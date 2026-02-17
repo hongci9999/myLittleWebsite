@@ -36,6 +36,17 @@ fix: 모바일에서 네비게이션 겹침 수정
 docs: README에 프로젝트 목적 설명 추가
 ```
 
+### Windows 한글 인코딩
+
+PowerShell 등에서 한글 커밋 메시지가 깨지면 **메시지 파일** 방식 사용:
+
+```
+# 1. 메시지를 UTF-8로 저장 (예: .git-commit-msg.txt)
+# 2. 커밋 시
+git commit -F .git-commit-msg.txt
+git commit --amend -F .git-commit-msg.txt
+```
+
 ---
 
 ## 커밋 단위

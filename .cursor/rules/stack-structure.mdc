@@ -1,0 +1,58 @@
+---
+description: 기술 스택 및 폴더 구조 - React, Node, PostgreSQL(Supabase)
+alwaysApply: true
+---
+
+# 기술 스택
+
+학습·기능 확장을 위한 구성.
+
+| 레이어 | 기술 |
+|--------|------|
+| **프론트엔드** | React + TypeScript (Next.js 또는 Vite) |
+| **백엔드** | Node.js + Express + TypeScript |
+| **데이터베이스** | PostgreSQL (Supabase 호스팅) |
+| **인증·기타** | Supabase Auth, Storage, Realtime (필요 시) |
+
+---
+
+# 폴더 구조
+
+```
+myLittleWebsite/
+├── client/                 # 프론트엔드
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/          # 또는 app/ (Next.js App Router)
+│   │   ├── hooks/
+│   │   ├── utils/
+│   │   └── ...
+│   └── package.json
+│
+├── server/                 # 백엔드
+│   ├── src/
+│   │   ├── routes/
+│   │   ├── controllers/
+│   │   ├── services/
+│   │   ├── db/             # Supabase 클라이언트, 쿼리
+│   │   └── ...
+│   └── package.json
+│
+├── docs/                   # 프로젝트 기록 (docs-record 룰 참고)
+│   ├── CHANGELOG.md
+│   ├── decisions/
+│   ├── journal/
+│   └── README.md
+├── .cursor/
+├── README.md
+└── package.json            # 루트 workspace (선택)
+```
+
+---
+
+## 규칙
+
+- **client**: React UI, API 호출. 백엔드 로직·DB 직접 접근 금지
+- **server**: REST API, DB 연동, 비즈니스 로직. Supabase는 server에서만 사용
+- **공유 타입**: 필요 시 `shared/` 또는 `packages/types/` 추가
+- 새 기능은 기존 레이어에 맞춰 추가한다 (foundation 확장 원칙)

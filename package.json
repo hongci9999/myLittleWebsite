@@ -1,0 +1,20 @@
+{
+  "name": "mylittlewebsite",
+  "private": true,
+  "version": "0.0.1",
+  "description": "자료 정리 + 포트폴리오 + 기술 학습을 위한 개인 웹사이트",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "npm run dev -w client",
+    "dev:server": "npm run dev -w server",
+    "build": "npm run build -w client && npm run build -w server",
+    "install:all": "npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "workspaces": [
+    "client",
+    "server"
+  ]
+}

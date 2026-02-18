@@ -6,7 +6,7 @@
 
 ## 목적
 
-- **자료 정리**: 학습 내용, 메모 등을 체계적으로 정리
+- **자료 정리**: 학습 내용, 자료, 메모 등을 체계적으로 정리
 - **포트폴리오**: 프로젝트·경험 공유
 - **기술 학습**: 풀스택 개발 경험, 제작·배포·유지보수 전 과정 실습
 
@@ -14,12 +14,12 @@
 
 ## 기술 스택
 
-| 레이어 | 기술 |
-|--------|------|
-| 프론트엔드 | React + TypeScript (Next.js 또는 Vite) |
-| 백엔드 | Node.js + Express + TypeScript |
-| 데이터베이스 | PostgreSQL (Supabase) |
-| 인증·기타 | Supabase Auth, Storage, Realtime (필요 시) |
+| 레이어       | 기술                                       |
+| ------------ | ------------------------------------------ |
+| 프론트엔드   | React + TypeScript (Next.js 또는 Vite)     |
+| 백엔드       | Node.js + Express + TypeScript             |
+| 데이터베이스 | PostgreSQL (Supabase)                      |
+| 인증·기타    | Supabase Auth, Storage, Realtime (필요 시) |
 
 선택 이유: [docs/decisions/0001-tech-stack.md](docs/decisions/0001-tech-stack.md)
 
@@ -42,14 +42,16 @@ myLittleWebsite/
 
 ## 시작하기
 
-> ⏳ client, server 세팅 진행 중
-
 ```bash
-# 클라이언트
-cd client && npm install && npm run dev
+# 의존성 설치 (루트에서 한 번에)
+npm install
 
-# 서버 (별도 터미널)
-cd server && npm install && npm run dev
+# 동시 실행 (client: 5173, server: 3000)
+npm run dev
+
+# 또는 각각 별도 터미널에서
+npm run dev:client   # http://localhost:5173
+npm run dev:server   # http://localhost:3000
 ```
 
 ---

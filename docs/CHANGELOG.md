@@ -5,6 +5,13 @@
 ## [Unreleased]
 
 ### Added
+- **docs/learnings/** - 학습 내용 정리용 (개념·동작 방식)
+- docs-record 룰에 learnings 규칙 추가
+- learnings 0001: npm workspaces 동작 방식
+- **client/** - Vite + React + TypeScript 프론트엔드 (components, pages, hooks, utils)
+- **server/** - Express + TypeScript 백엔드 (routes, controllers, services, db)
+- 루트 package.json - npm workspaces, concurrently로 client/server 동시 실행
+- .gitignore - node_modules, dist, env, 로그 등
 - 프로젝트 핵심 원칙 룰 (foundation.mdc) - 이유 기반, 자기서술, 확장성
 - Git 작업 규칙 (git.mdc) - Conventional Commits, 브랜치 전략, Windows 한글 인코딩
 - 기술 스택·폴더 구조 룰 (stack-structure.mdc) - React, Node, Supabase

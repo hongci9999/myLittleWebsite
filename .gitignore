@@ -21,6 +21,9 @@ build/
 .DS_Store
 Thumbs.db
 
+# Commit message (Windows 한글용)
+.git-commit-msg.txt
+
 # Logs
 *.log
 npm-debug.log*

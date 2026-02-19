@@ -32,3 +32,6 @@ yarn-error.log*
 
 # Vite
 client/dist/
+
+# Superpowers (프로젝트 전용 - 클론 후 .cursor/skills/superpowers 사용, learnings 0002 참고)
+.cursor/skills/

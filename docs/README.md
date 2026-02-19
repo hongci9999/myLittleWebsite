@@ -12,6 +12,8 @@
 ### 의사결정 목록
 - [0001 기술 스택](./decisions/0001-tech-stack.md)
 - [0002 프로젝트 기초 구조](./decisions/0002-project-foundation.md)
+- [0003 Superpowers 적용](./decisions/0003-superpowers.md)
 
 ### 학습 내용
 - [0001 npm workspaces](./learnings/0001-npm-workspaces.md)
+- [0002 Superpowers](./learnings/0002-superpowers.md)

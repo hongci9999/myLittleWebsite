@@ -1,41 +1,41 @@
 ---
-description: 프로젝트 기록 규칙 - docs 폴더, CHANGELOG, 의사결정, 개발 로그
+description: Project recording rules - docs folder, CHANGELOG, decisions, journal
 alwaysApply: true
 ---
 
-# 프로젝트 기록
+# Project Records
 
-foundation의 "자기서술"·"이유 기반"을 위한 체계적 기록. 모든 기록에는 **날짜**와 **이유**를 포함한다.
+Structured records for foundation’s "self-documentation" and "reason-first". All records include **date** and **reason**.
 
 ---
 
-## 폴더 구조
+## Folder Structure
 
 ```
 docs/
-├── CHANGELOG.md          # 버전별 변경 내역
-├── decisions/            # 의사결정 기록 (ADR)
+├── CHANGELOG.md          # Version history
+├── decisions/            # Decision records (ADR)
 │   └── 0001-제목.md
-├── learnings/            # 학습 내용 (이해한 개념·동작 방식)
+├── learnings/            # Learnings (concepts, how things work)
 │   └── 0001-주제.md
-├── journal/              # 개발·학습 로그
+├── journal/              # Dev/learning log
 │   └── YYYY-MM.md
-└── README.md             # docs 인덱스
+└── README.md             # Docs index
 ```
 
 ---
 
-## 기록 유형별 규칙
+## Rules by Record Type
 
 ### CHANGELOG.md
-- **언제**: 릴리즈·커밋 묶음이 의미 있을 때
-- **형식**: [Keep a Changelog](https://keepachangelog.com/) (Added, Changed, Fixed 등)
-- **내용**: 무엇이 바뀌었는지, 왜 바뀌었는지(요약)
+- **When**: Release or meaningful commit batches
+- **Format**: [Keep a Changelog](https://keepachangelog.com/) (Added, Changed, Fixed, etc.)
+- **Content**: What changed and why (summary)
 
 ### decisions/ (의사결정 기록)
-- **언제**: 기술 선택, 구조 변경, 중요한 설계 결정 시
-- **파일명**: `0001-slug.md` (번호-간단설명)
-- **형식**:
+- **When**: Tech choices, structure changes, major design decisions
+- **Filename**: `0001-slug.md` (number-short-description)
+- **Format** (한국어 출력):
   ```markdown
   # 제목
   날짜: YYYY-MM-DD
@@ -48,14 +48,14 @@ docs/
   ```
 
 ### journal/ (개발 로그)
-- **언제**: 작업 단위·학습 단위로 자유롭게
-- **파일명**: `YYYY-MM.md` (월별) 또는 주제별
-- **내용**: 오늘 한 일, 배운 점, 막힌 점, 다음 할 일
+- **When**: Per task or learning unit
+- **Filename**: `YYYY-MM.md` (monthly) or by topic
+- **Content**: What you did, learned, got stuck on, next steps (한국어)
 
 ### learnings/ (학습 내용)
-- **언제**: 구현·개념을 이해했을 때, 나중에 참고할 내용을 정리할 때
-- **파일명**: `0001-slug.md` (번호-주제, decisions와 동일 형식)
-- **형식**:
+- **When**: After understanding a concept or implementation, for future reference
+- **Filename**: `0001-slug.md` (same pattern as decisions)
+- **Format** (한국어 출력):
   ```markdown
   # 주제
   날짜: YYYY-MM-DD
@@ -65,16 +65,16 @@ docs/
   ## 상세 설명 (이해한 내용)
   ## 참고
   ```
-- **decisions와 차이**: decisions는 "무엇을 선택했는가", learnings는 "어떻게 동작하는가·왜 그런가"
+- **vs decisions**: decisions = "what was chosen", learnings = "how it works and why"
 
 ---
 
-## 작성 시점
+## When to Write What
 
-| 상황 | 기록 위치 |
-|------|-----------|
-| 기능 추가·수정·삭제 | CHANGELOG |
-| 기술/구조 선택 | decisions/ |
-| 개념·동작 방식 이해한 내용 | learnings/ |
-| 일상 작업·학습 | journal/ |
-| 새 섹션·문서 타입 필요 | docs/README에 규칙 추가 후 적용 |
+| situation                        | location     |
+| -------------------------------- | ------------ |
+| Feature add/change/remove        | CHANGELOG    |
+| Tech/structure choice            | decisions/   |
+| Understanding concepts/behavior | learnings/   |
+| Daily work/learning              | journal/     |
+| New section or doc type          | Add to docs/README, then apply |

@@ -17,3 +17,4 @@
 ### 학습 내용
 - [0001 npm workspaces](./learnings/0001-npm-workspaces.md)
 - [0002 Superpowers](./learnings/0002-superpowers.md)
+- [0003 웹사이트 구조·UX 용어](./learnings/0003-website-structure-terminology.md)

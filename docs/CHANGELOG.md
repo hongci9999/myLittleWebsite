@@ -5,6 +5,9 @@
 ## [Unreleased]
 
 ### Added
+
+- **ESLint + Prettier** - .prettierrc, .prettierignore, eslint-config-prettier, 루트 format/format:check 스크립트
+- **react-refresh 규칙 전역 비활성화** - shadcn 컴포넌트(컴포넌트+variants export) 패턴 허용
 - **Superpowers 프로젝트 전용 설치** - .cursor/skills/superpowers 클론, superpowers-bootstrap.mdc 룰 (이 프로젝트에서만 적용)
 - learnings 0002 보강: 수동 설치 CLI (PowerShell 경로 수정, 프로젝트 전용 방법 C), Bootstrap 역할·출처
 - **docs/learnings/** - 학습 내용 정리용 (개념·동작 방식)
@@ -22,7 +25,9 @@
 - 의사결정 기록: 0001 기술 스택, 0002 프로젝트 기초 구조, 0003 Superpowers 적용
 
 ### Changed
+
 - (아직 없음)
 
 ### Fixed
+
 - (아직 없음)

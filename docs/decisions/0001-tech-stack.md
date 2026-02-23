@@ -9,12 +9,12 @@
 
 ## 결정 (무엇으로 했는지)
 
-| 레이어 | 기술 |
-|--------|------|
-| 프론트엔드 | React + TypeScript (Next.js 또는 Vite) |
-| 백엔드 | Node.js + Express + TypeScript |
-| 데이터베이스 | PostgreSQL (Supabase 호스팅) |
-| 인증·기타 | Supabase Auth, Storage, Realtime (필요 시) |
+| 레이어       | 기술                                       |
+| ------------ | ------------------------------------------ |
+| 프론트엔드   | React + TypeScript (Next.js 또는 Vite)     |
+| 백엔드       | Node.js + Express + TypeScript             |
+| 데이터베이스 | PostgreSQL (Supabase 호스팅)               |
+| 인증·기타    | Supabase Auth, Storage, Realtime (필요 시) |
 
 ## 이유 (다른 선택지를 배제한 이유)
 

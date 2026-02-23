@@ -11,10 +11,10 @@ shadcn/ui를 Vite + React 프로젝트에 적용했다. `npx shadcn@latest init`
 
 ## 1. 왜 이렇게 했는지
 
-| 항목 | 설명 |
-|------|------|
+| 항목           | 설명                                                                                             |
+| -------------- | ------------------------------------------------------------------------------------------------ |
 | **CLI 미사용** | `npx shadcn@latest init`은 대화형이라 자동화 어려움. npm install이 샌드박스에서 실패해 수동 설정 |
-| **수동 설정** | components.json, utils, CSS 변수, Button 컴포넌트를 문서 기준으로 직접 작성 |
+| **수동 설정**  | components.json, utils, CSS 변수, Button 컴포넌트를 문서 기준으로 직접 작성                      |
 
 ---
 
@@ -25,6 +25,7 @@ shadcn/ui를 Vite + React 프로젝트에 적용했다. `npx shadcn@latest init`
 **목적**: shadcn/ui는 Tailwind로 스타일을 적용한다.
 
 **한 일**:
+
 - `tailwindcss`, `@tailwindcss/vite` 패키지 추가
 - `vite.config.ts`에 `tailwindcss()` 플러그인 등록
 
@@ -42,11 +43,11 @@ plugins: [react(), tailwindcss()]
 
 **한 일**:
 
-| 파일 | 변경 내용 |
-|------|-----------|
-| `vite.config.ts` | `resolve.alias`: `"@": path.resolve(__dirname, "./src")` |
-| `tsconfig.json` | `compilerOptions.baseUrl`, `paths: { "@/*": ["./src/*"] }` |
-| `tsconfig.app.json` | 위와 동일 (IDE·타입 체크용) |
+| 파일                | 변경 내용                                                  |
+| ------------------- | ---------------------------------------------------------- |
+| `vite.config.ts`    | `resolve.alias`: `"@": path.resolve(__dirname, "./src")`   |
+| `tsconfig.json`     | `compilerOptions.baseUrl`, `paths: { "@/*": ["./src/*"] }` |
+| `tsconfig.app.json` | 위와 동일 (IDE·타입 체크용)                                |
 
 ---
 
@@ -57,8 +58,9 @@ plugins: [react(), tailwindcss()]
 **한 일**:
 
 1. **Tailwind 불러오기**
+
    ```css
-   @import "tailwindcss";
+   @import 'tailwindcss';
    ```
 
 2. **`:root` (라이트 모드)**  
@@ -69,6 +71,7 @@ plugins: [react(), tailwindcss()]
 
 4. **`@theme inline`**  
    Tailwind v4에서 위 변수를 `bg-primary`, `text-foreground` 같은 유틸리티로 쓰기 위해 매핑
+
    ```css
    @theme inline {
      --color-background: var(--background);
@@ -90,6 +93,7 @@ plugins: [react(), tailwindcss()]
 **목적**: shadcn CLI가 이 파일을 읽고, `npx shadcn add <컴포넌트>` 실행 시 어디에 무엇을 넣을지 결정한다.
 
 **한 일**:
+
 - `client/components.json` 생성
 - style: `new-york`, baseColor: `neutral`, css: `src/index.css`
 - aliases: `@/components`, `@/lib/utils` 등
@@ -101,6 +105,7 @@ plugins: [react(), tailwindcss()]
 **목적**: Tailwind 클래스를 조건부로 합치고, 충돌 시 나중 클래스가 이기도록 한다.
 
 **한 일**:
+
 - `clsx` + `tailwind-merge`로 `cn()` 함수 구현
 - shadcn 컴포넌트에서 `className={cn("base", variant, className)}` 형태로 사용
 
@@ -117,6 +122,7 @@ export function cn(...inputs: ClassValue[]) {
 **목적**: shadcn Button 컴포넌트를 프로젝트에 추가한다.
 
 **한 일**:
+
 - `@radix-ui/react-slot`: `asChild`일 때 자식 요소를 그대로 렌더 (예: Link를 버튼처럼)
 - `class-variance-authority` (cva): variant/size별 Tailwind 클래스 정의
 - `buttonVariants`: default, outline, ghost, destructive 등 variant, sm/lg/icon 등 size
@@ -130,20 +136,21 @@ export function cn(...inputs: ClassValue[]) {
 
 **추가한 패키지**:
 
-| 패키지 | 용도 |
-|--------|------|
-| `tailwindcss` | Tailwind CSS |
-| `@tailwindcss/vite` | Vite용 Tailwind 플러그인 |
-| `@radix-ui/react-slot` | Button의 `asChild` (자식으로 렌더) |
-| `class-variance-authority` | variant/size별 클래스 정의 |
-| `clsx` | 조건부 클래스 합치기 |
-| `tailwind-merge` | Tailwind 클래스 충돌 시 나중 것 우선 |
+| 패키지                     | 용도                                 |
+| -------------------------- | ------------------------------------ |
+| `tailwindcss`              | Tailwind CSS                         |
+| `@tailwindcss/vite`        | Vite용 Tailwind 플러그인             |
+| `@radix-ui/react-slot`     | Button의 `asChild` (자식으로 렌더)   |
+| `class-variance-authority` | variant/size별 클래스 정의           |
+| `clsx`                     | 조건부 클래스 합치기                 |
+| `tailwind-merge`           | Tailwind 클래스 충돌 시 나중 것 우선 |
 
 ---
 
 ### 2-8. index.html
 
 **한 일**:
+
 - `html`에 `class="dark"` 추가 → 다크 테마 적용
 - `lang="ko"`, `title="myLittleWebsite"` 변경
 
@@ -152,6 +159,7 @@ export function cn(...inputs: ClassValue[]) {
 ### 2-9. Layout, HomePage 수정
 
 **한 일**:
+
 - 기존 CSS 파일(`Layout.css`, `HomePage.css`) 삭제
 - Tailwind 유틸 클래스로 대체: `bg-background`, `text-foreground`, `border-border` 등
 - HomePage에 `<Button>`, `<Button variant="outline">` 사용

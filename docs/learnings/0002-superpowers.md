@@ -9,14 +9,14 @@ Superpowers는 Cursor·Claude Code 같은 코딩 에이전트에 설계 선행·
 
 ## 핵심 개념
 
-| 용어 | 의미 |
-|------|------|
-| **스킬 (Skill)** | 특정 상황에서 실행되는 워크플로우 지침·절차 |
-| **자동 트리거** | 에이전트가 맥락을 보고, 해당 스킬이 필요하다고 판단하면 자동 실행 |
-| **brainstorming** | 코드 작성 전 질문으로 요구사항을 정리하고 설계를 나눠 검증 |
-| **writing-plans** | 승인된 설계를 2~5분 단위 태스크로 분해한 구현 계획 작성 |
+| 용어                            | 의미                                                                   |
+| ------------------------------- | ---------------------------------------------------------------------- |
+| **스킬 (Skill)**                | 특정 상황에서 실행되는 워크플로우 지침·절차                            |
+| **자동 트리거**                 | 에이전트가 맥락을 보고, 해당 스킬이 필요하다고 판단하면 자동 실행      |
+| **brainstorming**               | 코드 작성 전 질문으로 요구사항을 정리하고 설계를 나눠 검증             |
+| **writing-plans**               | 승인된 설계를 2~5분 단위 태스크로 분해한 구현 계획 작성                |
 | **subagent-driven-development** | 태스크마다 서브에이전트를 띄워 실행하고, 2단계 리뷰(스펙·품질) 후 진행 |
-| **RED-GREEN-REFACTOR** | TDD 사이클: 실패 테스트 → 통과할 최소 코드 → 리팩터링 |
+| **RED-GREEN-REFACTOR**          | TDD 사이클: 실패 테스트 → 통과할 최소 코드 → 리팩터링                  |
 
 ## 상세 설명 (이해한 내용)
 
@@ -42,16 +42,16 @@ Superpowers는 Cursor·Claude Code 같은 코딩 에이전트에 설계 선행·
 
 ### 3. 스킬 종류 (요약)
 
-| 영역 | 스킬 | 역할 |
-|------|------|------|
-| 설계 | brainstorming | 요구사항 질문, 설계 분할 제시, 설계 문서 저장 |
-| 작업 공간 | using-git-worktrees | 새 브랜치에 worktree 생성, 프로젝트 세팅, 테스트 베이스라인 확인 |
-| 계획 | writing-plans | 2~5분 단위 태스크, 파일 경로·코드·검증 절차 명시 |
-| 실행 | subagent-driven-development | 태스크별 서브에이전트, 스펙→품질 2단계 리뷰 |
-| 실행 | executing-plans | 계획 배치 실행, 사람 체크포인트 |
-| 테스트 | test-driven-development | RED-GREEN-REFACTOR, 테스트 전 코드 삭제 |
-| 협업 | requesting-code-review | 계획 대비 검토, 심각도별 이슈 보고 |
-| 협업 | finishing-a-development-branch | 테스트 확인, 머지/PR/유지/버림 결정 |
+| 영역      | 스킬                           | 역할                                                             |
+| --------- | ------------------------------ | ---------------------------------------------------------------- |
+| 설계      | brainstorming                  | 요구사항 질문, 설계 분할 제시, 설계 문서 저장                    |
+| 작업 공간 | using-git-worktrees            | 새 브랜치에 worktree 생성, 프로젝트 세팅, 테스트 베이스라인 확인 |
+| 계획      | writing-plans                  | 2~5분 단위 태스크, 파일 경로·코드·검증 절차 명시                 |
+| 실행      | subagent-driven-development    | 태스크별 서브에이전트, 스펙→품질 2단계 리뷰                      |
+| 실행      | executing-plans                | 계획 배치 실행, 사람 체크포인트                                  |
+| 테스트    | test-driven-development        | RED-GREEN-REFACTOR, 테스트 전 코드 삭제                          |
+| 협업      | requesting-code-review         | 계획 대비 검토, 심각도별 이슈 보고                               |
+| 협업      | finishing-a-development-branch | 테스트 확인, 머지/PR/유지/버림 결정                              |
 
 ### 4. TDD (test-driven-development)
 
@@ -83,6 +83,7 @@ Superpowers는 Cursor·Claude Code 같은 코딩 에이전트에 설계 선행·
 `/plugin-add`가 동작하지 않거나 마켓플레이스가 없을 때 사용. [SOY4RIAS Gist](https://gist.github.com/SOY4RIAS/b7acafb1e61827c17ecf755de008e8fd) 기준.
 
 1. **저장소 클론**
+
    ```bash
    mkdir -p ~/.cursor/skills
    git clone https://github.com/obra/superpowers.git ~/.cursor/skills/superpowers
@@ -105,13 +106,13 @@ Superpowers는 Cursor·Claude Code 같은 코딩 에이전트에 설계 선행·
 
 수동 설치 시 Bootstrap 룰이 에이전트에게 다음을 알려준다.
 
-| 항목 | 내용 |
-|------|------|
+| 항목           | 내용                                                        |
+| -------------- | ----------------------------------------------------------- |
 | 스킬 파일 위치 | `~/.cursor/skills/superpowers/skills/{skill-name}/SKILL.md` |
-| 도구 매핑 | Skill→Read, Bash→Shell, TodoWrite→TodoWrite |
-| 규칙 | 적용 가능성 1%라도 있으면 스킬을 먼저 읽고 따라야 함 |
-| Red Flags | "간단한 질문이야", "컨텍스트부터" 같은 합리화 방지 |
-| 스킬 우선순위 | brainstorming·debugging 먼저 → 구현 스킬 나중 |
+| 도구 매핑      | Skill→Read, Bash→Shell, TodoWrite→TodoWrite                 |
+| 규칙           | 적용 가능성 1%라도 있으면 스킬을 먼저 읽고 따라야 함        |
+| Red Flags      | "간단한 질문이야", "컨텍스트부터" 같은 합리화 방지          |
+| 스킬 우선순위  | brainstorming·debugging 먼저 → 구현 스킬 나중               |
 
 ## 참고
 

@@ -26,5 +26,6 @@
 | [0003](./learnings/0003-website-structure-terminology.md) | 웹사이트 구조·UX 용어 | 프론트, ux                     |
 | [0004](./learnings/0004-feature-sliced-design.md)         | Feature-Sliced Design | 프론트, 개발방법론, 아키텍처   |
 | [0005](./learnings/0005-shadcn-ui-setup.md)               | shadcn/ui 적용 내역   | 프론트, 도구                   |
+| [0006](./learnings/0006-shadcn-ui-and-radix.md)           | shadcn/ui와 Radix UI | 프론트, 도구, ux               |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

@@ -20,13 +20,14 @@ Set up for learning and extensibility.
 
 ```
 myLittleWebsite/
-├── client/                 # Frontend
+├── client/                 # Frontend (FSD 점진적 적용, see decisions/0004)
 │   ├── src/
-│   │   ├── components/
-│   │   ├── pages/          # or app/ (Next.js App Router)
-│   │   ├── hooks/
-│   │   ├── utils/
-│   │   └── ...
+│   │   ├── app/            # 앱 진입점, 라우터, 프로바이더
+│   │   ├── pages/          # 페이지 단위 (home, about, portfolio 등)
+│   │   ├── widgets/        # 독립 UI 블록 (Header, Footer 등)
+│   │   ├── features/       # 사용자 시나리오 (검색, 필터 등, 필요 시)
+│   │   ├── entities/       # 비즈니스 엔티티 (포트폴리오 항목 등, 필요 시)
+│   │   └── shared/         # UI 키트, 유틸, 설정
 │   └── package.json
 │
 ├── server/                 # Backend
@@ -56,3 +57,21 @@ myLittleWebsite/
 - **server**: REST API, DB integration, business logic. Supabase only on server
 - **Shared types**: Add `shared/` or `packages/types/` when needed
 - Add new features within existing layers (foundation extensibility)
+
+---
+
+## FSD 적용 가이드 (client)
+
+Feature-Sliced Design을 **점진적**으로 적용한다. 규모가 크지 않을 때는 전부 도입하지 않는다.
+
+- **의존 방향**: 위 레이어 → 아래 레이어만. `pages` → `widgets` → `features` → `entities` → `shared`
+- **공개 API**: 각 슬라이스는 `index.ts`로만 노출. 내부 구현 직접 import 금지
+- **점진적 도입**: `shared` → `pages` → `app` 먼저 시작. `entities`, `features`, `widgets`는 필요해질 때 추가
+
+| 단계 | 시점 | 추가할 레이어 |
+|------|------|---------------|
+| 1 | 초기 | `shared/`, `pages/`, `app/` |
+| 2 | 비즈니스 도메인 생김 | `entities/`, `features/` |
+| 3 | UI 블록 재사용 필요 | `widgets/` |
+
+- **참고**: `docs/learnings/0004-feature-sliced-design.md`, `docs/decisions/0004-fsd-application-strategy.md`

@@ -6,6 +6,9 @@
 
 ### Added
 
+- **랜딩 페이지** - 스크롤 기반 표어 애니메이션 ("끊임없이 배워나가는..."), 홈 버튼으로 메인 이동
+- **메인 허브** - About/Portfolio/Blog 카드 그리드, config 기반 확장 가능
+- **플레이스홀더 페이지** - About, Portfolio, Blog (준비 중)
 - **ESLint + Prettier** - .prettierrc, .prettierignore, eslint-config-prettier, 루트 format/format:check 스크립트
 - **react-refresh 규칙 전역 비활성화** - shadcn 컴포넌트(컴포넌트+variants export) 패턴 허용
 - **Superpowers 프로젝트 전용 설치** - .cursor/skills/superpowers 클론, superpowers-bootstrap.mdc 룰 (이 프로젝트에서만 적용)

@@ -416,13 +416,18 @@ const CARD_STYLES = [
   { id: 'header-accent', name: '헤더 강조', className: 'border shadow [&>*:first-child]:border-b [&>*:first-child]:border-primary/30' },
 ] as const
 
-// 선택지 스타일
-const CHOICE_STYLES = [
+// 선택지 표시 스타일 (단일/다중용)
+const CHOICE_STYLES_SELECT = [
   { id: 'default', name: '기본' },
   { id: 'card', name: '카드형' },
   { id: 'pill', name: '필형' },
-  { id: 'switch', name: '스위치형' },
   { id: 'list', name: '리스트형' },
+] as const
+
+// 토글 표시 스타일
+const CHOICE_STYLES_TOGGLE = [
+  { id: 'switch', name: '스위치' },
+  { id: 'checkbox', name: '체크박스' },
 ] as const
 
 // 메뉴 스타일
@@ -436,11 +441,12 @@ const MENU_STYLES = [
 
 // 코드블록 스타일
 const CODE_BLOCK_STYLES = [
-  { id: 'default', name: '기본', className: 'border border-border bg-muted/50' },
-  { id: 'left-bar', name: '좌측 강조', className: 'border-0 border-l-4 border-l-primary bg-muted/30' },
-  { id: 'flat', name: '플랫', className: 'border-0 bg-muted/40' },
-  { id: 'elevated', name: '떠있는', className: 'border border-border bg-card shadow-md' },
-  { id: 'with-label', name: '언어 라벨', className: 'border border-border bg-muted/50' },
+  { id: 'default', name: '기본', className: 'border border-border bg-muted/50', hasLabel: false },
+  { id: 'left-bar', name: '좌측 강조', className: 'border-0 border-l-4 border-l-primary bg-muted/30', hasLabel: false },
+  { id: 'flat', name: '플랫', className: 'border-0 bg-muted/40', hasLabel: false },
+  { id: 'elevated', name: '떠있는', className: 'border border-border bg-card shadow-md', hasLabel: false },
+  { id: 'with-label', name: '언어 라벨', className: 'border border-border bg-muted/50', hasLabel: true },
+  { id: 'label-elevated', name: '언어 라벨 + 떠있는', className: 'border border-border bg-card shadow-md', hasLabel: true },
 ] as const
 
 // 입력칸 스타일
@@ -452,13 +458,27 @@ const INPUT_STYLES = [
   { id: 'ghost', name: '고스트', className: 'border-0 bg-transparent focus:bg-muted/30' },
 ] as const
 
-// 타이포그래피
+// 타이포그래피 (굵기·줄간격)
 const TYPO_STYLES = [
   { id: 'default', name: '기본', heading: 'font-bold', body: 'leading-relaxed' },
   { id: 'tight', name: '촘촘', heading: 'font-bold', body: 'leading-snug' },
   { id: 'loose', name: '넓음', heading: 'font-semibold', body: 'leading-loose' },
   { id: 'heavy', name: '강조', heading: 'font-extrabold', body: 'leading-normal' },
   { id: 'light', name: '가벼움', heading: 'font-semibold', body: 'leading-loose' },
+] as const
+
+// 제목 크기
+const TYPO_SIZE_HEADING = [
+  { id: 'xl', name: 'XL', className: 'text-xl' },
+  { id: '2xl', name: '2XL', className: 'text-2xl' },
+  { id: '3xl', name: '3XL', className: 'text-3xl' },
+] as const
+
+// 본문 크기
+const TYPO_SIZE_BODY = [
+  { id: 'sm', name: '작게', className: 'text-sm' },
+  { id: 'base', name: '기본', className: 'text-base' },
+  { id: 'lg', name: '크게', className: 'text-lg' },
 ] as const
 
 // 그림자
@@ -549,11 +569,15 @@ export default function DesignPlaygroundPage() {
   const [radius, setRadius] = useState<string>('0.5rem')
   const [buttonStyle, setButtonStyle] = useState<(typeof BUTTON_STYLES)[number]['id']>('default')
   const [cardStyle, setCardStyle] = useState<(typeof CARD_STYLES)[number]['id']>('default')
-  const [choiceStyle, setChoiceStyle] = useState<(typeof CHOICE_STYLES)[number]['id']>('default')
+  const [choiceStyleSingle, setChoiceStyleSingle] = useState<(typeof CHOICE_STYLES_SELECT)[number]['id']>('default')
+  const [choiceStyleMulti, setChoiceStyleMulti] = useState<(typeof CHOICE_STYLES_SELECT)[number]['id']>('default')
+  const [choiceStyleToggle, setChoiceStyleToggle] = useState<(typeof CHOICE_STYLES_TOGGLE)[number]['id']>('switch')
   const [menuStyle, setMenuStyle] = useState<(typeof MENU_STYLES)[number]['id']>('underline')
   const [codeBlockStyle, setCodeBlockStyle] = useState<(typeof CODE_BLOCK_STYLES)[number]['id']>('default')
   const [inputStyle, setInputStyle] = useState<(typeof INPUT_STYLES)[number]['id']>('default')
   const [typoStyle, setTypoStyle] = useState<(typeof TYPO_STYLES)[number]['id']>('default')
+  const [typoSizeHeading, setTypoSizeHeading] = useState<(typeof TYPO_SIZE_HEADING)[number]['id']>('2xl')
+  const [typoSizeBody, setTypoSizeBody] = useState<(typeof TYPO_SIZE_BODY)[number]['id']>('base')
   const [shadowStyle, setShadowStyle] = useState<(typeof SHADOW_STYLES)[number]['id']>('default')
   const [transitionStyle, setTransitionStyle] = useState<(typeof TRANSITION_STYLES)[number]['id']>('default')
   const [tabStyle, setTabStyle] = useState<(typeof TAB_STYLES)[number]['id']>('underline')
@@ -583,6 +607,8 @@ export default function DesignPlaygroundPage() {
     CODE_BLOCK_STYLES.find((s) => s.id === codeBlockStyle)?.className ?? ''
   const inputStyleClass = INPUT_STYLES.find((s) => s.id === inputStyle)?.className ?? ''
   const typoStyleClass = TYPO_STYLES.find((s) => s.id === typoStyle)
+  const typoSizeHeadingClass = TYPO_SIZE_HEADING.find((s) => s.id === typoSizeHeading)?.className ?? 'text-2xl'
+  const typoSizeBodyClass = TYPO_SIZE_BODY.find((s) => s.id === typoSizeBody)?.className ?? 'text-base'
   const shadowStyleClass = SHADOW_STYLES.find((s) => s.id === shadowStyle)?.className ?? ''
   const transitionValue = TRANSITION_STYLES.find((s) => s.id === transitionStyle)?.value ?? '300ms'
 
@@ -600,11 +626,15 @@ export default function DesignPlaygroundPage() {
 - 모서리: ${RADII.find((r) => r.value === radius)?.name ?? radius}
 - 버튼: ${BUTTON_STYLES.find((s) => s.id === buttonStyle)?.name ?? buttonStyle}
 - 카드: ${CARD_STYLES.find((s) => s.id === cardStyle)?.name ?? cardStyle}
-- 선택지: ${CHOICE_STYLES.find((s) => s.id === choiceStyle)?.name ?? choiceStyle}
+- 선택지 단일: ${CHOICE_STYLES_SELECT.find((s) => s.id === choiceStyleSingle)?.name ?? choiceStyleSingle}
+- 선택지 다중: ${CHOICE_STYLES_SELECT.find((s) => s.id === choiceStyleMulti)?.name ?? choiceStyleMulti}
+- 선택지 토글: ${CHOICE_STYLES_TOGGLE.find((s) => s.id === choiceStyleToggle)?.name ?? choiceStyleToggle}
 - 메뉴: ${MENU_STYLES.find((s) => s.id === menuStyle)?.name ?? menuStyle}
 - 코드블록: ${CODE_BLOCK_STYLES.find((s) => s.id === codeBlockStyle)?.name ?? codeBlockStyle}
 - 입력칸: ${INPUT_STYLES.find((s) => s.id === inputStyle)?.name ?? inputStyle}
 - 타이포: ${TYPO_STYLES.find((s) => s.id === typoStyle)?.name ?? typoStyle}
+- 제목 크기: ${TYPO_SIZE_HEADING.find((s) => s.id === typoSizeHeading)?.name ?? typoSizeHeading}
+- 본문 크기: ${TYPO_SIZE_BODY.find((s) => s.id === typoSizeBody)?.name ?? typoSizeBody}
 - 그림자: ${SHADOW_STYLES.find((s) => s.id === shadowStyle)?.name ?? shadowStyle}
 - 트랜지션: ${TRANSITION_STYLES.find((s) => s.id === transitionStyle)?.name ?? transitionStyle}
 
@@ -900,36 +930,38 @@ export default function DesignPlaygroundPage() {
             </div>
           </div>
 
-          <div className="space-y-3">
-            <div>
-              <p className="text-sm text-muted-foreground mb-2">선택지</p>
-              <div className="flex flex-wrap gap-2">
-                {CHOICE_STYLES.map((s) => (
-                  <Button
-                    key={s.id}
-                    variant={choiceStyle === s.id ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setChoiceStyle(s.id)}
-                  >
-                    {s.name}
-                  </Button>
-                ))}
+          <div className="space-y-6">
+            {/* 단일선택 */}
+            <div className="space-y-3">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-2">단일선택 (radio)</p>
+                <div className="flex flex-wrap gap-2">
+                  {CHOICE_STYLES_SELECT.map((s) => (
+                    <Button
+                      key={s.id}
+                      variant={choiceStyleSingle === s.id ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setChoiceStyleSingle(s.id)}
+                    >
+                      {s.name}
+                    </Button>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="flex flex-wrap gap-4">
-              {choiceStyle === 'default' && (
+              <div className="flex flex-wrap gap-4">
+              {choiceStyleSingle === 'default' && (
                 <>
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="rounded border-input" />
+                    <input type="radio" name="choice-single-default" className="border-input" />
                     <span>옵션 A</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="choice" className="border-input" />
+                    <input type="radio" name="choice-single-default" className="border-input" defaultChecked />
                     <span>옵션 B</span>
                   </label>
                 </>
               )}
-              {choiceStyle === 'card' && (
+              {choiceStyleSingle === 'card' && (
                 <div className="flex gap-2">
                   {['옵션 A', '옵션 B'].map((opt, i) => (
                     <label
@@ -937,53 +969,179 @@ export default function DesignPlaygroundPage() {
                       className={cn(
                         'flex items-center gap-2 px-4 py-2 border cursor-pointer transition-colors',
                         PREVIEW_RADIUS,
-                        i === 0 ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
+                        i === 1 ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
                       )}
                     >
-                      <input type="radio" name="choice-card" className="sr-only" defaultChecked={i === 0} />
+                      <input type="radio" name="choice-single-card" className="sr-only" defaultChecked={i === 1} />
                       <span>{opt}</span>
                     </label>
                   ))}
                 </div>
               )}
-              {choiceStyle === 'pill' && (
+              {choiceStyleSingle === 'pill' && (
                 <div className="flex gap-1 p-1 rounded-full bg-muted">
                   {['옵션 A', '옵션 B'].map((opt, i) => (
                     <label
                       key={opt}
                       className={cn(
                         'px-4 py-1.5 rounded-full text-sm cursor-pointer transition-colors',
-                        i === 0 ? 'bg-primary text-primary-foreground' : 'hover:bg-muted-foreground/10'
+                        i === 1 ? 'bg-primary text-primary-foreground' : 'hover:bg-muted-foreground/10'
                       )}
                     >
-                      <input type="radio" name="choice-pill" className="sr-only" defaultChecked={i === 0} />
+                      <input type="radio" name="choice-single-pill" className="sr-only" defaultChecked={i === 1} />
                       {opt}
                     </label>
                   ))}
                 </div>
               )}
-              {choiceStyle === 'list' && (
-                <ul className={cn('space-y-2 border divide-y divide-border p-0 list-none', PREVIEW_RADIUS)}>
+              {choiceStyleSingle === 'list' && (
+                <ul className={cn('space-y-0 border divide-y divide-border p-0 list-none', PREVIEW_RADIUS)}>
                   {['옵션 A', '옵션 B'].map((opt, i) => (
                     <li key={opt}>
                       <label className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-muted/50">
-                        <input type="radio" name="choice-list" className="border-input" defaultChecked={i === 0} />
+                        <input type="radio" name="choice-single-list" className="border-input" defaultChecked={i === 1} />
                         <span>{opt}</span>
                       </label>
                     </li>
                   ))}
                 </ul>
               )}
-              {choiceStyle === 'switch' && (
-                <div className="flex gap-4 items-center">
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" />
-                    <div className="w-11 h-6 rounded-full bg-muted peer-checked:bg-primary transition-colors" />
-                    <div className="absolute left-1 top-1 w-4 h-4 rounded-full bg-background shadow transition-transform peer-checked:translate-x-5" />
+              </div>
+            </div>
+
+            {/* 다중선택 */}
+            <div className="space-y-3">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-2">다중선택 (checkbox)</p>
+                <div className="flex flex-wrap gap-2">
+                  {CHOICE_STYLES_SELECT.map((s) => (
+                    <Button
+                      key={s.id}
+                      variant={choiceStyleMulti === s.id ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setChoiceStyleMulti(s.id)}
+                    >
+                      {s.name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-4">
+              {choiceStyleMulti === 'default' && (
+                <>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="rounded border-input" defaultChecked />
+                    <span>옵션 A</span>
                   </label>
-                  <span className="text-sm">스위치</span>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="rounded border-input" />
+                    <span>옵션 B</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="rounded border-input" defaultChecked />
+                    <span>옵션 C</span>
+                  </label>
+                </>
+              )}
+              {choiceStyleMulti === 'card' && (
+                <div className="flex flex-wrap gap-2">
+                  {['옵션 A', '옵션 B', '옵션 C'].map((opt, i) => (
+                    <label
+                      key={opt}
+                      className={cn(
+                        'flex items-center gap-2 px-4 py-2 border cursor-pointer transition-colors',
+                        PREVIEW_RADIUS,
+                        [0, 2].includes(i) ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
+                      )}
+                    >
+                      <input type="checkbox" className="sr-only" defaultChecked={[0, 2].includes(i)} />
+                      <span>{opt}</span>
+                    </label>
+                  ))}
                 </div>
               )}
+              {choiceStyleMulti === 'pill' && (
+                <div className="flex gap-1 p-1 rounded-full bg-muted flex-wrap">
+                  {['옵션 A', '옵션 B', '옵션 C'].map((opt, i) => (
+                    <label
+                      key={opt}
+                      className={cn(
+                        'px-4 py-1.5 rounded-full text-sm cursor-pointer transition-colors',
+                        [0, 2].includes(i) ? 'bg-primary text-primary-foreground' : 'hover:bg-muted-foreground/10'
+                      )}
+                    >
+                      <input type="checkbox" className="sr-only" defaultChecked={[0, 2].includes(i)} />
+                      {opt}
+                    </label>
+                  ))}
+                </div>
+              )}
+              {choiceStyleMulti === 'list' && (
+                <ul className={cn('space-y-0 border divide-y divide-border p-0 list-none', PREVIEW_RADIUS)}>
+                  {['옵션 A', '옵션 B', '옵션 C'].map((opt, i) => (
+                    <li key={opt}>
+                      <label className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-muted/50">
+                        <input type="checkbox" className="border-input rounded" defaultChecked={[0, 2].includes(i)} />
+                        <span>{opt}</span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              </div>
+            </div>
+
+            {/* 토글 */}
+            <div className="space-y-3">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-2">토글 (switch/checkbox)</p>
+                <div className="flex flex-wrap gap-2">
+                  {CHOICE_STYLES_TOGGLE.map((s) => (
+                    <Button
+                      key={s.id}
+                      variant={choiceStyleToggle === s.id ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setChoiceStyleToggle(s.id)}
+                    >
+                      {s.name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-4">
+              {choiceStyleToggle === 'switch' && (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-3">
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <div className="w-11 h-6 rounded-full bg-muted peer-checked:bg-primary transition-colors" />
+                      <div className="absolute left-1 top-1 w-4 h-4 rounded-full bg-background shadow transition-transform peer-checked:translate-x-5" />
+                    </label>
+                    <span className="text-sm">알림 받기</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" />
+                      <div className="w-11 h-6 rounded-full bg-muted peer-checked:bg-primary transition-colors" />
+                      <div className="absolute left-1 top-1 w-4 h-4 rounded-full bg-background shadow transition-transform peer-checked:translate-x-5" />
+                    </label>
+                    <span className="text-sm">다크 모드</span>
+                  </div>
+                </div>
+              )}
+              {choiceStyleToggle === 'checkbox' && (
+                <div className="flex flex-col gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="rounded border-input" defaultChecked />
+                    <span className="text-sm">알림 받기</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="rounded border-input" />
+                    <span className="text-sm">다크 모드</span>
+                  </label>
+                </div>
+              )}
+              </div>
             </div>
           </div>
 
@@ -1079,7 +1237,7 @@ export default function DesignPlaygroundPage() {
                 ))}
               </div>
             </div>
-            {codeBlockStyle === 'with-label' ? (
+            {CODE_BLOCK_STYLES.find((s) => s.id === codeBlockStyle)?.hasLabel ? (
               <div className={cn('min-w-0 flex-1 overflow-hidden', codeBlockStyleClass, PREVIEW_RADIUS)}>
                 <div className="px-3 py-1 text-xs font-medium text-muted-foreground bg-muted/50 border-b border-border">
                   typescript
@@ -1141,7 +1299,7 @@ export default function DesignPlaygroundPage() {
 
           <div className="space-y-3">
             <div>
-              <p className="text-sm text-muted-foreground mb-2">타이포그래피</p>
+              <p className="text-sm text-muted-foreground mb-2">타이포그래피 (굵기·줄간격)</p>
               <div className="flex flex-wrap gap-2">
                 {TYPO_STYLES.map((s) => (
                   <Button
@@ -1155,9 +1313,39 @@ export default function DesignPlaygroundPage() {
                 ))}
               </div>
             </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">제목 크기</p>
+              <div className="flex flex-wrap gap-2">
+                {TYPO_SIZE_HEADING.map((s) => (
+                  <Button
+                    key={s.id}
+                    variant={typoSizeHeading === s.id ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTypoSizeHeading(s.id)}
+                  >
+                    {s.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">본문 크기</p>
+              <div className="flex flex-wrap gap-2">
+                {TYPO_SIZE_BODY.map((s) => (
+                  <Button
+                    key={s.id}
+                    variant={typoSizeBody === s.id ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setTypoSizeBody(s.id)}
+                  >
+                    {s.name}
+                  </Button>
+                ))}
+              </div>
+            </div>
             <div className="space-y-2">
-              <h3 className={cn('text-2xl', typoStyleClass?.heading)}>제목 H3</h3>
-              <p className={cn('text-muted-foreground', typoStyleClass?.body)}>
+              <h3 className={cn(typoSizeHeadingClass, typoStyleClass?.heading)}>제목 H3</h3>
+              <p className={cn(typoSizeBodyClass, 'text-muted-foreground', typoStyleClass?.body)}>
                 본문 텍스트. 자료 정리, 포트폴리오, 기술 학습을 위한 개인 웹사이트입니다.
               </p>
             </div>

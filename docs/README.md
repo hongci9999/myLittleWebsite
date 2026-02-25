@@ -16,6 +16,7 @@
 - [0003 Superpowers 적용](./decisions/0003-superpowers.md)
 - [0004 FSD 적용 전략](./decisions/0004-fsd-application-strategy.md)
 - [0005 디자인 시스템 shadcn/ui](./decisions/0005-design-system-shadcn.md)
+- [0006 디자인 플레이그라운드](./decisions/0006-design-playground.md)
 
 ### 학습 내용
 
@@ -27,5 +28,6 @@
 | [0004](./learnings/0004-feature-sliced-design.md)         | Feature-Sliced Design | 프론트, 개발방법론, 아키텍처   |
 | [0005](./learnings/0005-shadcn-ui-setup.md)               | shadcn/ui 적용 내역   | 프론트, 도구                   |
 | [0006](./learnings/0006-shadcn-ui-and-radix.md)           | shadcn/ui와 Radix UI | 프론트, 도구, ux               |
+| [0007](./learnings/0007-design-playground.md)             | 디자인 플레이그라운드 | 프론트, ux, 도구               |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

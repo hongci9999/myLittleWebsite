@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
+import DesignPlaygroundPage from './pages/DesignPlaygroundPage'
 import LandingPage from './pages/LandingPage'
 import MainPage from './pages/MainPage'
 import AboutPage from './pages/AboutPage'
@@ -10,6 +11,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/design-playground" element={<DesignPlaygroundPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route element={<Layout />}>
           <Route path="main" element={<MainPage />} />

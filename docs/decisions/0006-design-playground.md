@@ -24,5 +24,10 @@
 ## 결과/참고
 
 - `client/src/pages/DesignPlaygroundPage.tsx` - 메인 구현
-- About 페이지에 "디자인 플레이그라운드 열기" 링크
+- `client/src/pages/design-playground.css` - 플레이그라운드 전용 스타일 (전역과 분리)
+- 사이트 소개 페이지(/about)에 "디자인 플레이그라운드" 링크
 - learnings/0007: 사용법·구성 상세
+
+### 스타일 독립성
+
+플레이그라운드는 `design-playground-root` 클래스로 전역 스타일(body 폰트·크기, code 폰트) 상속을 차단한다. 폰트·색상·타이포는 플레이그라운드 내부 선택값만 적용된다.

@@ -1,0 +1,18 @@
+/**
+ * 디자인 플레이그라운드 전용 스타일
+ * 전역(index.css) 스타일과 분리되어 독립적으로 동작
+ */
+
+.design-playground-root {
+  /* 전역 body 스타일 상속 차단 - 중립 기준선으로 리셋 */
+  font-size: 1rem;
+  line-height: 1.5;
+  /* font-family, 색상 변수는 컴포넌트 inline style에서 주입 */
+}
+
+.design-playground-root code,
+.design-playground-root pre,
+.design-playground-root kbd {
+  /* 전역 code 폰트 상속 차단 - 플레이그라운드 선택값만 적용 */
+  font-family: inherit;
+}

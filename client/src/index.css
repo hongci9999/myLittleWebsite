@@ -1,27 +1,80 @@
 @import 'tailwindcss';
 
 @layer base {
-  :root {
-    --radius: 0.625rem;
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
+  :root,
+  [data-theme='blue-orange'] {
+    --radius: 0.75rem;
+    --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.04);
+    --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.06), 0 2px 4px -2px oklch(0 0 0 / 0.04);
+    --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.06), 0 4px 6px -4px oklch(0 0 0 / 0.04);
+    /* 메인: blue-orange */
+    --background: oklch(0.98 0.01 250);
+    --foreground: oklch(0.2 0.02 250);
+    --card: oklch(1 0.005 250);
+    --card-foreground: oklch(0.2 0.02 250);
+    --popover: oklch(1 0.005 250);
+    --popover-foreground: oklch(0.2 0.02 250);
+    --primary: oklch(0.5 0.2 250);
+    --primary-foreground: oklch(0.98 0 0);
+    --secondary: oklch(0.75 0.15 55);
+    --secondary-foreground: oklch(0.2 0 0);
+    --muted: oklch(0.94 0.02 250);
+    --muted-foreground: oklch(0.5 0.02 250);
+    --accent: oklch(0.92 0.06 55);
+    --accent-foreground: oklch(0.2 0 0);
     --destructive: oklch(0.577 0.245 27.325);
     --destructive-foreground: oklch(0.985 0 0);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
+    --border: oklch(0.88 0.02 250);
+    --input: oklch(0.88 0.02 250);
+    --ring: oklch(0.5 0.2 250);
+  }
+
+  [data-theme='amber-cyan'] {
+    --radius: 0.75rem;
+    /* 서브: amber-cyan */
+    --background: oklch(0.98 0.02 85);
+    --foreground: oklch(0.25 0.04 85);
+    --card: oklch(1 0.01 85);
+    --card-foreground: oklch(0.25 0.04 85);
+    --popover: oklch(1 0.01 85);
+    --popover-foreground: oklch(0.25 0.04 85);
+    --primary: oklch(0.65 0.18 75);
+    --primary-foreground: oklch(0.15 0 0);
+    --secondary: oklch(0.6 0.12 195);
+    --secondary-foreground: oklch(0.98 0 0);
+    --muted: oklch(0.95 0.03 85);
+    --muted-foreground: oklch(0.45 0.04 85);
+    --accent: oklch(0.9 0.05 195);
+    --accent-foreground: oklch(0.2 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.985 0 0);
+    --border: oklch(0.9 0.03 85);
+    --input: oklch(0.9 0.03 85);
+    --ring: oklch(0.65 0.18 75);
+  }
+
+  [data-theme='dark-slate'] {
+    --radius: 0.75rem;
+    /* 다크: dark-slate */
+    --background: oklch(0.11 0.01 260);
+    --foreground: oklch(0.95 0 0);
+    --card: oklch(0.14 0.01 260);
+    --card-foreground: oklch(0.95 0 0);
+    --popover: oklch(0.14 0.01 260);
+    --popover-foreground: oklch(0.95 0 0);
+    --primary: oklch(0.65 0.12 260);
+    --primary-foreground: oklch(0.1 0 0);
+    --secondary: oklch(0.35 0.05 260);
+    --secondary-foreground: oklch(0.95 0 0);
+    --muted: oklch(0.22 0.01 260);
+    --muted-foreground: oklch(0.7 0 0);
+    --accent: oklch(0.28 0.03 260);
+    --accent-foreground: oklch(0.95 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.985 0 0);
+    --border: oklch(0.28 0.01 260);
+    --input: oklch(0.28 0.01 260);
+    --ring: oklch(0.65 0.12 260);
   }
 
   button:not(:disabled),
@@ -31,6 +84,8 @@
 }
 
 @theme inline {
+  --font-sans: 'Noto Sans KR', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: Consolas, 'Courier New', ui-monospace, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -55,10 +110,38 @@
   --radius-lg: calc(var(--radius) + 2px);
 }
 
+/* 테마 전환: oklch 색상이 자연스럽게 이어지도록 transition 적용 */
+[data-theme] *,
+[data-theme] *::before,
+[data-theme] *::after {
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    fill 0.4s ease,
+    stroke 0.4s ease;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
+  font-family: 'Noto Sans KR', system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 스크롤 부드럽게 */
+html {
+  scroll-behavior: smooth;
+}
+
+code,
+pre,
+kbd {
+  font-family: Consolas, 'Courier New', monospace;
 }

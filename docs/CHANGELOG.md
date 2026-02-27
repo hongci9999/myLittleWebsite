@@ -37,7 +37,8 @@
 
 ### Changed
 
-- (아직 없음)
+- **Hero 섹션 패딩** - md 뷰포트에서 상·하 패딩 56px → 27px (`md:py-14` → `md:py-[27px]`)
+- **테마 전환 애니메이션** - oklch 색상이 자연스럽게 이어지도록 `index.css`에 transition 적용 (background-color, color, border-color, box-shadow, fill, stroke, 0.4s ease)
 
 ### Fixed
 

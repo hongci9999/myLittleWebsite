@@ -1,8 +1,10 @@
 /**
  * 디자인 결정용 플레이그라운드 (임시 - 결정 후 삭제)
  * 폰트, 색상 테마, 컴포넌트 스타일을 비교·결정
+ * 스타일은 전역과 분리되어 독립적으로 동작
  */
 import { useState } from 'react'
+import './design-playground.css'
 import { Link } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -655,7 +657,7 @@ export default function DesignPlaygroundPage() {
 
   return (
     <div
-      className="min-h-svh bg-background text-foreground"
+      className="design-playground-root min-h-svh bg-background text-foreground"
       style={
         {
           fontFamily,

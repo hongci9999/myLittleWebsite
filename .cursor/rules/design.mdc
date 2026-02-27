@@ -1,0 +1,24 @@
+---
+description: UI/디자인 작업 시 따라야 할 룰 - 색상, 타이포, 레이아웃, 컴포넌트
+alwaysApply: true
+---
+
+# 디자인 룰
+
+UI·디자인 관련 수정 시 `docs/decisions/0009-design-rules.md`를 참조한다.
+
+## 요약
+
+- **원칙**: 미니멀·프로페셔널, 콘텐츠 우선
+- **색상**: CSS 변수 사용. 테마(blue-orange, amber-cyan, dark-slate) 유지
+- **타이포**: Noto Sans KR(본문), Consolas(코드)
+- **레이아웃**: max-w-6xl, 넉넉한 여백(py-16~24)
+- **카드**: BentoCard 또는 rounded-2xl, border-border/60, shadow-sm
+- **헤더**: widgets/Header 사용, h-16, 햄버거 → 좌측 사이드
+- **인터랙션**: transition-colors, hover 시 shadow-md
+
+## 새 UI 추가 시
+
+1. 기존 컴포넌트(Button, Card, BentoCard) 재사용 검토
+2. config(nav.ts, main-widgets.ts) 기반 확장
+3. 테마 변수로 색상 지정

@@ -1,43 +1,27 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
-import { MAIN_NAV } from '@/shared/config/nav'
+import { Outlet, useLocation } from 'react-router-dom'
+import Header from '@/widgets/Header'
+import Hero from '@/widgets/Hero'
+import RightSidebar from '@/widgets/RightSidebar'
 
 export default function Layout() {
-  const location = useLocation()
+  const { pathname } = useLocation()
+  const isMainPage = pathname === '/main' || pathname === '/main/'
 
   return (
     <div className="min-h-svh flex flex-col bg-background text-foreground font-sans">
-      <header className="flex items-center justify-between px-6 py-4 border-b border-border">
-        <Link
-          to="/main"
-          className="font-semibold text-lg text-foreground no-underline hover:text-primary"
-        >
-          myLittleWebsite
-        </Link>
-        <nav className="flex gap-4">
-          <Link
-            to="/main"
-            className={`text-sm no-underline hover:text-primary ${
-              location.pathname === '/main' ? 'text-primary font-medium' : 'text-muted-foreground'
-            }`}
-          >
-            홈
-          </Link>
-          {MAIN_NAV.map(({ path, label }) => (
-            <Link
-              key={path}
-              to={path}
-              className={`text-sm no-underline hover:text-primary ${
-                location.pathname === path ? 'text-primary font-medium' : 'text-muted-foreground'
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
-      </header>
-      <main className="flex-1">
-        <Outlet />
-      </main>
+      <Header />
+      {/* 히어로: 메인 페이지에서만 전체 너비, 사이드바 침범 없음 */}
+      {isMainPage && (
+        <div className="w-full shrink-0 border-b border-border/40">
+          <Hero />
+        </div>
+      )}
+      <div className="flex flex-1 min-h-0">
+        <main className="min-w-0 flex-1">
+          <Outlet />
+        </main>
+        <RightSidebar />
+      </div>
     </div>
   )
 }

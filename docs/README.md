@@ -29,5 +29,7 @@
 | [0005](./learnings/0005-shadcn-ui-setup.md)               | shadcn/ui 적용 내역   | 프론트, 도구                   |
 | [0006](./learnings/0006-shadcn-ui-and-radix.md)           | shadcn/ui와 Radix UI | 프론트, 도구, ux               |
 | [0007](./learnings/0007-design-playground.md)             | 디자인 플레이그라운드 | 프론트, ux, 도구               |
+| [0008](./learnings/0008-next-js-overview.md)             | Next.js 개요 및 Vite 대비 | 프론트, 아키텍처, 도구         |
+| [0009](./learnings/0009-tailwindcss-typography.md)      | @tailwindcss/typography (Tailwind v4) | 프론트, 도구         |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

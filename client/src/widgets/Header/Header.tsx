@@ -1,12 +1,55 @@
 /**
  * 스티키 헤더 + 좌측 사이드 메뉴 (GitHub 스타일)
+ * 경로는 파일 구조처럼 breadcrumb 형태로 표시
  */
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { MAIN_NAV } from '@/shared/config/nav'
+import { INFO_ENGINEER_CATEGORIES } from '@/shared/config/learningInfoEngineer'
 import { useTheme } from '@/shared/context/ThemeContext'
 import { THEME_OPTIONS } from '@/shared/config/themes'
 import { cn } from '@/lib/utils'
+
+type BreadcrumbItem = { label: string; href?: string }
+
+function useBreadcrumb(pathname: string): BreadcrumbItem[] {
+  const items: BreadcrumbItem[] = [{ label: 'myLittleWebsite', href: '/main' }]
+
+  if (pathname === '/main' || pathname === '/') {
+    return items
+  }
+
+  if (pathname.startsWith('/learning')) {
+    items.push({ label: '학습자료', href: '/learning' })
+    const docMatch = pathname.match(/^\/learning\/info-engineer\/([^/]+)\/([^/]+)$/)
+    if (docMatch) {
+      const [, categoryId, docSlug] = docMatch
+      const category = INFO_ENGINEER_CATEGORIES.find((c) => c.id === categoryId)
+      const doc = category?.docs.find((d) => d.slug === docSlug)
+      items.push({ label: '정보처리기사', href: '/learning/info-engineer' })
+      if (category) items.push({ label: category.name, href: `/learning/info-engineer/${categoryId}` })
+      if (doc) items.push({ label: doc.title, href: undefined })
+    } else {
+      const categoryMatch = pathname.match(/^\/learning\/info-engineer\/([^/]+)$/)
+      if (categoryMatch) {
+        const [, categoryId] = categoryMatch
+        const category = INFO_ENGINEER_CATEGORIES.find((c) => c.id === categoryId)
+        items.push({ label: '정보처리기사', href: '/learning/info-engineer' })
+        if (category) items.push({ label: category.name, href: undefined })
+      } else if (pathname === '/learning/info-engineer') {
+        items.push({ label: '정보처리기사', href: undefined })
+      }
+    }
+    return items
+  }
+
+  const nav = MAIN_NAV.find((n) => pathname === n.path || pathname.startsWith(n.path + '/'))
+  if (nav) {
+    items.push({ label: nav.label, href: nav.path })
+  }
+
+  return items
+}
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme()
@@ -67,6 +110,7 @@ function SidebarNavLink({
 export default function Header() {
   const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const breadcrumb = useBreadcrumb(location.pathname)
 
   const closeSidebar = () => setSidebarOpen(false)
 
@@ -86,8 +130,8 @@ export default function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/95 backdrop-blur-sm">
-        <div className="flex h-16 w-full items-center justify-between px-4 sm:px-8">
-          <div className="flex items-center gap-4">
+        <div className="flex h-16 w-full items-center justify-between gap-4 px-4 sm:px-8">
+          <div className="flex min-w-0 flex-1 items-center gap-4">
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
@@ -111,12 +155,30 @@ export default function Header() {
                 <line x1="4" x2="20" y1="18" y2="18" />
               </svg>
             </button>
-            <Link
-              to="/main"
-              className="text-xl font-semibold tracking-tight text-foreground no-underline transition-colors hover:text-primary"
+            <nav
+              className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden text-xl font-semibold tracking-tight"
+              aria-label="경로"
             >
-              myLittleWebsite
-            </Link>
+              {breadcrumb.map((item, i) => (
+                <span key={i} className="flex shrink-0 items-center gap-1.5">
+                  {i > 0 && (
+                    <span className="font-semibold text-muted-foreground">/</span>
+                  )}
+                  {item.href ? (
+                    <Link
+                      to={item.href}
+                      className="truncate text-foreground no-underline hover:text-primary hover:underline"
+                    >
+                      {item.label}
+                    </Link>
+                  ) : (
+                    <span className="truncate font-normal text-muted-foreground">
+                      {item.label}
+                    </span>
+                  )}
+                </span>
+              ))}
+            </nav>
           </div>
 
           <ThemeToggle />

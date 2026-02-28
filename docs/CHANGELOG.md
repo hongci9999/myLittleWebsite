@@ -6,6 +6,25 @@
 
 ### Added
 
+- **학습자료 페이지 - 정보처리기사 프로토타입** (Phase 1 MVP)
+  - 파일 구조형 3단계 네비게이션: `/learning` → `/learning/info-engineer` → `/learning/info-engineer/:categoryId` → 문서 뷰어
+  - `FileListItem` 공통 컴포넌트: 가로 전체 직사각형, 세로 배치, 제목·부가설명
+  - `LearningPage`: 1단계(정보처리기사)
+  - `LearningCategoryListPage`: 2단계(소프트웨어 설계, 소프트웨어 개발 등 6개 과목)
+  - `LearningDocListPage`: 3단계(과목별 문서 목록)
+  - `LearningDocPage`: 문서 뷰어 (react-markdown + remark-gfm)
+  - `learningInfoEngineer.ts` 인덱스 config (Phase 2에서 DB/JSON 대체 예정)
+  - 샘플 md: `client/public/learnings/정처기/01_소프트웨어설계/` (sdlc.md, uml.md)
+- **헤더 breadcrumb** - 파일 경로 형태 (`myLittleWebsite / 학습자료 / 정보처리기사 / ...`)
+  - `useBreadcrumb` 훅, 경로별 클릭 가능 링크
+- **@tailwindcss/typography** - prose 클래스로 마크다운 본문 스타일링
+
+### Changed
+
+- **헤더** - 로고+라벨 → breadcrumb 형태로 전환, text-xl font-semibold 유지
+- **FileListItem** - 왼쪽 패딩(pl-12), 높이(py-6), 폰트(text-lg), 부가설명 제목 하단 배치
+- **학습자료 페이지** - 카드 그리드 → 파일 구조형 풀폭 리스트로 전환
+
 - **디자인 플레이그라운드** (`/design-playground`) - 폰트·색상·컴포넌트 스타일 실시간 비교·결정 도구
   - 폰트: 본문 7종, 코드 8종
   - 색상 테마: 복수 선택 가능, 20+ 테마 (light, dark, warm, cool, forest, navy 등)

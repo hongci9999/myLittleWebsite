@@ -17,7 +17,7 @@ export default function Layout() {
         </div>
       )}
       <div className="flex flex-1 min-h-0">
-        <main className="min-w-0 flex-1">
+        <main className="min-w-0 flex-1 lg:pr-40">
           <Outlet />
         </main>
         <RightSidebar />

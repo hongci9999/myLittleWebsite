@@ -22,6 +22,10 @@
 
 ### Changed
 
+- **바로가기(RightSidebar)** - 플로팅 패널로 전환
+  - 고정 사이드바 → 오른쪽 세로 중앙 플로팅 (fixed right-0 top-1/2)
+  - 메인 영역 `lg:pr-40`로 플로팅 영역 침범 방지
+  - 버튼·아이콘 크기 축소 (w-40, compact 스타일)
 - **헤더** - 로고+라벨 → breadcrumb 형태로 전환, text-xl font-semibold 유지
 - **FileListItem** - 왼쪽 패딩(pl-12), 높이(py-6), 폰트(text-lg), 부가설명 제목 하단 배치
 - **학습자료 페이지** - 카드 그리드 → 파일 구조형 풀폭 리스트로 전환

@@ -97,6 +97,17 @@ function resolveFromNodes(
   return null
 }
 
+/** 경로 해석: section 객체 + pathParts → ResolveResult (API 데이터용) */
+export function resolveFileStructurePathFromSection(
+  section: FileStructureSection,
+  pathParts: string[]
+): ResolveResult | null {
+  if (pathParts.length === 0) {
+    return { type: 'node-list', nodes: section.nodes, pathSegments: [] }
+  }
+  return resolveFromNodes(section.nodes, pathParts, section.basePath, [])
+}
+
 /** 경로 해석: sectionId + pathParts → ResolveResult */
 export function resolveFileStructurePath(
   parentPath: string,

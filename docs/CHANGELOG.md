@@ -6,6 +6,15 @@
 
 ### Added
 
+- **학습 폴더 DB API** (Phase 2·3)
+  - 서버: Supabase 연동 (`db/supabase.ts`, `db/queries/learning.ts`), `GET /api/learning/sections`, `/sections/:sectionId`
+  - 클라이언트: `fetchLearningSection()` API 호출, API 실패 시 config 폴백
+  - env 선행 로드 (`server/src/env.ts`), dotenv
+- **에러 픽스 기록** - `docs/error-fixes/` 폴더, 오류·원인·수정 방법 정리
+  - 0001: 학습 폴더·config 관련 (EADDRINUSE, env 로드, API 폴백, config 자동생성, 99_노트 children)
+- **학습 폴더 config 자동 생성** - `scripts/build-learning-config.mjs`, `npm run build:learning-config`
+  - `public/learnings/정처기` 폴더 스캔 → `learning-info-engineer.ts` 자동 생성 (95개 md 반영)
+- **learnings 0016** - 학습 폴더 config 자동 생성 개념·동작 방식
 - **파일 구조형 패턴 재귀화** - 깊이 제한 없이 확장 가능
   - `FileStructureNode`: children(재귀) 또는 docs
   - `FileStructureBrowserPage`: splat 라우트로 node-list/doc-list/doc 통합
@@ -72,4 +81,6 @@
 
 ### Fixed
 
-- (아직 없음)
+- **학습 콘텐츠 미표시** - API가 빈 nodes 반환 시 config 폴백 (`LearningBrowserPage` hasNodes 체크)
+- **md 문서 일부만 표시** - config 하드코딩(sdlc, uml 2개) → 폴더 스캔 스크립트로 전체 자동 생성
+- **99_노트 하위 누락** - `scanDir` 반환값(객체)을 배열처럼 사용하던 버그 수정

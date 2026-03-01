@@ -5,24 +5,32 @@ import remarkGfm from 'remark-gfm'
 import { FileListItem } from '@/shared/ui/FileListItem'
 import {
   resolveFileStructurePath,
+  resolveFileStructurePathFromSection,
   buildPath,
   getFileStructureParent,
+  type FileStructureSection,
 } from '@/shared/config/file-structure'
 import { Button } from '@/components/ui/button'
 
 interface Props {
   parentPath: string
   sectionId: string
+  /** API에서 로드한 섹션. 있으면 config 대신 사용 */
+  sectionOverride?: FileStructureSection | null
 }
 
 export default function FileStructureBrowserPage({
   parentPath,
   sectionId,
+  sectionOverride,
 }: Props) {
   const { '*': splat } = useParams<{ '*': string }>()
   const pathParts = splat ? splat.split('/') : []
 
-  const result = resolveFileStructurePath(parentPath, sectionId, pathParts)
+  const result = sectionOverride
+    ? resolveFileStructurePathFromSection(sectionOverride, pathParts)
+    : resolveFileStructurePath(parentPath, sectionId, pathParts)
+
   const parent = getFileStructureParent(parentPath)
 
   if (!result) {

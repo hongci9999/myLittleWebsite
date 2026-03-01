@@ -18,6 +18,8 @@ docs/
 │   └── 0001-제목.md
 ├── learnings/            # Learnings (concepts, how things work)
 │   └── 0001-주제.md
+├── error-fixes/          # Error fix records (오류·원인·수정)
+│   └── 0001-제목.md
 ├── journal/              # Dev/learning log
 │   └── YYYY-MM.md
 └── README.md             # Docs index
@@ -70,6 +72,21 @@ docs/
 - **추천 태그 예시**: `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` (소문자·한글 혼용 가능, 팀 합의에 따라 확장)
 - **vs decisions**: decisions = "what was chosen", learnings = "how it works and why"
 
+### error-fixes/ (에러 픽스 기록)
+- **When**: 오류 발생 후 수정 완료 시, 같은 오류 재발 시 참고용
+- **Filename**: `0001-slug.md` (decisions·learnings와 동일 패턴)
+- **Format** (한국어 출력):
+  ```markdown
+  # 제목 (오류 요약)
+  날짜: YYYY-MM-DD
+
+  ## 발생한 오류
+  ## 원인
+  ## 수정 방법
+  ## 결과/참고
+  ```
+- 여러 오류를 한 문서에 모을 수도 있음 (예: 0001-learning-folder-session)
+
 ---
 
 ## When to Write What
@@ -79,5 +96,6 @@ docs/
 | Feature add/change/remove        | CHANGELOG    |
 | Tech/structure choice            | decisions/   |
 | Understanding concepts/behavior | learnings/   |
+| Bug fix (오류·원인·수정)         | error-fixes/ |
 | Daily work/learning              | journal/     |
 | New section or doc type          | Add to docs/README, then apply |

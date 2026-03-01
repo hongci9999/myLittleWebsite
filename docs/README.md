@@ -7,7 +7,8 @@
 | [CHANGELOG.md](./CHANGELOG.md) | 버전별 변경 내역                |
 | [decisions/](./decisions/)     | 의사결정 기록 (ADR)             |
 | [learnings/](./learnings/)     | 학습 내용 (개념·동작 방식 정리) |
-| [journal/](./journal/)         | 개발·학습 로그                  |
+| [error-fixes/](./error-fixes/) | 에러 픽스 기록 (오류·원인·수정) |
+| [journal/](./journal/)        | 개발·학습 로그                  |
 
 ### 의사결정 목록
 
@@ -36,5 +37,13 @@
 | [0012](./learnings/0012-file-structure-path-resolution.md) | 파일 구조형 패턴 Part 3: 경로 해석 | 프론트, 아키텍처         |
 | [0013](./learnings/0013-file-structure-ui-integration.md) | 파일 구조형 패턴 Part 4: UI 통합 | 프론트, 아키텍처         |
 | [0014](./learnings/0014-file-structure-extending.md) | 파일 구조형 패턴 Part 5: 확장 방법 | 프론트, 아키텍처         |
+| [0015](./learnings/0015-backend-database-basics.md) | 백엔드·데이터베이스 기초 (초보자용) | 백엔드, 데이터베이스     |
+| [0016](./learnings/0016-learning-folder-config-generation.md) | 학습 폴더 config 자동 생성 | 프론트, 백엔드, 도구, 아키텍처 |
+
+### 에러 픽스
+
+| 번호 | 제목 |
+|------|------|
+| [0001](./error-fixes/0001-learning-folder-session.md) | 학습 폴더·config 관련 오류 모음 |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

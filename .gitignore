@@ -36,3 +36,6 @@ client/dist/
 # Superpowers (프로젝트 전용 클론, 각자 수동 설치)
 .cursor/skills/
 
+# 정처기 (루트 소스 폴더, client/public/learnings/정처기로 복사·스캔)
+/정처기/
+

@@ -142,14 +142,20 @@ function DocViewer({
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16">
-      <div className="mb-6 flex items-center gap-4">
-        <Button asChild variant="ghost" size="sm">
+    <div className="doc-reader mx-auto max-w-4xl px-6 py-12 sm:px-8 sm:py-16">
+      <div className="mb-8 flex items-center gap-4">
+        <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground -ml-2">
           <Link to={backPath}>← {backLabel}</Link>
         </Button>
       </div>
 
-      <article className="prose prose-neutral dark:prose-invert max-w-none">
+      <header className="mb-10">
+        <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+          {doc.title}
+        </h1>
+      </header>
+
+      <article className="doc-article text-foreground">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
       </article>
     </div>

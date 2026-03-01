@@ -146,3 +146,120 @@ pre,
 kbd {
   font-family: Consolas, 'Courier New', monospace;
 }
+
+/* 학습 문서 읽기용 스타일 */
+.doc-reader {
+  --doc-line-height: 1.75;
+  --doc-measure: 65ch;
+}
+
+.doc-reader .doc-article {
+  font-size: 0.9375rem;
+  line-height: var(--doc-line-height);
+  max-width: var(--doc-measure);
+  letter-spacing: 0.01em;
+}
+
+.doc-reader .doc-article h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.doc-reader .doc-article h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.75em;
+  margin-bottom: 0.6em;
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-reader .doc-article h3 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.4em;
+}
+
+.doc-reader .doc-article h4 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.35em;
+}
+
+.doc-reader .doc-article p {
+  margin-bottom: 1em;
+}
+
+.doc-reader .doc-article ul,
+.doc-reader .doc-article ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.doc-reader .doc-article li {
+  margin-bottom: 0.35em;
+}
+
+.doc-reader .doc-article blockquote {
+  border-left: 4px solid var(--primary);
+  padding-left: 1em;
+  margin: 1.25em 0;
+  color: var(--muted-foreground);
+  font-style: italic;
+}
+
+.doc-reader .doc-article pre {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.85em;
+  line-height: 1.5;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius);
+  background: var(--muted);
+  overflow-x: auto;
+  margin: 1.25em 0;
+}
+
+.doc-reader .doc-article code {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 0.85em;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  background: var(--muted);
+}
+
+.doc-reader .doc-article pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.doc-reader .doc-article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25em 0;
+  font-size: 0.9em;
+}
+
+.doc-reader .doc-article th,
+.doc-reader .doc-article td {
+  border: 1px solid var(--border);
+  padding: 0.5em 0.75em;
+  text-align: left;
+}
+
+.doc-reader .doc-article th {
+  background: var(--muted);
+  font-weight: 600;
+}
+
+.doc-reader .doc-article hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2em 0;
+}
+

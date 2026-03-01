@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node -e \"require('fs').copyFileSync('../docs/CHANGELOG.md','public/changelog.md')\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

@@ -43,6 +43,12 @@ export default function Hero() {
           >
             이 사이트에 대해 →
           </Link>
+          <Link
+            to="/patch-notes"
+            className="text-sm text-primary no-underline hover:underline"
+          >
+            패치노트 →
+          </Link>
         </div>
       </div>
     </section>

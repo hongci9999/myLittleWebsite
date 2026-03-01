@@ -6,12 +6,11 @@ import LandingPage from './pages/LandingPage'
 import MainPage from './pages/MainPage'
 import PortfolioPage from './pages/PortfolioPage'
 import LearningPage from './pages/LearningPage'
-import LearningCategoryListPage from './pages/LearningCategoryListPage'
-import LearningDocListPage from './pages/LearningDocListPage'
-import LearningDocPage from './pages/LearningDocPage'
+import LearningBrowserPage from './pages/LearningBrowserPage'
 import ColumnPage from './pages/ColumnPage'
 import ProjectPage from './pages/ProjectPage'
 import AboutPage from './pages/AboutPage'
+import PatchNotesPage from './pages/PatchNotesPage'
 
 function App() {
   return (
@@ -23,19 +22,12 @@ function App() {
         <Route element={<Layout />}>
           <Route path="main" element={<MainPage />} />
           <Route path="about" element={<AboutPage />} />
+          <Route path="patch-notes" element={<PatchNotesPage />} />
           <Route path="portfolio" element={<PortfolioPage />} />
           <Route path="learning" element={<LearningPage />} />
           <Route
-            path="learning/info-engineer/:categoryId/:docSlug"
-            element={<LearningDocPage />}
-          />
-          <Route
-            path="learning/info-engineer/:categoryId"
-            element={<LearningDocListPage />}
-          />
-          <Route
-            path="learning/info-engineer"
-            element={<LearningCategoryListPage />}
+            path="learning/info-engineer/*"
+            element={<LearningBrowserPage />}
           />
           <Route path="column" element={<ColumnPage />} />
           <Route path="project" element={<ProjectPage />} />

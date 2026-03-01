@@ -5,7 +5,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { MAIN_NAV } from '@/shared/config/nav'
-import { INFO_ENGINEER_CATEGORIES } from '@/shared/config/learningInfoEngineer'
+import { getFileStructureBreadcrumb } from '@/shared/config/file-structure'
 import { useTheme } from '@/shared/context/ThemeContext'
 import { THEME_OPTIONS } from '@/shared/config/themes'
 import { cn } from '@/lib/utils'
@@ -19,27 +19,14 @@ function useBreadcrumb(pathname: string): BreadcrumbItem[] {
     return items
   }
 
-  if (pathname.startsWith('/learning')) {
-    items.push({ label: '학습자료', href: '/learning' })
-    const docMatch = pathname.match(/^\/learning\/info-engineer\/([^/]+)\/([^/]+)$/)
-    if (docMatch) {
-      const [, categoryId, docSlug] = docMatch
-      const category = INFO_ENGINEER_CATEGORIES.find((c) => c.id === categoryId)
-      const doc = category?.docs.find((d) => d.slug === docSlug)
-      items.push({ label: '정보처리기사', href: '/learning/info-engineer' })
-      if (category) items.push({ label: category.name, href: `/learning/info-engineer/${categoryId}` })
-      if (doc) items.push({ label: doc.title, href: undefined })
-    } else {
-      const categoryMatch = pathname.match(/^\/learning\/info-engineer\/([^/]+)$/)
-      if (categoryMatch) {
-        const [, categoryId] = categoryMatch
-        const category = INFO_ENGINEER_CATEGORIES.find((c) => c.id === categoryId)
-        items.push({ label: '정보처리기사', href: '/learning/info-engineer' })
-        if (category) items.push({ label: category.name, href: undefined })
-      } else if (pathname === '/learning/info-engineer') {
-        items.push({ label: '정보처리기사', href: undefined })
-      }
-    }
+  if (pathname === '/patch-notes') {
+    items.push({ label: '패치노트', href: undefined })
+    return items
+  }
+
+  const fsBreadcrumb = getFileStructureBreadcrumb(pathname)
+  if (fsBreadcrumb) {
+    items.push(...fsBreadcrumb)
     return items
   }
 
@@ -172,7 +159,7 @@ export default function Header() {
                       {item.label}
                     </Link>
                   ) : (
-                    <span className="truncate font-normal text-muted-foreground">
+                    <span className="truncate text-foreground">
                       {item.label}
                     </span>
                   )}

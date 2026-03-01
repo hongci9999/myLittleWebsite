@@ -31,5 +31,10 @@
 | [0007](./learnings/0007-design-playground.md)             | 디자인 플레이그라운드 | 프론트, ux, 도구               |
 | [0008](./learnings/0008-next-js-overview.md)             | Next.js 개요 및 Vite 대비 | 프론트, 아키텍처, 도구         |
 | [0009](./learnings/0009-tailwindcss-typography.md)      | @tailwindcss/typography (Tailwind v4) | 프론트, 도구         |
+| [0010](./learnings/0010-file-structure-pattern-index.md) | 파일 구조형 패턴 학습 (목차) | 프론트, 아키텍처, 도구         |
+| [0011](./learnings/0011-file-structure-recursive-types.md) | 파일 구조형 패턴 Part 2: 재귀 타입 | 프론트, 아키텍처         |
+| [0012](./learnings/0012-file-structure-path-resolution.md) | 파일 구조형 패턴 Part 3: 경로 해석 | 프론트, 아키텍처         |
+| [0013](./learnings/0013-file-structure-ui-integration.md) | 파일 구조형 패턴 Part 4: UI 통합 | 프론트, 아키텍처         |
+| [0014](./learnings/0014-file-structure-extending.md) | 파일 구조형 패턴 Part 5: 확장 방법 | 프론트, 아키텍처         |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

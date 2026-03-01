@@ -6,14 +6,15 @@
 
 ### Added
 
+- **파일 구조형 패턴 재귀화** - 깊이 제한 없이 확장 가능
+  - `FileStructureNode`: children(재귀) 또는 docs
+  - `FileStructureBrowserPage`: splat 라우트로 node-list/doc-list/doc 통합
+  - `resolveFileStructurePath()`: 경로 기반 재귀 해석
+  - 라우트: `learning/info-engineer/*` (splat)
 - **학습자료 페이지 - 정보처리기사 프로토타입** (Phase 1 MVP)
   - 파일 구조형 3단계 네비게이션: `/learning` → `/learning/info-engineer` → `/learning/info-engineer/:categoryId` → 문서 뷰어
   - `FileListItem` 공통 컴포넌트: 가로 전체 직사각형, 세로 배치, 제목·부가설명
-  - `LearningPage`: 1단계(정보처리기사)
-  - `LearningCategoryListPage`: 2단계(소프트웨어 설계, 소프트웨어 개발 등 6개 과목)
-  - `LearningDocListPage`: 3단계(과목별 문서 목록)
-  - `LearningDocPage`: 문서 뷰어 (react-markdown + remark-gfm)
-  - `learningInfoEngineer.ts` 인덱스 config (Phase 2에서 DB/JSON 대체 예정)
+  - Learning* 페이지는 FileStructure* 래퍼로 전환
   - 샘플 md: `client/public/learnings/정처기/01_소프트웨어설계/` (sdlc.md, uml.md)
 - **헤더 breadcrumb** - 파일 경로 형태 (`myLittleWebsite / 학습자료 / 정보처리기사 / ...`)
   - `useBreadcrumb` 훅, 경로별 클릭 가능 링크
@@ -40,6 +41,12 @@
 - **react-refresh 규칙 전역 비활성화** - shadcn 컴포넌트(컴포넌트+variants export) 패턴 허용
 - **Superpowers 프로젝트 전용 설치** - .cursor/skills/superpowers 클론, superpowers-bootstrap.mdc 룰 (이 프로젝트에서만 적용)
 - learnings 0002 보강: 수동 설치 CLI (PowerShell 경로 수정, 프로젝트 전용 방법 C), Bootstrap 역할·출처
+- **파일 구조형 패턴 학습 자료** (learnings 0010~0014)
+  - Part 1: 배경·목표·아키텍처 개요
+  - Part 2: 재귀 타입 (FileStructureNode, ResolveResult)
+  - Part 3: 경로 해석 (resolveFromNodes 재귀)
+  - Part 4: UI 통합 (FileStructureBrowserPage, splat 라우트)
+  - Part 5: 확장 방법 (새 섹션, 깊은 중첩)
 - **docs/learnings/** - 학습 내용 정리용 (개념·동작 방식)
 - docs-record 룰에 learnings 규칙 추가
 - learnings 0001: npm workspaces 동작 방식, 0002: Superpowers 에이전트 워크플로우

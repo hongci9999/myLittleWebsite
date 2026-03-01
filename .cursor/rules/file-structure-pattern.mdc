@@ -1,0 +1,66 @@
+---
+description: 파일 구조형 콘텐츠 패턴 - 계층적 드릴다운 UI 재사용 (재귀 구조)
+globs: client/src/**/*.{ts,tsx}
+---
+
+# File-Structure Pattern
+
+학습자료, 포트폴리오 등 **계층적 드릴다운** UI가 필요한 콘텐츠에 적용하는 공통 패턴. **재귀 구조**로 깊이 제한 없음.
+
+---
+
+## 구조
+
+```
+parentPath (예: /learning)
+  └── sectionId (예: info-engineer)
+        └── nodeId / nodeId / ... (재귀)
+              └── docSlug → 문서 뷰어
+```
+
+- **Node**: `children`(하위 노드) 또는 `docs`(문서 목록) 중 하나 이상
+- **깊이**: 제한 없음 (children으로 중첩 가능)
+
+---
+
+## 파일 위치
+
+| 역할 | 경로 |
+|------|------|
+| 타입·레지스트리 | `shared/config/file-structure.ts` |
+| 섹션 config | `shared/config/file-structure-sections/<이름>.ts` |
+| 공통 페이지 | `pages/FileStructure/FileStructureTopPage.tsx`, `FileStructureBrowserPage.tsx` |
+| 부모별 래퍼 | `pages/LearningBrowserPage.tsx` 등 |
+
+---
+
+## 새 섹션 추가 절차
+
+1. **config 작성**: `file-structure-sections/<section-name>.ts` 생성
+   - `FileStructureSection` 타입: `nodes` (FileStructureNode[])
+   - `FileStructureNode`: `id`, `name`, `description?`, `children?`, `docs?`
+
+2. **index 등록**: `file-structure-sections/index.ts`에 import 추가
+
+3. **라우트**: `parentPath/sectionId/*` (splat) → `FileStructureBrowserPage`
+
+4. **md 파일**: `client/public/<basePath>/` 에 콘텐츠 배치
+
+---
+
+## 타입
+
+```ts
+FileStructureDoc    { slug, title, filePath }
+FileStructureNode   { id, name, description?, children?, docs? }  // 재귀
+FileStructureSection { sectionId, sectionLabel, basePath, nodes }
+FileStructureParent  { parentPath, parentLabel, sections }
+```
+
+---
+
+## 참고
+
+- `resolveFileStructurePath()`: 경로 해석 (node-list / doc-list / doc)
+- `FileListItem`: 풀폭 직사각형 리스트 아이템
+- 헤더 breadcrumb: `getFileStructureBreadcrumb()`로 자동 해석

@@ -6,6 +6,12 @@
 
 ### Added
 
+- **유용한 링크 페이지 + 사이트 전체 관리자 인증 설계**
+  - 설계 문서: `docs/plans/2026-03-03-links-admin-design.md`
+  - 구현 계획: `docs/plans/2026-03-03-links-admin-implementation-plan.md`
+  - 스키마 SQL: `docs/plans/2026-03-03-links-schema.sql`
+  - 기능: 목적·종류 등 축(dimension) + 계층형 값으로 분류, Supabase Auth, Remember Me
+  - (구현 전)
 - **학습 폴더 DB API** (Phase 2·3)
   - 서버: Supabase 연동 (`db/supabase.ts`, `db/queries/learning.ts`), `GET /api/learning/sections`, `/sections/:sectionId`
   - 클라이언트: `fetchLearningSection()` API 호출, API 실패 시 config 폴백

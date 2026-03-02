@@ -22,6 +22,8 @@ docs/
 │   └── 0001-제목.md
 ├── journal/              # Dev/learning log
 │   └── YYYY-MM.md
+├── plans/                # Design docs, implementation plans
+│   └── YYYY-MM-DD-주제-design.md
 └── README.md             # Docs index
 ```
 
@@ -51,8 +53,10 @@ docs/
 
 ### journal/ (개발 로그)
 - **When**: Per task or learning unit
-- **Filename**: `YYYY-MM.md` (monthly) or by topic
+- **Filename**: `YYYY-MM.md` (monthly) — **반드시 오늘 날짜의 연·월과 일치**
+- **Entry date**: `## YYYY-MM-DD` — **반드시 오늘 날짜 사용** (user_info의 "Today's date" 확인)
 - **Content**: What you did, learned, got stuck on, next steps (한국어)
+- **주의**: 2월(02)에 고정하지 말 것. 현재 연·월에 맞는 파일에 작성
 
 ### learnings/ (학습 내용)
 - **When**: After understanding a concept or implementation, for future reference
@@ -89,6 +93,19 @@ docs/
 
 ---
 
+## Decisions 기록 점검 (잊지 말 것)
+
+설계·계획·구현 완료 시 **반드시 확인**: 이번 작업에서 기술 선택·구조 결정이 있었는가?
+
+- **있었다** → `docs/decisions/`에 ADR 추가 (다음 번호, 0001-slug.md 형식)
+- **없었다** → 스킵
+
+예: "Supabase Auth 채택", "분류 구조(축+계층형) 채택", "관리자 전용 페이지 방식" 등. plans에만 있으면 나중에 "왜 이걸 선택했지?"를 찾기 어렵다. decisions에 기록해 두면 의사결정 이력을 추적할 수 있다.
+
+**문서화 완료 시 체크**: CHANGELOG ✓ | journal ✓ | decisions ✓ (해당 시) | docs/README ✓
+
+---
+
 ## When to Write What
 
 | situation                        | location     |
@@ -99,3 +116,4 @@ docs/
 | Bug fix (오류·원인·수정)         | error-fixes/ |
 | Daily work/learning              | journal/     |
 | New section or doc type          | Add to docs/README, then apply |
+| Design/implementation planning   | plans/ (YYYY-MM-DD-topic-design.md 등) |

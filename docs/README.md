@@ -9,6 +9,13 @@
 | [learnings/](./learnings/)     | 학습 내용 (개념·동작 방식 정리) |
 | [error-fixes/](./error-fixes/) | 에러 픽스 기록 (오류·원인·수정) |
 | [journal/](./journal/)        | 개발·학습 로그                  |
+| [plans/](./plans/)            | 설계·구현 계획                  |
+
+### 최근 계획
+
+| 날짜 | 제목 |
+|------|------|
+| [2026-03-03](./plans/2026-03-03-links-admin-design.md) | 유용한 링크 페이지 + 사이트 전체 관리자 인증 |
 
 ### 의사결정 목록
 
@@ -39,6 +46,7 @@
 | [0014](./learnings/0014-file-structure-extending.md) | 파일 구조형 패턴 Part 5: 확장 방법 | 프론트, 아키텍처         |
 | [0015](./learnings/0015-backend-database-basics.md) | 백엔드·데이터베이스 기초 (초보자용) | 백엔드, 데이터베이스     |
 | [0016](./learnings/0016-learning-folder-config-generation.md) | 학습 폴더 config 자동 생성 | 프론트, 백엔드, 도구, 아키텍처 |
+| [0017](./learnings/0017-supabase.md) | Supabase 개요 및 이용 방법 | 백엔드, 데이터베이스, 도구 |
 
 ### 에러 픽스
 

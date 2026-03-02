@@ -33,8 +33,7 @@ yarn-error.log*
 # Vite
 client/dist/
 
-# Superpowers (프로젝트 전용 클론, 각자 수동 설치)
-.cursor/skills/
+# Superpowers: .cursor/skills/ 커밋함 (0003 A안: .git 제거 후 추적)
 
 # 정처기 (루트 소스 폴더, client/public/learnings/정처기로 복사·스캔)
 /정처기/

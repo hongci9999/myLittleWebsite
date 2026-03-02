@@ -27,14 +27,13 @@ Cursor Agent로 개발할 때, 곧바로 코드 작성을 시도하기보다 설
 
 ### .cursor/skills/ gitignore 선택
 
-`.cursor/skills/`를 .gitignore에 두기로 했다.
+**2026-03-03 변경:** gitignore에서 제외하고 커밋하기로 했다 (A안).
 
-**이유:**
+- `superpowers/.git` 폴더를 제거한 뒤 `.cursor/skills/` 전체를 커밋
+- **이유:** 프로젝트별 스킬 커스터마이징(brainstorming 등)을 추적하고, 자기서술·포트폴리오에 "어떻게 개발하는지" 반영
+- **주의:** upstream(superpowers 원본) 업데이트 시 `git pull`로는 반영 불가. 필요 시 수동 병합 또는 재클론
 
-- `superpowers`가 자체 `.git`을 가진 중첩 저장소라, 그대로 커밋 시 구조가 복잡해짐
-- 저장소 용량 증가
+**이전 결정 (2026-02-20):**
 
-**대안 검토:**
-
-- 커밋 시: 자기서술·포트폴리오 "어떻게 개발하는지" 보여주기에 유리. `.git` 제거 후 폴더만 커밋하거나 submodule 사용 가능
-- 현재는 gitignore로 유지. 필요 시 learnings 0002의 설치 절차대로 클론하면 됨
+- `.cursor/skills/`를 .gitignore에 두었음
+- 이유: `superpowers`가 자체 `.git`을 가진 중첩 저장소, 저장소 용량

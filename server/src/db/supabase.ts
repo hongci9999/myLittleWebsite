@@ -17,6 +17,14 @@ function getSupabase(): SupabaseClient | null {
   return _client
 }
 
+/** 인증된 사용자 JWT로 Supabase 클라이언트 (RLS write용) */
+export function getSupabaseWithAuth(token: string): SupabaseClient | null {
+  if (!url || !key) return null
+  return createClient(url, key, {
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  })
+}
+
 export const supabase = {
   get client() {
     return getSupabase()

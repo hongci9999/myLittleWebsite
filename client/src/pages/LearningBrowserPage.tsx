@@ -12,7 +12,7 @@ export default function LearningBrowserPage() {
     fetchLearningSection('info-engineer')
       .then((data) => {
         // API가 노드를 포함하면 사용, 없으면 config 폴백
-        const hasNodes = data?.nodes?.length > 0
+        const hasNodes = (data?.nodes?.length ?? 0) > 0
         setSection(hasNodes ? data : null)
       })
       .catch(() => setSection(null))

@@ -26,7 +26,21 @@
 - **시각적 대비**: 헤더와 콘텐츠 구분
 - **모션**: 자연스럽고 반응적으로
 
-## 4. 적용 방향 (myLittleWebsite)
+## 4. 링크/북마크 UI 레퍼런스 (2026-03 적용)
+
+| 출처 | 특징 | URL |
+|------|------|-----|
+| **Raindrop.io** | 그리드 카드, pill 필터, 시각 우선 북마크 UI | [raindrop.io](https://www.raindrop.io/) |
+| **Web Design Trends 2025** | pill 스타일 입력, 웜 톤, 단일 액센트 컬러, 카드 기반 | [7K Ecosystem](https://7kc.me/blog/web-design-trends-2025), [Elegant Themes](https://www.elegantthemes.com/blog/design/modern-ui-design-trends) |
+| **Colorhero Blog** | refined dark mode, near-black (#1F1F1F), 웜 neutral | [UI Design Trends 2025](https://colorhero.io/blog/ui-design-trends-2025) |
+
+**유용한 링크·링크 관리 페이지 적용** (2026-03-03):
+- 검색창: pill 스타일, 검색 아이콘, `backdrop-blur`
+- 필터 칩: `rounded-full`, pill 형태
+- 링크 카드: `hover:-translate-y-0.5`, 외부 링크 아이콘, `font-mono` URL
+- 폼: `rounded-xl` 입력, uppercase label, `tracking-wider`
+
+## 5. 적용 방향 (myLittleWebsite)
 
 - 자료 정리·포트폴리오·기술 학습 목적에 맞춘 **미니멀·프로페셔널** 톤
 - 기존 테마(blue-orange, amber-cyan, dark-slate) 유지

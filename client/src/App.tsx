@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ThemeProvider } from '@/shared/context/ThemeContext'
+import { AuthProvider } from '@/shared/context/AuthContext'
 import Layout from './components/Layout'
 import DesignPlaygroundPage from './pages/DesignPlaygroundPage'
 import LandingPage from './pages/LandingPage'
@@ -11,13 +12,19 @@ import ColumnPage from './pages/ColumnPage'
 import ProjectPage from './pages/ProjectPage'
 import AboutPage from './pages/AboutPage'
 import PatchNotesPage from './pages/PatchNotesPage'
+import LinksPage from './pages/LinksPage'
+import LinksAdminPage from './pages/LinksAdminPage'
+import AdminPage from './pages/AdminPage'
+import AdminLoginPage from './pages/AdminLoginPage'
 
 function App() {
   return (
     <ThemeProvider>
+      <AuthProvider>
       <BrowserRouter>
       <Routes>
         <Route path="/design-playground" element={<DesignPlaygroundPage />} />
+        <Route path="/login" element={<AdminLoginPage />} />
         <Route path="/" element={<LandingPage />} />
         <Route element={<Layout />}>
           <Route path="main" element={<MainPage />} />
@@ -30,10 +37,14 @@ function App() {
             element={<LearningBrowserPage />}
           />
           <Route path="column" element={<ColumnPage />} />
+          <Route path="admin" element={<AdminPage />} />
+          <Route path="links/admin" element={<LinksAdminPage />} />
+          <Route path="links" element={<LinksPage />} />
           <Route path="project" element={<ProjectPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   )
 }

@@ -5,6 +5,7 @@
 | 경로                           | 용도                            |
 | ------------------------------ | ------------------------------- |
 | [CHANGELOG.md](./CHANGELOG.md) | 버전별 변경 내역                |
+| [api-spec.md](./api-spec.md)   | REST API 명세                   |
 | [decisions/](./decisions/)     | 의사결정 기록 (ADR)             |
 | [learnings/](./learnings/)     | 학습 내용 (개념·동작 방식 정리) |
 | [error-fixes/](./error-fixes/) | 에러 픽스 기록 (오류·원인·수정) |

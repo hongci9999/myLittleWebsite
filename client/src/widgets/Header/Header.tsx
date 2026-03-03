@@ -5,6 +5,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { MAIN_NAV } from '@/shared/config/nav'
+import { useAuth } from '@/shared/context/AuthContext'
 import { getFileStructureBreadcrumb } from '@/shared/config/file-structure'
 import { useTheme } from '@/shared/context/ThemeContext'
 import { THEME_OPTIONS } from '@/shared/config/themes'
@@ -21,6 +22,22 @@ function useBreadcrumb(pathname: string): BreadcrumbItem[] {
 
   if (pathname === '/patch-notes') {
     items.push({ label: '패치노트', href: undefined })
+    return items
+  }
+
+  if (pathname === '/admin') {
+    items.push({ label: '관리', href: undefined })
+    return items
+  }
+
+  if (pathname === '/links/admin') {
+    items.push({ label: '유용한 링크', href: '/links' })
+    items.push({ label: '링크 관리', href: undefined })
+    return items
+  }
+
+  if (pathname === '/login') {
+    items.push({ label: '로그인', href: undefined })
     return items
   }
 
@@ -96,6 +113,7 @@ function SidebarNavLink({
 
 export default function Header() {
   const location = useLocation()
+  const { token } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const breadcrumb = useBreadcrumb(location.pathname)
 
@@ -168,7 +186,21 @@ export default function Header() {
             </nav>
           </div>
 
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            <Link
+              to={
+                token
+                  ? '/admin'
+                  : `/login?redirect=${encodeURIComponent(
+                      location.pathname || '/main'
+                    )}`
+              }
+              className="text-sm font-medium text-muted-foreground no-underline hover:text-foreground transition-colors"
+            >
+              {token ? '관리' : '관리자 로그인'}
+            </Link>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 

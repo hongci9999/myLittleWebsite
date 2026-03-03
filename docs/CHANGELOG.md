@@ -6,12 +6,12 @@
 
 ### Added
 
-- **유용한 링크 페이지 + 사이트 전체 관리자 인증 설계**
-  - 설계 문서: `docs/plans/2026-03-03-links-admin-design.md`
-  - 구현 계획: `docs/plans/2026-03-03-links-admin-implementation-plan.md`
-  - 스키마 SQL: `docs/plans/2026-03-03-links-schema.sql`
-  - 기능: 목적·종류 등 축(dimension) + 계층형 값으로 분류, Supabase Auth, Remember Me
-  - (구현 전)
+- **유용한 링크 페이지 + 사이트 전체 관리자 인증**
+  - 설계: `docs/plans/2026-03-03-links-admin-design.md`, 구현 계획, 스키마·RLS SQL
+  - 인증: Supabase Auth, JWT 기반 서버 검증, Remember Me, `/login` 전용 페이지
+  - 링크 API: `GET/POST/PATCH/DELETE /api/links`, `GET /api/links/dimensions` (공개/인증 분리)
+  - 라우트: `/links` (목록), `/links/admin` (CRUD), `/admin` (관리자 허브), `/login`
+  - 분류: 축(dimension) + 계층형 값(목적·종류), 필터·검색·정렬
 - **학습 폴더 DB API** (Phase 2·3)
   - 서버: Supabase 연동 (`db/supabase.ts`, `db/queries/learning.ts`), `GET /api/learning/sections`, `/sections/:sectionId`
   - 클라이언트: `fetchLearningSection()` API 호출, API 실패 시 config 폴백
@@ -37,6 +37,17 @@
 
 ### Changed
 
+- **유용한 링크 페이지 레이아웃**
+  - 검색창: 상단 중앙 고정 (`sticky top-16`), pill 스타일
+  - 좌측 사이드바(lg+): 태그 선택, 정렬, 링크 관리, 필터 초기화
+  - 모바일: 상단에 필터·정렬·링크관리 한 줄 배치
+- **링크 관리 페이지 UI**
+  - 로그아웃: LinksAdminPage에서 제거 → AdminPage로 이동
+  - 추가 폼: 버튼 제거, 상단에 항상 노출(새 링크 추가/링크 수정)
+  - pill 스타일 입력·버튼, rounded-xl 폼
+- **유용한 링크·링크 관리 디자인**
+  - pill 검색·필터 칩, 카드 호버 lift, 외부 링크 아이콘
+  - 레퍼런스: `docs/plans/2026-02-26-design-references.md` §4 링크/북마크 UI
 - **학습 문서 뷰어(DocViewer)** - 읽기용 디자인 개선
   - 최적 읽기 폭 65ch, 줄간격 1.75, 본문 0.9375rem
   - 제목(h1~h4) 계층·여백·구분선, 인용문·코드블록·테이블 스타일

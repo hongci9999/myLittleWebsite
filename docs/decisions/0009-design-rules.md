@@ -15,21 +15,21 @@
 
 ## 2. 색상
 
-| 용도 | 값 |
-|------|-----|
+| 용도      | 값          |
+| --------- | ----------- |
 | 메인 테마 | blue-orange |
-| 서브 테마 | amber-cyan |
-| 다크 테마 | dark-slate |
+| 서브 테마 | amber-cyan  |
+| 다크 테마 | dark-slate  |
 
 - CSS 변수(`--primary`, `--background` 등) 사용. 하드코딩 지양
 - 새 색 추가 시 `index.css` 테마 블록에 정의
 
 ## 3. 타이포그래피
 
-| 용도 | 폰트 |
-|------|------|
+| 용도 | 폰트         |
+| ---- | ------------ |
 | 본문 | Noto Sans KR |
-| 코드 | Consolas |
+| 코드 | Consolas     |
 
 - 제목: `text-3xl` ~ `text-5xl`, `font-bold` 또는 `font-semibold`
 - 본문: `text-base` 또는 `text-lg`, `leading-relaxed`
@@ -60,7 +60,7 @@
 - 활성 표시: 밑줄(`border-b-2 border-primary`) 또는 `text-primary`
 - 새 페이지 추가 시 `nav.ts`에 항목 추가
 
-## 8. 참고 문서
+## 8. 참고 문서.
 
 - `docs/decisions/0005-design-system-shadcn.md` - shadcn 채택
 - `docs/decisions/0007-design-playground-result.md` - 플레이그라운드 선택

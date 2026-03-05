@@ -10,6 +10,7 @@ import { getFileStructureBreadcrumb } from '@/shared/config/file-structure'
 import { useTheme } from '@/shared/context/ThemeContext'
 import { THEME_OPTIONS } from '@/shared/config/themes'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 type BreadcrumbItem = { label: string; href?: string }
 
@@ -26,7 +27,7 @@ function useBreadcrumb(pathname: string): BreadcrumbItem[] {
   }
 
   if (pathname === '/admin') {
-    items.push({ label: '관리', href: undefined })
+    items.push({ label: '관리자 페이지', href: undefined })
     return items
   }
 
@@ -187,18 +188,20 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link
-              to={
-                token
-                  ? '/admin'
-                  : `/login?redirect=${encodeURIComponent(
-                      location.pathname || '/main'
-                    )}`
-              }
-              className="text-sm font-medium text-muted-foreground no-underline hover:text-foreground transition-colors"
-            >
-              {token ? '관리' : '관리자 로그인'}
-            </Link>
+            <Button variant="outline" size="sm" asChild>
+              <Link
+                to={
+                  token
+                    ? '/admin'
+                    : `/login?redirect=${encodeURIComponent(
+                        location.pathname || '/main'
+                      )}`
+                }
+                className="no-underline"
+              >
+                {token ? '관리자 페이지' : '관리자 로그인'}
+              </Link>
+            </Button>
             <ThemeToggle />
           </div>
         </div>

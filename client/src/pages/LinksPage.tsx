@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/shared/context/AuthContext'
+import { useFavoriteLinks } from '@/shared/hooks/useFavoriteLinks'
 import {
   fetchLinks,
   fetchDimensions,
@@ -41,6 +42,22 @@ const ExternalLinkIcon = () => (
   </svg>
 )
 
+const StarIcon = ({ filled }: { filled: boolean }) => (
+  <svg
+    className="size-4 shrink-0"
+    fill={filled ? 'currentColor' : 'none'}
+    stroke="currentColor"
+    strokeWidth={2}
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+    />
+  </svg>
+)
+
 function collectValueIds(nodes: ValueTree[]): { id: string; label: string }[] {
   const result: { id: string; label: string }[] = []
   const walk = (items: ValueTree[]) => {
@@ -57,6 +74,7 @@ type SortKey = 'title' | 'createdAt' | 'sortOrder'
 
 export default function LinksPage() {
   const { token } = useAuth()
+  const { toggleFavorite, isFavorite } = useFavoriteLinks()
   const [links, setLinks] = useState<LinkWithValues[]>([])
   const [dimensions, setDimensions] = useState<DimensionWithValues[]>([])
   const [search, setSearch] = useState('')
@@ -187,8 +205,8 @@ export default function LinksPage() {
                       onClick={() => toggleValue(dim.slug, v.id)}
                       className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
                         selected.has(v.id)
-                          ? 'bg-primary text-primary-foreground shadow-sm'
-                          : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+                          ? 'bg-secondary text-secondary-foreground shadow-sm'
+                          : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-secondary'
                       }`}
                     >
                       {v.label}
@@ -211,7 +229,7 @@ export default function LinksPage() {
             {token && (
               <Link
                 to="/links/admin"
-                className="block rounded-lg bg-muted/50 px-3 py-2 text-center text-xs font-medium no-underline text-foreground transition-colors hover:bg-muted"
+                className="block rounded-lg bg-muted/50 px-3 py-2 text-center text-xs font-medium no-underline text-foreground transition-colors hover:bg-muted hover:text-secondary"
               >
                 링크 관리
               </Link>
@@ -220,7 +238,7 @@ export default function LinksPage() {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="text-left text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                className="text-left text-xs text-muted-foreground underline-offset-2 hover:text-secondary hover:underline"
               >
                 필터 초기화
               </button>
@@ -248,7 +266,7 @@ export default function LinksPage() {
                       onClick={() => toggleValue(dim.slug, v.id)}
                       className={`rounded-full px-2.5 py-1 text-xs ${
                         selected.has(v.id)
-                          ? 'bg-primary text-primary-foreground'
+                          ? 'bg-secondary text-secondary-foreground'
                           : 'bg-muted/60 text-muted-foreground'
                       }`}
                     >
@@ -276,7 +294,7 @@ export default function LinksPage() {
               {token && (
                 <Link
                   to="/links/admin"
-                  className="rounded-lg bg-muted/50 px-3 py-1.5 text-xs no-underline"
+                  className="rounded-lg bg-muted/50 px-3 py-1.5 text-xs no-underline transition-colors hover:text-secondary"
                 >
                   링크 관리
                 </Link>
@@ -285,7 +303,7 @@ export default function LinksPage() {
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="text-xs text-muted-foreground underline"
+                  className="text-xs text-muted-foreground underline transition-colors hover:text-secondary"
                 >
                   초기화
                 </button>
@@ -298,7 +316,7 @@ export default function LinksPage() {
             <div className="mx-auto max-w-5xl">
               {loading ? (
                 <div className="flex flex-col items-center justify-center gap-3 py-24">
-                  <div className="size-8 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+                  <div className="size-8 animate-spin rounded-full border-2 border-secondary/30 border-t-secondary" />
                   <p className="text-sm text-muted-foreground">로딩 중...</p>
                 </div>
               ) : sortedLinks.length === 0 ? (
@@ -320,14 +338,36 @@ export default function LinksPage() {
                       rel="noopener noreferrer"
                       className="group block no-underline"
                     >
-                      <div className="flex h-full flex-col rounded-2xl border border-border/50 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/15 hover:shadow-lg">
+                      <div className="flex h-full flex-col rounded-2xl border border-border/50 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-secondary/20 hover:shadow-lg">
                         <div className="flex items-start justify-between gap-3">
-                          <h3 className="min-w-0 flex-1 font-semibold text-foreground line-clamp-2 group-hover:text-primary">
+                          <h3 className="min-w-0 flex-1 font-semibold text-foreground line-clamp-2 group-hover:text-secondary">
                             {link.title}
                           </h3>
-                          <span className="mt-0.5 shrink-0 rounded-md bg-muted/50 p-1 opacity-70 transition-opacity group-hover:opacity-100">
-                            <ExternalLinkIcon />
-                          </span>
+                          <div className="flex shrink-0 items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                toggleFavorite(link.id)
+                              }}
+                              className={`rounded-md p-1 transition-colors hover:bg-muted/50 ${
+                                isFavorite(link.id)
+                                  ? 'text-secondary'
+                                  : 'text-muted-foreground hover:text-secondary'
+                              }`}
+                              aria-label={
+                                isFavorite(link.id)
+                                  ? '즐겨찾기 해제'
+                                  : '즐겨찾기 추가'
+                              }
+                            >
+                              <StarIcon filled={isFavorite(link.id)} />
+                            </button>
+                            <span className="rounded-md bg-muted/50 p-1 opacity-70 transition-opacity group-hover:opacity-100">
+                              <ExternalLinkIcon />
+                            </span>
+                          </div>
                         </div>
                         {link.description && (
                           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">

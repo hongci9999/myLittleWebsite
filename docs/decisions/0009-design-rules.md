@@ -24,6 +24,14 @@
 - CSS 변수(`--primary`, `--background` 등) 사용. 하드코딩 지양
 - 새 색 추가 시 `index.css` 테마 블록에 정의
 
+### 토큰별 용도
+
+| 토큰      | 용도 |
+| --------- | ---- |
+| **primary** | 메인 링크(기본), CTA, 포커스 링 |
+| **secondary** | 호버, 강조(선택·활성 상태), 즐겨찾기, 배지, 보조 버튼 |
+| **muted** | 비강조 텍스트, 배경 |
+
 ## 3. 타이포그래피
 
 | 용도 | 폰트         |
@@ -50,14 +58,14 @@
 
 ## 6. 인터랙션
 
-- **호버**: `transition-colors` 또는 `transition-all`, `hover:border-primary/20`
+- **호버**: `transition-colors` 또는 `transition-all`, `hover:border-secondary/20`, `hover:text-secondary`
 - **그림자**: `shadow-sm` 기본, 호버 시 `shadow-md`
 - **애니메이션**: 300~700ms, `ease-out`
 
 ## 7. 네비게이션
 
 - 대주제: `MAIN_NAV` config 기반
-- 활성 표시: 밑줄(`border-b-2 border-primary`) 또는 `text-primary`
+- 활성 표시: 밑줄(`border-b-2 border-secondary`) 또는 `text-secondary`
 - 새 페이지 추가 시 `nav.ts`에 항목 추가
 
 ## 8. 참고 문서.

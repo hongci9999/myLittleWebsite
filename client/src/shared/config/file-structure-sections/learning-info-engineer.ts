@@ -3,10 +3,7 @@
  * scripts/build-learning-config.mjs 로 public/learnings/정처기 폴더 스캔 후 생성
  * 수동 수정 시 다음 빌드에서 덮어쓰임
  */
-import {
-  registerFileStructureParent,
-  type FileStructureSection,
-} from '../file-structure'
+import type { FileStructureSection } from '../file-structure'
 
 const infoEngineerSection: FileStructureSection = {
   "sectionId": "info-engineer",
@@ -563,8 +560,4 @@ const infoEngineerSection: FileStructureSection = {
   ]
 }
 
-registerFileStructureParent({
-  parentPath: '/learning',
-  parentLabel: '학습자료',
-  sections: [infoEngineerSection],
-})
+export { infoEngineerSection }

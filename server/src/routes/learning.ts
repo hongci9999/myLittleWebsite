@@ -1,49 +1,51 @@
 import { Router } from 'express'
 import { getSections, getSectionWithNodes } from '../db/queries/learning.js'
+import { LEARNING_SECTIONS } from '../config/learning-sections.js'
+import { scanLearningSection } from '../services/learning-scan.js'
 
 const router = Router()
 
-/** GET /api/learning/sections - 섹션 목록 */
+/** GET /api/learning/sections - 섹션 목록 (DB 우선, 없으면 config) */
 router.get('/sections', async (_, res) => {
   try {
     const rows = await getSections()
-    const sections = rows.map((r) => ({
-      sectionId: r.section_id,
-      sectionLabel: r.label,
-      basePath: r.base_path,
-      nodes: [], // 목록에서는 노드 생략
-    }))
-    res.json(sections)
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Failed to fetch sections'
-    if (msg === 'Supabase not configured') {
-      res.status(503).json({ error: 'Database not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY in server/.env' })
-      return
+    if (rows.length > 0) {
+      const sections = rows.map((r) => ({
+        sectionId: r.section_id,
+        sectionLabel: r.label,
+        basePath: r.base_path,
+        nodes: [],
+      }))
+      return res.json(sections)
     }
-    console.error('[learning] getSections error:', err)
-    res.status(500).json({ error: 'Failed to fetch sections' })
+  } catch {
+    // Supabase 미설정 시 config 폴백
   }
+  const sections = LEARNING_SECTIONS.map((s) => ({
+    sectionId: s.sectionId,
+    sectionLabel: s.label,
+    basePath: `/learnings/${s.folderName}`,
+    nodes: [],
+  }))
+  res.json(sections)
 })
 
-/** GET /api/learning/sections/:sectionId - 섹션 상세 + 노드·문서 */
+/** GET /api/learning/sections/:sectionId - 섹션 상세 (DB 우선, 없으면 폴더 스캔) */
 router.get('/sections/:sectionId', async (req, res) => {
+  const { sectionId } = req.params
   try {
-    const { sectionId } = req.params
     const section = await getSectionWithNodes(sectionId)
-    if (!section) {
-      res.status(404).json({ error: 'Section not found' })
-      return
+    if (section && (section.nodes?.length ?? 0) > 0) {
+      return res.json(section)
     }
-    res.json(section)
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Failed to fetch section'
-    if (msg === 'Supabase not configured') {
-      res.status(503).json({ error: 'Database not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY in server/.env' })
-      return
-    }
-    console.error('[learning] getSectionWithNodes error:', err)
-    res.status(500).json({ error: 'Failed to fetch section' })
+  } catch {
+    // Supabase 미설정 시 스캔 폴백
   }
+  const scanned = scanLearningSection(sectionId)
+  if (!scanned) {
+    return res.status(404).json({ error: 'Section not found' })
+  }
+  res.json(scanned)
 })
 
 export default router

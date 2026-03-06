@@ -111,7 +111,7 @@ const infoEngineerSection: FileStructureSection = ${JSON.stringify(section, null
 
 registerFileStructureParent({
   parentPath: '/learning',
-  parentLabel: '학습자료',
+  parentLabel: '학습 기록',
   sections: [infoEngineerSection],
 })
 `

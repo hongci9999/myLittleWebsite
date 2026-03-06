@@ -43,6 +43,13 @@ export default function FileStructureBrowserPage({
 
   if (result.type === 'node-list') {
     const currentPath = buildPath(parentPath, sectionId, result.pathSegments)
+    if (result.nodes.length === 0) {
+      return (
+        <div className="mx-auto max-w-3xl px-6 py-16">
+          <p className="text-muted-foreground">준비 중입니다.</p>
+        </div>
+      )
+    }
     return (
       <div className="mx-auto max-w-3xl px-6 py-16">
         <ul className="flex flex-col gap-2">

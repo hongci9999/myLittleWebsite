@@ -1,6 +1,6 @@
 /**
  * 파일 구조형 콘텐츠 공통 스키마 (재귀 구조)
- * 학습자료, 포트폴리오 등 계층적 드릴다운 UI 재사용
+ * 학습 기록, 포트폴리오 등 계층적 드릴다운 UI 재사용
  */
 export interface FileStructureDoc {
   slug: string
@@ -24,6 +24,14 @@ export interface FileStructureSection {
   /** md fetch용 base path (예: /learnings/정처기) */
   basePath: string
   nodes: FileStructureNode[]
+}
+
+/** 섹션 목록용 (nodes 생략 또는 빈 배열) */
+export interface FileStructureSectionSummary {
+  sectionId: string
+  sectionLabel: string
+  basePath: string
+  nodes?: FileStructureNode[]
 }
 
 export interface FileStructureParent {

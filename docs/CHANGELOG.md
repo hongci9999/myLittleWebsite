@@ -6,6 +6,12 @@
 
 ### Added
 
+- **학습 기록 동적 폴더 스캔** (1번 방식)
+  - 서버: `server/src/config/learning-sections.ts` 섹션 정의, `services/learning-scan.ts` 런타임 스캔
+  - API: `GET /sections` DB 우선 → config 폴백, `GET /sections/:id` DB 우선 → 폴더 스캔 폴백
+  - 클라이언트: API에서 섹션 목록 조회, `learning/:sectionId/*` 동적 라우팅
+  - `.md` 폴더 추가 시 빌드 없이 즉시 목록 반영
+  - `decisions 0011` - 학습 기록 동적 섹션 (새 섹션 추가 방법)
 - **즐겨찾기 링크 위젯** (방문자별 localStorage)
   - 유용한 링크 페이지: 링크 카드에 별 아이콘, 클릭 시 즐겨찾기 토글
   - 메인 페이지: 위젯 영역에 즐겨찾기 링크 표시, 없으면 "즐겨찾기 링크 없습니다"
@@ -24,7 +30,7 @@
   - 0001: 학습 폴더·config 관련 (EADDRINUSE, env 로드, API 폴백, config 자동생성, 99_노트 children)
 - **학습 폴더 config 자동 생성** - `scripts/build-learning-config.mjs`, `npm run build:learning-config`
   - `public/learnings/정처기` 폴더 스캔 → `learning-info-engineer.ts` 자동 생성 (95개 md 반영)
-- **learnings 0016** - 학습 폴더 config 자동 생성 개념·동작 방식
+- **decisions 0010** - 학습 폴더 config 자동 생성
 - **파일 구조형 패턴 재귀화** - 깊이 제한 없이 확장 가능
   - `FileStructureNode`: children(재귀) 또는 docs
   - `FileStructureBrowserPage`: splat 라우트로 node-list/doc-list/doc 통합

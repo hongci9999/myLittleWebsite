@@ -27,6 +27,11 @@
 - [0004 FSD 적용 전략](./decisions/0004-fsd-application-strategy.md)
 - [0005 디자인 시스템 shadcn/ui](./decisions/0005-design-system-shadcn.md)
 - [0006 디자인 플레이그라운드](./decisions/0006-design-playground.md)
+- [0007 디자인 플레이그라운드 결과](./decisions/0007-design-playground-result.md)
+- [0008 컬러 테마](./decisions/0008-color-themes.md)
+- [0009 디자인 룰](./decisions/0009-design-rules.md)
+- [0010 학습 폴더 config 자동 생성](./decisions/0010-learning-folder-config-generation.md)
+- [0011 학습 기록 동적 섹션](./decisions/0011-learning-dynamic-sections.md)
 
 ### 학습 내용
 
@@ -47,7 +52,6 @@
 | [0013](./learnings/0013-file-structure-ui-integration.md) | 파일 구조형 패턴 Part 4: UI 통합 | 프론트, 아키텍처         |
 | [0014](./learnings/0014-file-structure-extending.md) | 파일 구조형 패턴 Part 5: 확장 방법 | 프론트, 아키텍처         |
 | [0015](./learnings/0015-backend-database-basics.md) | 백엔드·데이터베이스 기초 (초보자용) | 백엔드, 데이터베이스     |
-| [0016](./learnings/0016-learning-folder-config-generation.md) | 학습 폴더 config 자동 생성 | 프론트, 백엔드, 도구, 아키텍처 |
 | [0017](./learnings/0017-supabase.md) | Supabase 개요 및 이용 방법 | 백엔드, 데이터베이스, 도구 |
 
 ### 에러 픽스

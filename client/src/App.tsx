@@ -33,7 +33,7 @@ function App() {
           <Route path="portfolio" element={<PortfolioPage />} />
           <Route path="learning" element={<LearningPage />} />
           <Route
-            path="learning/info-engineer/*"
+            path="learning/:sectionId/*"
             element={<LearningBrowserPage />}
           />
           <Route path="column" element={<ColumnPage />} />

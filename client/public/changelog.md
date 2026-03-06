@@ -6,6 +6,10 @@
 
 ### Added
 
+- **즐겨찾기 링크 위젯** (방문자별 localStorage)
+  - 유용한 링크 페이지: 링크 카드에 별 아이콘, 클릭 시 즐겨찾기 토글
+  - 메인 페이지: 위젯 영역에 즐겨찾기 링크 표시, 없으면 "즐겨찾기 링크 없습니다"
+  - `useFavoriteLinks` 훅, `FavoriteLinksWidget`
 - **유용한 링크 페이지 + 사이트 전체 관리자 인증**
   - 설계: `docs/plans/2026-03-03-links-admin-design.md`, 구현 계획, 스키마·RLS SQL
   - 인증: Supabase Auth, JWT 기반 서버 검증, Remember Me, `/login` 전용 페이지
@@ -37,6 +41,21 @@
 
 ### Changed
 
+- **헤더 관리자 링크**
+  - '관리' → '관리자 페이지' (로그인 시), shadcn Button variant="outline" size="sm" 적용
+  - 브레드크럼 `/admin` 경로: '관리' → '관리자 페이지'
+- **디자인 룰 (0009)** - 토큰별 용도·호버 기준
+  - primary: 메인 링크(기본), CTA, 포커스 링
+  - secondary: 호버, 강조(선택·활성), 즐겨찾기, 배지
+  - 인터랙션: `hover:border-secondary/20`, `hover:text-secondary`
+  - 네비게이션 활성: `border-secondary`, `text-secondary`
+- **유용한 링크 페이지 색상** - 새 룰에 맞춰 secondary 적용
+  - 필터 칩 선택: `bg-secondary`, 미선택 호버: `hover:text-secondary`
+  - 링크 카드·제목·즐겨찾기 별 호버: secondary
+  - 로딩 스피너: `border-secondary`
+- **다크 모드(dark-slate) secondary**
+  - `oklch(0.35 0.05 260)` → `oklch(0.6 0.1 260)` (호버 텍스트 가독성)
+  - secondary-foreground: `oklch(0.1 0 0)` (배경 사용 시 대비)
 - **유용한 링크 페이지 레이아웃**
   - 검색창: 상단 중앙 고정 (`sticky top-16`), pill 스타일
   - 좌측 사이드바(lg+): 태그 선택, 정렬, 링크 관리, 필터 초기화

@@ -44,7 +44,7 @@ function scanDir(dirPath: string, baseRelPath = ''): { docs: ScanDoc[]; children
       if (hasContent) {
         const child: ScanChild = {
           id: ent.name,
-          name: ent.name.replace(/^\d+_?/, '').trim() || ent.name,
+          name: ent.name.replace(/^\d+_/, '').trim() || ent.name,
         }
         if (sub.docs.length > 0) {
           child.docs = sub.docs.sort((a, b) => a.title.localeCompare(b.title))
@@ -86,7 +86,7 @@ export function scanLearningSection(sectionId: string): FileStructureSectionResp
     const { docs, children } = scanDir(nodePath, nodeId)
     const node: { id: string; name: string; description?: string; docs?: ScanDoc[]; children?: ScanChild[] } = {
       id: nodeId,
-      name: nodeId.replace(/^\d+_?/, '').trim() || nodeId,
+      name: nodeId.replace(/^\d+_/, '').trim() || nodeId,
     }
     if (children.length > 0) node.children = children
     if (docs.length > 0) node.docs = docs.sort((a, b) => a.title.localeCompare(b.title))

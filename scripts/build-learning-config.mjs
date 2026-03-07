@@ -38,7 +38,7 @@ function scanDir(dirPath, baseRelPath = '') {
       if (hasContent) {
         const child = {
           id: ent.name,
-          name: ent.name.replace(/^\d+_?/, '').trim() || ent.name,
+          name: ent.name.replace(/^\d+_/, '').trim() || ent.name,
         }
         if (sub.docs.length > 0) child.docs = sub.docs.sort((a, b) => a.title.localeCompare(b.title))
         if (sub.children.length > 0) child.children = sub.children

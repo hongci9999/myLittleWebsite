@@ -1,0 +1,24 @@
+# Supabase 프로젝트 비활성 정지 방지
+# 5일마다 keepalive 테이블 조회 → DB 활동 발생 → 7일 타이머 초기화
+# docs/plans/2026-03-13-supabase-keepalive-github-actions.md
+
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # 매월 1, 6, 11, 16, 21, 26일 12:00 UTC (5일 간격)
+    - cron: '0 12 */5 * *'
+  workflow_dispatch: # 수동 실행 가능
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase
+        run: |
+          curl -sS -o /dev/null -w "%{http_code}" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Accept: application/json" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/keepalive?select=id&limit=1" \
+            | grep -q 200 || exit 1

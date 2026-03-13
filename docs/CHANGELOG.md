@@ -6,6 +6,18 @@
 
 ### Added
 
+- **Supabase Keep-Alive + GitHub Actions**
+  - Supabase 무료 티어 7일 비활성 정지 방지
+  - `keepalive` 전용 테이블 (id, pinged_at), REST API로 5일마다 조회
+  - `.github/workflows/supabase-keepalive.yml` cron 스케줄
+  - GitHub Secrets: `SUPABASE_URL`, `SUPABASE_ANON_KEY` 필요
+  - 설계: `docs/plans/2026-03-13-supabase-keepalive-github-actions.md`
+  - 학습: `docs/learnings/0019-github-actions.md`
+- **링크 AI 자동 설명·분류 설계**
+  - 설계: `docs/plans/2026-03-13-links-ai-suggest-design.md`
+  - 옵션: WebLLM(브라우저), Ollama(클라이언트/서버) 비교
+  - 추천: Ollama 서버 방식 (어느 PC에서 접속해도 동작, AWS 배포 시 동일)
+  - learnings 0018: Ollama, WebLLM 기술 상세
 - **학습 기록 동적 폴더 스캔** (1번 방식)
   - 서버: `server/src/config/learning-sections.ts` 섹션 정의, `services/learning-scan.ts` 런타임 스캔
   - API: `GET /sections` DB 우선 → config 폴백, `GET /sections/:id` DB 우선 → 폴더 스캔 폴백

@@ -16,6 +16,8 @@
 
 | 날짜 | 제목 |
 |------|------|
+| [2026-03-13](./plans/2026-03-13-supabase-keepalive-github-actions.md) | Supabase Keep-Alive + GitHub Actions |
+| [2026-03-13](./plans/2026-03-13-links-ai-suggest-design.md) | 링크 AI 자동 설명·분류 |
 | [2026-03-06](./plans/2026-03-06-favorite-links-design.md) | 즐겨찾기 링크 위젯 |
 | [2026-03-03](./plans/2026-03-03-links-admin-design.md) | 유용한 링크 페이지 + 사이트 전체 관리자 인증 |
 
@@ -53,6 +55,8 @@
 | [0014](./learnings/0014-file-structure-extending.md) | 파일 구조형 패턴 Part 5: 확장 방법 | 프론트, 아키텍처         |
 | [0015](./learnings/0015-backend-database-basics.md) | 백엔드·데이터베이스 기초 (초보자용) | 백엔드, 데이터베이스     |
 | [0017](./learnings/0017-supabase.md) | Supabase 개요 및 이용 방법 | 백엔드, 데이터베이스, 도구 |
+| [0018](./learnings/0018-local-ai-ollama-webllm.md) | 로컬 AI: Ollama와 WebLLM | ai, 백엔드, 프론트, 도구 |
+| [0019](./learnings/0019-github-actions.md) | GitHub Actions 개요 | 도구, 개발방법론, 백엔드 |
 
 ### 에러 픽스
 

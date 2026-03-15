@@ -11,6 +11,27 @@
 
 ## 📝 상세 정리
 
+### 선형 차원 축소 기법 개요
+
+| 기법 | 핵심 특징 |
+| :--- | :--- |
+| **PCA (주성분 분석)** | **분산이 최대화되는 방향**으로 차원을 축소 |
+| **LDA (Linear Discriminant Analysis)** | **분류**에서 **클래스 간 분산을 최대화**하면서 차원을 축소 |
+| **ICA (Independent Component Analysis)** | **서로 독립적인 성분**을 찾아 차원 축소 |
+| **SVD (특이값 분해)** | $m \times n$ 비정방행렬 $A$를 $A=U\Sigma V^T$로 분해. $U$: $m \times m$ 직교행렬, $\Sigma$: $m \times n$ 대각행렬, $V^T$: $n \times n$ 직교행렬 |
+| **요인분석 (Factor Analysis)** | 관측된 변수들을 **몇 개의 잠재 요인**으로 축소. 심리학, 사회과학 등에서 잠재 변수 해석이 필요한 경우 활용 |
+
+### 비선형 차원 축소 기법 개요
+
+* **1) MDS (Multi-Dimensional Scaling)**
+    * **거리정보의 근접성**을 보존하는 차원 축소.
+    * **Stress 함수**의 값이 최소가 되도록 구성.
+* **2) t-SNE (t-Distributed Stochastic Neighbor Embedding)**
+    * 고차원 데이터 간 **거리 정보를 확률적으로** 유지하여 차원 축소.
+    * 데이터의 복잡한 비선형 패턴을 시각화하며, **이미지나 텍스트 데이터**에 적합.
+
+---
+
 ### 1. 주성분 분석 (PCA, Principal Component Analysis)
 고차원 데이터의 차원을 축소하는 대표적인 통계 기법으로, 데이터 내의 주요한 변동성을 설명하는 새로운 변수를 찾아내어 구조를 이해하고 시각화합니다.
 

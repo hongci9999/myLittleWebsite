@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import { MarkdownWithMath } from '@/shared/ui/MarkdownWithMath'
 
 export default function PatchNotesPage() {
   const [content, setContent] = useState<string | null>(null)
@@ -35,7 +34,7 @@ export default function PatchNotesPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
       <article className="prose prose-neutral dark:prose-invert max-w-none">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        <MarkdownWithMath>{content}</MarkdownWithMath>
       </article>
     </div>
   )

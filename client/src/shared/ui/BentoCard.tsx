@@ -11,7 +11,7 @@ const BentoCard = forwardRef<HTMLDivElement, BentoCardProps>(
     <div
       ref={ref}
       className={cn(
-        'group flex flex-col rounded-2xl border border-border/60 bg-card p-6 shadow-sm transition-all hover:border-primary/20 hover:shadow-md',
+        'group flex flex-col rounded-2xl border border-border/60 bg-card p-6 shadow-sm transition-all hover:shadow-md',
         className
       )}
       {...props}

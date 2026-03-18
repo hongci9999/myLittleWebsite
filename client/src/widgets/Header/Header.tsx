@@ -75,7 +75,7 @@ function ThemeToggle() {
             'rounded-full px-3 py-1.5 text-sm font-medium transition-colors',
             theme === id
               ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
+              : 'text-muted-foreground hover-bg hover:text-foreground'
           )}
         >
           {label}
@@ -104,7 +104,7 @@ function SidebarNavLink({
         'block rounded-lg px-4 py-3 text-base font-medium no-underline transition-colors',
         isActive
           ? 'bg-primary/10 text-primary'
-          : 'text-foreground hover:bg-muted/50'
+          : 'text-foreground hover-bg'
       )}
     >
       {children}
@@ -141,7 +141,7 @@ export default function Header() {
             <button
               type="button"
               onClick={() => setSidebarOpen(true)}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-foreground hover:bg-muted/50 transition-colors"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-foreground hover-bg transition-colors"
               aria-label="메뉴 열기"
               aria-expanded={sidebarOpen}
             >
@@ -232,7 +232,7 @@ export default function Header() {
           <button
             type="button"
             onClick={closeSidebar}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground hover-bg hover:text-foreground transition-colors"
             aria-label="메뉴 닫기"
           >
             <svg

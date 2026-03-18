@@ -193,7 +193,7 @@ export default function LinksAdminPage() {
                       className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
                         formValueIds.has(v.id)
                           ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
+                          : 'bg-muted/60 text-muted-foreground hover-bg hover:text-foreground'
                       }`}
                     >
                       {v.label}
@@ -227,7 +227,7 @@ export default function LinksAdminPage() {
         {links.map((link) => (
           <div
             key={link.id}
-            className="flex flex-col rounded-2xl border border-border/50 bg-card p-5 shadow-sm transition-all hover:border-primary/15 hover:shadow-md"
+            className="flex flex-col rounded-2xl border border-border/50 bg-card p-5 shadow-sm transition-all hover-bg-card"
           >
             <h3 className="font-semibold text-foreground">
               {link.title}

@@ -27,7 +27,7 @@ export default function AdminPage() {
       <div className="flex flex-col gap-4">
         <Link
           to="/links/admin"
-          className="block rounded-xl border border-border/60 bg-card p-6 no-underline transition-colors hover:border-primary/20 hover:shadow-md"
+          className="block rounded-xl border border-border/60 bg-card p-6 no-underline transition-colors hover-bg-card"
         >
           <h2 className="font-semibold text-foreground">링크 관리</h2>
           <p className="mt-1 text-sm text-muted-foreground">

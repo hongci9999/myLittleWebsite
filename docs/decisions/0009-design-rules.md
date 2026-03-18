@@ -58,7 +58,7 @@
 
 ## 6. 인터랙션
 
-- **호버**: `transition-colors` 또는 `transition-all`, `hover:border-secondary/20`, `hover:text-secondary`
+- **호버**: `transition-colors` 또는 `transition-all`, `hover-bg`·`hover-bg-card`·`hover-bg-card-lg`·`group-hover-bg` 유틸리티 사용 (index.css 한 곳에서 관리), `hover:text-secondary`
 - **그림자**: `shadow-sm` 기본, 호버 시 `shadow-md`
 - **애니메이션**: 300~700ms, `ease-out`
 

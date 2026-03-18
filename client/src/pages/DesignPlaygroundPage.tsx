@@ -765,7 +765,7 @@ export default function DesignPlaygroundPage() {
                   type="button"
                   onClick={() => toggleTheme(id)}
                   className={`flex flex-col rounded-lg border-2 overflow-hidden text-left transition-all hover:scale-[1.02] ${
-                    isSelected ? 'border-primary ring-2 ring-primary/30' : 'border-border hover:border-muted-foreground/30'
+                    isSelected ? 'border-primary ring-2 ring-primary/30' : 'border-border'
                   }`}
                 >
                   <div className="flex h-12">
@@ -907,7 +907,7 @@ export default function DesignPlaygroundPage() {
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Card className={cn('hover:border-primary/50 transition-colors', cardStyleClass, shadowStyleClass, PREVIEW_RADIUS)}>
+              <Card className={cn('transition-colors', cardStyleClass, shadowStyleClass, PREVIEW_RADIUS)}>
                 <CardHeader>
                   <CardTitle>About</CardTitle>
                   <CardDescription>소개</CardDescription>
@@ -918,7 +918,7 @@ export default function DesignPlaygroundPage() {
                   </Button>
                 </CardContent>
               </Card>
-              <Card className={cn('hover:border-primary/50 transition-colors', cardStyleClass, shadowStyleClass, PREVIEW_RADIUS)}>
+              <Card className={cn('transition-colors', cardStyleClass, shadowStyleClass, PREVIEW_RADIUS)}>
                 <CardHeader>
                   <CardTitle>Portfolio</CardTitle>
                   <CardDescription>포트폴리오</CardDescription>
@@ -971,7 +971,7 @@ export default function DesignPlaygroundPage() {
                       className={cn(
                         'flex items-center gap-2 px-4 py-2 border cursor-pointer transition-colors',
                         PREVIEW_RADIUS,
-                        i === 1 ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
+                        i === 1 ? 'border-primary bg-primary/10' : 'border-border'
                       )}
                     >
                       <input type="radio" name="choice-single-card" className="sr-only" defaultChecked={i === 1} />
@@ -1000,7 +1000,7 @@ export default function DesignPlaygroundPage() {
                 <ul className={cn('space-y-0 border divide-y divide-border p-0 list-none', PREVIEW_RADIUS)}>
                   {['옵션 A', '옵션 B'].map((opt, i) => (
                     <li key={opt}>
-                      <label className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-muted/50">
+                      <label className="flex items-center gap-3 px-4 py-3 cursor-pointer hover-bg">
                         <input type="radio" name="choice-single-list" className="border-input" defaultChecked={i === 1} />
                         <span>{opt}</span>
                       </label>
@@ -1053,7 +1053,7 @@ export default function DesignPlaygroundPage() {
                       className={cn(
                         'flex items-center gap-2 px-4 py-2 border cursor-pointer transition-colors',
                         PREVIEW_RADIUS,
-                        [0, 2].includes(i) ? 'border-primary bg-primary/10' : 'border-border hover:border-primary/50'
+                        [0, 2].includes(i) ? 'border-primary bg-primary/10' : 'border-border'
                       )}
                     >
                       <input type="checkbox" className="sr-only" defaultChecked={[0, 2].includes(i)} />
@@ -1082,7 +1082,7 @@ export default function DesignPlaygroundPage() {
                 <ul className={cn('space-y-0 border divide-y divide-border p-0 list-none', PREVIEW_RADIUS)}>
                   {['옵션 A', '옵션 B', '옵션 C'].map((opt, i) => (
                     <li key={opt}>
-                      <label className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-muted/50">
+                      <label className="flex items-center gap-3 px-4 py-3 cursor-pointer hover-bg">
                         <input type="checkbox" className="border-input rounded" defaultChecked={[0, 2].includes(i)} />
                         <span>{opt}</span>
                       </label>
@@ -1185,10 +1185,10 @@ export default function DesignPlaygroundPage() {
                   >
                     홈
                   </a>
-                  <a href="#" className="px-3 py-1.5 rounded-full text-sm text-muted-foreground hover:bg-muted">
+                  <a href="#" className="px-3 py-1.5 rounded-full text-sm text-muted-foreground hover-bg">
                     About
                   </a>
-                  <a href="#" className="px-3 py-1.5 rounded-full text-sm text-muted-foreground hover:bg-muted">
+                  <a href="#" className="px-3 py-1.5 rounded-full text-sm text-muted-foreground hover-bg">
                     Blog
                   </a>
                 </>
@@ -1216,8 +1216,8 @@ export default function DesignPlaygroundPage() {
               {menuStyle === 'icon' && (
                 <>
                   <a href="#" className={cn('p-2 bg-primary text-primary-foreground', PREVIEW_RADIUS)} title="홈">⌂</a>
-                  <a href="#" className={cn('p-2 text-muted-foreground hover:bg-muted', PREVIEW_RADIUS)} title="About">👤</a>
-                  <a href="#" className={cn('p-2 text-muted-foreground hover:bg-muted', PREVIEW_RADIUS)} title="Blog">📝</a>
+                  <a href="#" className={cn('p-2 text-muted-foreground hover-bg', PREVIEW_RADIUS)} title="About">👤</a>
+                  <a href="#" className={cn('p-2 text-muted-foreground hover-bg', PREVIEW_RADIUS)} title="Blog">📝</a>
                 </>
               )}
             </nav>

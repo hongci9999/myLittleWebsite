@@ -25,7 +25,7 @@ export default function RightSidebar() {
                   'group flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium no-underline transition-all duration-200',
                   isActive
                     ? 'border-primary/40 bg-primary/10 text-primary shadow-sm'
-                    : 'border-border/60 bg-card text-foreground hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm'
+                    : 'border-border/60 bg-card text-foreground hover-bg hover:shadow-sm'
                 )}
               >
                 <span
@@ -33,7 +33,7 @@ export default function RightSidebar() {
                     'flex h-7 w-7 shrink-0 items-center justify-center rounded text-sm transition-colors',
                     isActive
                       ? 'bg-primary/20 text-primary'
-                      : 'bg-muted/80 text-muted-foreground group-hover:bg-primary/15 group-hover:text-primary'
+                      : 'bg-muted/80 text-muted-foreground group-hover-bg group-hover:text-primary'
                   )}
                 >
                   {icon}

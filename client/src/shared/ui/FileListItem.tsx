@@ -18,7 +18,7 @@ export function FileListItem({
   className,
 }: FileListItemProps) {
   const baseClass =
-    'flex w-full flex-col justify-center gap-1 rounded-lg border border-border/60 bg-card pl-6 pr-6 py-6 text-left transition-colors hover:border-primary/30 hover:bg-muted/30'
+    'flex w-full flex-col justify-center gap-1 rounded-lg border border-border/60 bg-card pl-6 pr-6 py-6 text-left transition-colors hover-bg'
 
   const content = (
     <>

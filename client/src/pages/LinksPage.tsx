@@ -206,7 +206,7 @@ export default function LinksPage() {
                       className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
                         selected.has(v.id)
                           ? 'bg-secondary text-secondary-foreground shadow-sm'
-                          : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-secondary'
+                          : 'bg-muted/60 text-muted-foreground hover-bg hover:text-secondary'
                       }`}
                     >
                       {v.label}
@@ -229,7 +229,7 @@ export default function LinksPage() {
             {token && (
               <Link
                 to="/links/admin"
-                className="block rounded-lg bg-muted/50 px-3 py-2 text-center text-xs font-medium no-underline text-foreground transition-colors hover:bg-muted hover:text-secondary"
+                className="block rounded-lg bg-muted/50 px-3 py-2 text-center text-xs font-medium no-underline text-foreground transition-colors hover-bg hover:text-secondary"
               >
                 링크 관리
               </Link>
@@ -338,7 +338,7 @@ export default function LinksPage() {
                       rel="noopener noreferrer"
                       className="group block no-underline"
                     >
-                      <div className="flex h-full flex-col rounded-2xl border border-border/50 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-secondary/20 hover:shadow-lg">
+                      <div className="flex h-full flex-col rounded-2xl border border-border/50 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover-bg-card-lg">
                         <div className="flex items-start justify-between gap-3">
                           <h3 className="min-w-0 flex-1 font-semibold text-foreground line-clamp-2 group-hover:text-secondary">
                             {link.title}
@@ -351,7 +351,7 @@ export default function LinksPage() {
                                 e.stopPropagation()
                                 toggleFavorite(link.id)
                               }}
-                              className={`rounded-md p-1 transition-colors hover:bg-muted/50 ${
+                              className={`rounded-md p-1 transition-colors hover-bg ${
                                 isFavorite(link.id)
                                   ? 'text-secondary'
                                   : 'text-muted-foreground hover:text-secondary'

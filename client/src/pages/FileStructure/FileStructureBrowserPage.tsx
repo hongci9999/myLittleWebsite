@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
+import { MarkdownWithMath } from '@/shared/ui/MarkdownWithMath'
 import { FileListItem } from '@/shared/ui/FileListItem'
 import {
   resolveFileStructurePath,
@@ -163,7 +162,7 @@ function DocViewer({
       </header>
 
       <article className="doc-article text-foreground">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+        <MarkdownWithMath>{content}</MarkdownWithMath>
       </article>
     </div>
   )

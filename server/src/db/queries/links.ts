@@ -290,18 +290,23 @@ export async function createClassificationValue(
   return value
 }
 
-/** custom dimension ID 조회 (slug='custom') */
-export async function getCustomDimensionId(): Promise<string | null> {
+/** dimension ID 조회 (slug로) */
+export async function getDimensionIdBySlug(slug: string): Promise<string | null> {
   const client = supabase.client
   if (!client) throw new Error('Supabase not configured')
 
   const { data, error } = await client
     .from('classification_dimensions')
     .select('id')
-    .eq('slug', 'custom')
+    .eq('slug', slug)
     .limit(1)
     .single()
 
   if (error || !data) return null
   return data.id
+}
+
+/** custom dimension ID 조회 (slug='custom') */
+export async function getCustomDimensionId(): Promise<string | null> {
+  return getDimensionIdBySlug('custom')
 }

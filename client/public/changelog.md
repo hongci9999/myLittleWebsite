@@ -13,8 +13,24 @@
   - GitHub Secrets: `SUPABASE_URL`, `SUPABASE_ANON_KEY` 필요
   - 설계: `docs/plans/2026-03-13-supabase-keepalive-github-actions.md`
   - 학습: `docs/learnings/0019-github-actions.md`
+- **링크 AI 자동 설명·분류 구현**
+  - POST /api/links/ai-suggest: Ollama(lfm2:24b) 호출, **URL만** 있어도 제목·설명·태그 추천
+  - LinkForm (widgets): 링크 추가·수정 공통 폼, AI로 채우기, 진행 상태(URL 전송→AI 분석→완료) 시각화
+  - AddLinkDialog: LinksPage 검색창 "추가", LinksAdminPage "새 링크 추가" → 팝업
+  - LinksAdminPage: LinkForm으로 수정 폼 통합
+- **태그 추가·분류 (목적/종류)**
+  - POST /api/links/values: dimensionSlug(purpose|medium) 필수, 목적 또는 종류에 새 태그 생성
+  - LinkForm: 목적·종류 각각 "새 태그" 입력 + 추가 버튼
+  - AI suggest: suggestedLabels에 dimension 포함, 새 태그는 지정 dimension에 생성
+  - custom 축 태그 → 종류 마이그레이션: `docs/plans/2026-03-13-migrate-custom-tags-to-purpose.sql`
+- **AI 링크 추천 2단계 분석**
+  - 1단계: 웹사이트 fetch(cheerio) → AI가 사이트 내용 분석
+  - 2단계: 분석 결과를 바탕으로 제목·설명·태그 생성
+  - fetch 실패 시 URL만으로 기존 방식 폴백
+- **AI 분석 결과 보기**: LinkForm에서 "AI 분석 결과 보기" 버튼 → Dialog로 원시 응답 표시
 - **링크 AI 자동 설명·분류 설계**
   - 설계: `docs/plans/2026-03-13-links-ai-suggest-design.md`
+  - decisions 0012: Ollama 서버 방식 채택 ADR
   - 옵션: WebLLM(브라우저), Ollama(클라이언트/서버) 비교
   - 추천: Ollama 서버 방식 (어느 PC에서 접속해도 동작, AWS 배포 시 동일)
   - learnings 0018: Ollama, WebLLM 기술 상세
@@ -59,6 +75,15 @@
 
 ### Changed
 
+- **링크 카드 UI**
+  - 표시 순서: 제목 → 태그 → 설명 → URL
+  - 태그: 목적/종류 구분 표시, 알약 크기 축소 (text-[10px], rounded-full)
+  - 설명: 폰트 축소(text-xs), 더보기 버튼(호버 시 전문 툴팁)
+  - URL: 카드 하단, 매우 작게(text-[9px])
+- **AI 링크 추천 프롬프트**
+  - 제목: 사이트 이름(브랜드명)만, 설명 아님
+  - 설명: 문어체, "이 사이트는" 등 구어체 금지
+  - 종류 태그 필수 포함, 웹사이트와 무관한 태그 금지
 - **헤더 관리자 링크**
   - '관리' → '관리자 페이지' (로그인 시), shadcn Button variant="outline" size="sm" 적용
   - 브레드크럼 `/admin` 경로: '관리' → '관리자 페이지'

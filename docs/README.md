@@ -12,6 +12,17 @@
 | [journal/](./journal/)        | 개발·학습 로그                  |
 | [plans/](./plans/)            | 설계·구현 계획                  |
 
+### 디바이스 AI (링크 자동 설명·분류)
+
+유용한 링크 등록 시 로컬/서버 AI가 제목·설명·태그를 자동 추천한다.
+
+| 항목 | 내용 |
+|------|------|
+| 실행 환경 | [Ollama](https://ollama.com) (`localhost:11434`) |
+| 모델 | **lfm2:24b** (Liquid AI LFM2-24B-A2B) |
+| 모델 설명 | 24B MoE, 토큰당 2B 활성. 온디바이스용 하이브리드 모델. ~14GB, 32K 컨텍스트 |
+| 관련 문서 | [설계](plans/2026-03-13-links-ai-suggest-design.md), [decisions 0012](decisions/0012-ollama-ai-links.md), [learnings 0018](learnings/0018-local-ai-ollama-webllm.md) |
+
 ### 최근 계획
 
 | 날짜 | 제목 |
@@ -34,6 +45,7 @@
 - [0009 디자인 룰](./decisions/0009-design-rules.md)
 - [0010 학습 폴더 config 자동 생성](./decisions/0010-learning-folder-config-generation.md)
 - [0011 학습 기록 동적 섹션](./decisions/0011-learning-dynamic-sections.md)
+- [0012 링크 AI: Ollama 서버 방식 채택](./decisions/0012-ollama-ai-links.md)
 
 ### 학습 내용
 

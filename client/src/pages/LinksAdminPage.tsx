@@ -4,46 +4,29 @@ import { useAuth } from '@/shared/context/AuthContext'
 import {
   fetchLinks,
   fetchDimensions,
-  createLink,
   updateLink,
   deleteLink,
+  collectValueIds,
+  buildValueIdToMeta,
   type LinkWithValues,
   type DimensionWithValues,
-  type ValueTree,
 } from '@/shared/api/links'
 import { Button } from '@/components/ui/button'
-
-function collectValueIds(nodes: ValueTree[]): { id: string; label: string }[] {
-  const result: { id: string; label: string }[] = []
-  const walk = (items: ValueTree[]) => {
-    for (const v of items) {
-      result.push({ id: v.id, label: v.label })
-      if (v.children?.length) walk(v.children)
-    }
-  }
-  walk(nodes)
-  return result
-}
+import { AddLinkDialog } from '@/widgets/AddLinkDialog'
+import { LinkForm } from '@/widgets/LinkForm'
 
 export default function LinksAdminPage() {
   const { token, isLoading: authLoading } = useAuth()
   const [links, setLinks] = useState<LinkWithValues[]>([])
   const [dimensions, setDimensions] = useState<DimensionWithValues[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [formUrl, setFormUrl] = useState('')
-  const [formTitle, setFormTitle] = useState('')
-  const [formDescription, setFormDescription] = useState('')
-  const [formValueIds, setFormValueIds] = useState<Set<string>>(new Set())
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
 
-  const allValues = dimensions.flatMap((d) => collectValueIds(d.values))
-  const valueLabels = Object.fromEntries(allValues.map((v) => [v.id, v.label]))
+  const valueIdToMeta = buildValueIdToMeta(dimensions)
 
   const loadData = () => {
     if (!token) return
-    Promise.all([
-      fetchLinks(),
-      fetchDimensions(),
-    ]).then(([l, d]) => {
+    Promise.all([fetchLinks(), fetchDimensions()]).then(([l, d]) => {
       setLinks(l)
       setDimensions(d)
     })
@@ -53,58 +36,26 @@ export default function LinksAdminPage() {
     if (token) loadData()
   }, [token])
 
-  const resetForm = () => {
-    setEditingId(null)
-    setFormUrl('')
-    setFormTitle('')
-    setFormDescription('')
-    setFormValueIds(new Set())
-  }
+  const editingLink = editingId ? links.find((l) => l.id === editingId) : null
 
-  const openEditForm = (link: LinkWithValues) => {
-    setEditingId(link.id)
-    setFormUrl(link.url)
-    setFormTitle(link.title)
-    setFormDescription(link.description ?? '')
-    setFormValueIds(new Set(link.valueIds))
-  }
-
-  const toggleFormValue = (id: string) => {
-    setFormValueIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
+  const handleEditSubmit = async (data: {
+    url: string
+    title: string
+    description?: string
+    valueIds: string[]
+  }) => {
+    if (!token || !editingId) return
+    const updated = await updateLink(token, editingId, {
+      url: data.url,
+      title: data.title,
+      description: data.description,
+      valueIds: data.valueIds,
     })
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!token || !formUrl.trim() || !formTitle.trim()) return
-    if (editingId) {
-      const updated = await updateLink(token, editingId, {
-        url: formUrl.trim(),
-        title: formTitle.trim(),
-        description: formDescription.trim() || undefined,
-        valueIds: Array.from(formValueIds),
-      })
-      if (updated) {
-        setLinks((prev) =>
-          prev.map((l) => (l.id === editingId ? { ...l, ...updated } : l))
-        )
-        resetForm()
-      }
-    } else {
-      const created = await createLink(token, {
-        url: formUrl.trim(),
-        title: formTitle.trim(),
-        description: formDescription.trim() || undefined,
-        valueIds: Array.from(formValueIds),
-      })
-      if (created) {
-        setLinks((prev) => [...prev, created])
-        resetForm()
-      }
+    if (updated) {
+      setLinks((prev) =>
+        prev.map((l) => (l.id === editingId ? { ...l, ...updated } : l))
+      )
+      setEditingId(null)
     }
   }
 
@@ -124,132 +75,120 @@ export default function LinksAdminPage() {
   }
 
   if (!token) {
-    return <Navigate to={`/login?redirect=${encodeURIComponent('/links/admin')}`} replace />
+    return (
+      <Navigate
+        to={`/login?redirect=${encodeURIComponent('/links/admin')}`}
+        replace
+      />
+    )
   }
 
-  const inputBase =
-    'mt-1.5 w-full rounded-xl border-0 bg-muted/40 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/70 focus:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/20'
-
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-      {/* 추가/수정 폼 */}
-      <div className="mb-10 rounded-2xl border border-border/50 bg-card p-6 shadow-sm sm:p-8">
-        <h2 className="mb-6 text-lg font-semibold tracking-tight">
-          {editingId ? '링크 수정' : '새 링크 추가'}
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              URL
-            </label>
-            <input
-              type="url"
-              value={formUrl}
-              onChange={(e) => setFormUrl(e.target.value)}
-              required
-              placeholder="https://..."
-              className={inputBase}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              제목
-            </label>
-            <input
-              type="text"
-              value={formTitle}
-              onChange={(e) => setFormTitle(e.target.value)}
-              required
-              placeholder="링크 제목"
-              className={inputBase}
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              설명 (선택)
-            </label>
-            <textarea
-              value={formDescription}
-              onChange={(e) => setFormDescription(e.target.value)}
-              rows={2}
-              placeholder="간단한 설명"
-              className={`${inputBase} resize-none`}
-            />
-          </div>
-          {dimensions.map((dim) => {
-            const values = collectValueIds(dim.values)
-            if (values.length === 0) return null
-            return (
-              <div key={dim.id}>
-                <label className="block text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  {dim.label}
-                </label>
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {values.map((v) => (
-                    <button
-                      key={v.id}
-                      type="button"
-                      onClick={() => toggleFormValue(v.id)}
-                      className={`rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
-                        formValueIds.has(v.id)
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted/60 text-muted-foreground hover-bg hover:text-foreground'
-                      }`}
-                    >
-                      {v.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )
-          })}
-          <div className="flex gap-2 pt-2">
-            <Button type="submit" size="sm" className="rounded-full px-5">
-              {editingId ? '저장' : '추가'}
-            </Button>
-            {editingId && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="rounded-full"
-                onClick={resetForm}
-              >
-                취소
-              </Button>
-            )}
-          </div>
-        </form>
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <div className="mb-10">
+        {!editingId ? (
+          <Button
+            size="sm"
+            className="rounded-full px-5"
+            onClick={() => setAddDialogOpen(true)}
+          >
+            새 링크 추가
+          </Button>
+        ) : (
+          editingLink && (
+            <div className="mx-auto max-w-2xl rounded-2xl border border-border/50 bg-card p-5 shadow-sm">
+              <h2 className="mb-4 text-base font-semibold tracking-tight">
+                링크 수정
+              </h2>
+              <LinkForm
+                key={editingId}
+                token={token!}
+                dimensions={dimensions}
+                setDimensions={setDimensions}
+                initialValues={{
+                  url: editingLink.url,
+                  title: editingLink.title,
+                  description: editingLink.description ?? '',
+                  valueIds: new Set(editingLink.valueIds),
+                }}
+                onSubmit={handleEditSubmit}
+                onCancel={() => setEditingId(null)}
+                submitLabel="저장"
+                compact
+              />
+            </div>
+          )
+        )}
       </div>
 
-      {/* 링크 목록 */}
+      <AddLinkDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        token={token!}
+        dimensions={dimensions}
+        setDimensions={setDimensions}
+        onLinkAdded={loadData}
+      />
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {links.map((link) => (
           <div
             key={link.id}
             className="flex flex-col rounded-2xl border border-border/50 bg-card p-5 shadow-sm transition-all hover-bg-card"
           >
-            <h3 className="font-semibold text-foreground">
-              {link.title}
-            </h3>
-            {link.description && (
-              <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">
-                {link.description}
-              </p>
-            )}
-            <p className="mt-2 truncate font-mono text-[11px] text-muted-foreground/80">
-              {link.url}
-            </p>
+            <h3 className="font-semibold text-foreground">{link.title}</h3>
             {link.valueIds.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1">
-                {link.valueIds.map((vid) => (
+              <div className="mt-2 flex flex-col gap-1">
+                {(() => {
+                  const byDim = link.valueIds.reduce<
+                    Record<string, string[]>
+                  >((acc, vid) => {
+                    const meta = valueIdToMeta[vid]
+                    if (!meta) return acc
+                    const list = acc[meta.dimensionLabel] ?? []
+                    list.push(meta.label)
+                    acc[meta.dimensionLabel] = list
+                    return acc
+                  }, {})
+                  return Object.entries(byDim).map(
+                    ([dimLabel, labels]) => (
+                      <div
+                        key={dimLabel}
+                        className="flex flex-wrap items-center gap-1"
+                      >
+                        <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/80">
+                          {dimLabel}:
+                        </span>
+                        {labels.map((l) => (
+                          <span
+                            key={`${dimLabel}-${l}`}
+                            className="rounded-full bg-muted/70 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+                          >
+                            {l}
+                          </span>
+                        ))}
+                      </div>
+                    )
+                  )
+                })()}
+              </div>
+            )}
+            {link.description && (
+              <div className="relative mt-2">
+                <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                  {link.description}
+                </p>
+                <div className="mt-1 flex justify-end">
                   <span
-                    key={vid}
-                    className="rounded-md bg-muted/70 px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
+                    className="group/more relative inline-block cursor-default text-[10px] text-muted-foreground/80 hover:text-muted-foreground"
+                    title={link.description}
                   >
-                    {valueLabels[vid] ?? vid}
+                    더보기
+                    <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-1 hidden max-h-40 w-64 -translate-x-1/2 overflow-auto rounded-lg border border-border/60 bg-popover px-3 py-2 text-xs text-foreground shadow-lg group-hover/more:block">
+                      {link.description}
+                    </span>
                   </span>
-                ))}
+                </div>
               </div>
             )}
             <div className="mt-4 flex gap-2">
@@ -257,7 +196,7 @@ export default function LinksAdminPage() {
                 variant="outline"
                 size="sm"
                 className="rounded-full"
-                onClick={() => openEditForm(link)}
+                onClick={() => setEditingId(link.id)}
               >
                 수정
               </Button>
@@ -270,6 +209,9 @@ export default function LinksAdminPage() {
                 삭제
               </Button>
             </div>
+            <p className="mt-3 truncate font-mono text-[9px] text-muted-foreground/60">
+              {link.url}
+            </p>
           </div>
         ))}
       </div>

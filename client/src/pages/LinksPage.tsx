@@ -5,9 +5,10 @@ import { useFavoriteLinks } from '@/shared/hooks/useFavoriteLinks'
 import {
   fetchLinks,
   fetchDimensions,
+  collectValueIds,
+  buildValueIdToMeta,
   type LinkWithValues,
   type DimensionWithValues,
-  type ValueTree,
 } from '@/shared/api/links'
 import { AddLinkDialog } from '@/widgets/AddLinkDialog'
 
@@ -58,18 +59,6 @@ const StarIcon = ({ filled }: { filled: boolean }) => (
     />
   </svg>
 )
-
-function collectValueIds(nodes: ValueTree[]): { id: string; label: string }[] {
-  const result: { id: string; label: string }[] = []
-  const walk = (items: ValueTree[]) => {
-    for (const v of items) {
-      result.push({ id: v.id, label: v.label })
-      if (v.children?.length) walk(v.children)
-    }
-  }
-  walk(nodes)
-  return result
-}
 
 type SortKey = 'title' | 'createdAt' | 'sortOrder'
 
@@ -164,10 +153,10 @@ export default function LinksPage() {
     return arr
   }, [links, sortBy])
 
-  const valueLabels = useMemo(() => {
-    const all = dimensions.flatMap((d) => collectValueIds(d.values))
-    return Object.fromEntries(all.map((v) => [v.id, v.label]))
-  }, [dimensions])
+  const valueIdToMeta = useMemo(
+    () => buildValueIdToMeta(dimensions),
+    [dimensions]
+  )
 
   return (
     <div className="flex min-h-full flex-col">
@@ -394,26 +383,67 @@ export default function LinksPage() {
                             </span>
                           </div>
                         </div>
-                        {link.description && (
-                          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                            {link.description}
-                          </p>
-                        )}
-                        <p className="mt-2 truncate font-mono text-[11px] text-muted-foreground/80">
-                          {link.url}
-                        </p>
                         {link.valueIds.length > 0 && (
-                          <div className="mt-3 flex flex-wrap gap-1">
-                            {link.valueIds.map((vid) => (
-                              <span
-                                key={vid}
-                                className="rounded-md bg-muted/70 px-2 py-0.5 font-medium text-[11px] text-muted-foreground"
-                              >
-                                {valueLabels[vid] ?? vid}
-                              </span>
-                            ))}
+                          <div className="mt-2 flex flex-col gap-1">
+                            {(() => {
+                              const byDim = link.valueIds.reduce<
+                                Record<string, string[]>
+                              >((acc, vid) => {
+                                const meta = valueIdToMeta[vid]
+                                if (!meta) return acc
+                                const list = acc[meta.dimensionLabel] ?? []
+                                list.push(meta.label)
+                                acc[meta.dimensionLabel] = list
+                                return acc
+                              }, {})
+                              return Object.entries(byDim).map(
+                                ([dimLabel, labels]) => (
+                                  <div
+                                    key={dimLabel}
+                                    className="flex flex-wrap items-center gap-1"
+                                  >
+                                    <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/80">
+                                      {dimLabel}:
+                                    </span>
+                                    {labels.map((l) => (
+                                      <span
+                                        key={`${dimLabel}-${l}`}
+                                        className="rounded-full bg-muted/70 px-1.5 py-0.5 font-medium text-[10px] text-muted-foreground"
+                                      >
+                                        {l}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )
+                              )
+                            })()}
                           </div>
                         )}
+                        {link.description && (
+                          <div className="relative mt-2">
+                            <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                              {link.description}
+                            </p>
+                            <div className="mt-1 flex justify-end">
+                              <span
+                                className="group/more relative inline-block cursor-default text-[10px] text-muted-foreground/80 hover:text-muted-foreground"
+                                title={link.description}
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                }}
+                              >
+                                더보기
+                                <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-1 hidden max-h-40 w-64 -translate-x-1/2 overflow-auto rounded-lg border border-border/60 bg-popover px-3 py-2 text-xs text-foreground shadow-lg group-hover/more:block">
+                                  {link.description}
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                        <p className="mt-auto pt-3 truncate font-mono text-[9px] text-muted-foreground/60">
+                          {link.url}
+                        </p>
                       </div>
                     </a>
                   ))}

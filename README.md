@@ -25,6 +25,22 @@
 
 ---
 
+## 디바이스 AI (링크 자동 설명·분류)
+
+유용한 링크 등록 시 **로컬/서버에서 동작하는 AI**가 제목·설명·태그를 자동 추천한다. 데이터가 외부로 나가지 않아 프라이버시를 유지할 수 있다.
+
+| 항목 | 내용 |
+|------|------|
+| **실행 환경** | [Ollama](https://ollama.com) — 로컬 LLM 서버 (`localhost:11434`) |
+| **모델** | **lfm2:24b** (Liquid AI LFM2-24B-A2B) |
+| **모델 설명** | 24B 파라미터 MoE(Mixture of Experts) 구조, 토큰당 2B 활성 파라미터. 온디바이스·엣지 배포용 하이브리드 모델(State Space + attention). ~14GB, 32K 컨텍스트 |
+| **용도** | 링크 URL만 입력해도 제목·설명·분류 태그 자동 생성 |
+| **환경 변수** | `OLLAMA_HOST` (기본 `http://localhost:11434`), `OLLAMA_MODEL` (기본 `lfm2:24b`) |
+
+AI 기능 사용 전에 `ollama run lfm2:24b`로 모델을 실행해 두어야 한다. 상세: [docs/plans/2026-03-13-links-ai-suggest-design.md](docs/plans/2026-03-13-links-ai-suggest-design.md), [docs/decisions/0012-ollama-ai-links.md](docs/decisions/0012-ollama-ai-links.md)
+
+---
+
 ## 프로젝트 구조
 
 ```

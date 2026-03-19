@@ -17,6 +17,36 @@ export interface ValueTree {
   children?: ValueTree[]
 }
 
+/** ValueTree에서 id, label을 평면 배열로 수집 (재사용) */
+export function collectValueIds(nodes: ValueTree[]): { id: string; label: string }[] {
+  const result: { id: string; label: string }[] = []
+  const walk = (items: ValueTree[]) => {
+    for (const v of items) {
+      result.push({ id: v.id, label: v.label })
+      if (v.children?.length) walk(v.children)
+    }
+  }
+  walk(nodes)
+  return result
+}
+
+/** valueId → { label, dimensionLabel } 매핑. 링크 카드에서 목적/종류/태그 구분 표시용 */
+export function buildValueIdToMeta(
+  dimensions: DimensionWithValues[]
+): Record<string, { label: string; dimensionLabel: string }> {
+  const map: Record<string, { label: string; dimensionLabel: string }> = {}
+  const walk = (items: ValueTree[], dimLabel: string) => {
+    for (const v of items) {
+      map[v.id] = { label: v.label, dimensionLabel: dimLabel }
+      if (v.children?.length) walk(v.children, dimLabel)
+    }
+  }
+  for (const d of dimensions) {
+    walk(d.values ?? [], d.label)
+  }
+  return map
+}
+
 export interface LinkWithValues {
   id: string
   url: string
@@ -58,20 +88,36 @@ export async function fetchLinks(filters?: {
   return data as LinkWithValues[]
 }
 
-/** AI 설명·분류 추천 */
+/** AI 제목·설명·분류 추천 (URL만 있어도 됨) */
 export async function suggestLinkMeta(
   token: string,
   url: string,
-  title: string
-): Promise<{ description: string; valueIds: string[] } | null> {
+  title?: string
+): Promise<{ title: string; description: string; valueIds: string[]; rawResponse?: string } | null> {
   const res = await fetch(`${API_BASE}/ai-suggest`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders(token) },
-    body: JSON.stringify({ url, title }),
+    body: JSON.stringify({ url, title: title ?? '' }),
   })
   if (!res.ok) return null
   const data = await res.json()
-  return data as { description: string; valueIds: string[] }
+  return data as { title: string; description: string; valueIds: string[]; rawResponse?: string }
+}
+
+/** 새 태그 추가 (목적 또는 종류). 이미 있으면 기존 id 반환 */
+export async function createTag(
+  token: string,
+  label: string,
+  dimensionSlug: 'purpose' | 'medium'
+): Promise<{ id: string; label: string } | null> {
+  const res = await fetch(`${API_BASE}/values`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders(token) },
+    body: JSON.stringify({ label: label.trim(), dimensionSlug }),
+  })
+  if (!res.ok) return null
+  const data = await res.json()
+  return data as { id: string; label: string }
 }
 
 /** 링크 추가 */

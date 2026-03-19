@@ -5,7 +5,7 @@ import authRoutes from './routes/auth.js'
 import linksRoutes from './routes/links.js'
 
 const app = express()
-const PORT = process.env.PORT ?? 3001
+const PORT = Number(process.env.PORT) || 3001
 
 app.use(express.json())
 
@@ -17,6 +17,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/links', linksRoutes)
 app.use('/api/learning', learningRoutes)
 
-app.listen(PORT, () => {
+app.listen(PORT, '127.0.0.1', () => {
   console.log(`Server running at http://localhost:${PORT}`)
 })

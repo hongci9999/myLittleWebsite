@@ -238,3 +238,70 @@ export async function deleteLink(token: string, id: string) {
   const { error } = await client.from('links').delete().eq('id', id)
   if (error) throw error
 }
+
+/** label로 value 찾기 (대소문자 무시) */
+export async function findValueByLabel(label: string): Promise<string | null> {
+  const client = supabase.client
+  if (!client) throw new Error('Supabase not configured')
+
+  const { data: rows, error } = await client
+    .from('classification_values')
+    .select('id, label')
+  if (error) throw error
+  const trimmed = label.trim().toLowerCase()
+  const exact = (rows ?? []).find(
+    (r: { id: string; label: string }) =>
+      r.label?.toLowerCase() === trimmed
+  )
+  return exact ? exact.id : null
+}
+
+/** 분류 값 생성 (인증 필요). custom dimension에 새 태그 추가 */
+export async function createClassificationValue(
+  token: string,
+  dimensionId: string,
+  data: { label: string; slug?: string }
+): Promise<{ id: string }> {
+  const client = getSupabaseWithAuth(token)
+  if (!client) throw new Error('Supabase not configured')
+
+  const slug =
+    data.slug ??
+    data.label
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9가-힣-]/g, '')
+
+  const { data: value, error } = await client
+    .from('classification_values')
+    .insert({
+      dimension_id: dimensionId,
+      parent_id: null,
+      slug: slug || 'custom-tag',
+      label: data.label.trim(),
+      sort_order: 999,
+    })
+    .select('id')
+    .single()
+
+  if (error) throw error
+  if (!value) throw new Error('Insert failed')
+  return value
+}
+
+/** custom dimension ID 조회 (slug='custom') */
+export async function getCustomDimensionId(): Promise<string | null> {
+  const client = supabase.client
+  if (!client) throw new Error('Supabase not configured')
+
+  const { data, error } = await client
+    .from('classification_dimensions')
+    .select('id')
+    .eq('slug', 'custom')
+    .limit(1)
+    .single()
+
+  if (error || !data) return null
+  return data.id
+}

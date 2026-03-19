@@ -9,6 +9,7 @@ import {
   type DimensionWithValues,
   type ValueTree,
 } from '@/shared/api/links'
+import { AddLinkDialog } from '@/widgets/AddLinkDialog'
 
 const SearchIcon = () => (
   <svg
@@ -83,10 +84,13 @@ export default function LinksPage() {
   >({})
   const [sortBy, setSortBy] = useState<SortKey>('sortOrder')
   const [loading, setLoading] = useState(true)
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
 
   useEffect(() => {
     fetchDimensions().then(setDimensions)
   }, [])
+
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
     const valueIds = Object.values(selectedByDimension).flatMap((s) =>
@@ -101,7 +105,6 @@ export default function LinksPage() {
       valueIds: valueIds.length > 0 ? valueIds : undefined,
     })
       .then((data) => {
-        // 여러 축 선택 시 AND 조건: 각 축에서 최소 1개씩 매칭
         const dimSlugs = Object.keys(selectedByDimension)
         if (dimSlugs.length <= 1) return data
         return data.filter((link) => {
@@ -124,7 +127,7 @@ export default function LinksPage() {
     return () => {
       cancelled = true
     }
-  }, [search, selectedByDimension])
+  }, [search, selectedByDimension, refreshKey])
 
   const toggleValue = (dimensionSlug: string, valueId: string) => {
     setSelectedByDimension((prev) => {
@@ -170,19 +173,41 @@ export default function LinksPage() {
     <div className="flex min-h-full flex-col">
       {/* 고정 검색창 - 상단 중앙 */}
       <div className="sticky top-16 z-40 flex justify-center border-b border-border/40 bg-background/80 px-4 py-4 backdrop-blur-md">
-        <div className="relative w-full max-w-md">
-          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
-            <SearchIcon />
-          </span>
-          <input
-            type="search"
-            placeholder="링크 검색..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-full border-0 bg-muted/40 py-3 pl-11 pr-5 text-sm text-foreground placeholder:text-muted-foreground/80 focus:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/20"
-          />
+        <div className="flex w-full max-w-md items-center gap-2">
+          <div className="relative min-w-0 flex-1">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
+              <SearchIcon />
+            </span>
+            <input
+              type="search"
+              placeholder="링크 검색..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-full border-0 bg-muted/40 py-3 pl-11 pr-5 text-sm text-foreground placeholder:text-muted-foreground/80 focus:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+          {token && (
+            <button
+              type="button"
+              onClick={() => setAddDialogOpen(true)}
+              className="shrink-0 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              추가
+            </button>
+          )}
         </div>
       </div>
+
+      {token && (
+        <AddLinkDialog
+          open={addDialogOpen}
+          onOpenChange={setAddDialogOpen}
+          token={token}
+          dimensions={dimensions}
+          setDimensions={setDimensions}
+          onLinkAdded={() => setRefreshKey((k) => k + 1)}
+        />
+      )}
 
       {/* 사이드바 + 링크 그리드 */}
       <div className="flex flex-1">

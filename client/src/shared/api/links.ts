@@ -58,6 +58,22 @@ export async function fetchLinks(filters?: {
   return data as LinkWithValues[]
 }
 
+/** AI 설명·분류 추천 */
+export async function suggestLinkMeta(
+  token: string,
+  url: string,
+  title: string
+): Promise<{ description: string; valueIds: string[] } | null> {
+  const res = await fetch(`${API_BASE}/ai-suggest`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders(token) },
+    body: JSON.stringify({ url, title }),
+  })
+  if (!res.ok) return null
+  const data = await res.json()
+  return data as { description: string; valueIds: string[] }
+}
+
 /** 링크 추가 */
 export async function createLink(
   token: string,

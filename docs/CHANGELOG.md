@@ -13,6 +13,11 @@
   - GitHub Secrets: `SUPABASE_URL`, `SUPABASE_ANON_KEY` 필요
   - 설계: `docs/plans/2026-03-13-supabase-keepalive-github-actions.md`
   - 학습: `docs/learnings/0019-github-actions.md`
+- **링크 AI 자동 설명·분류 구현**
+  - POST /api/links/ai-suggest: Ollama(lfm2:24b) 호출, 설명·태그 추천, 새 태그는 custom dimension에 생성
+  - LinksPage: 로그인 시 검색창 오른쪽 "추가" 버튼 → AddLinkDialog 팝업
+  - AddLinkDialog: URL·제목 입력 → AI로 채우기 → 설명·태그 자동 채움 → 수정 후 추가
+  - custom dimension: `docs/plans/2026-03-13-links-custom-dimension.sql` 실행 필요
 - **링크 AI 자동 설명·분류 설계**
   - 설계: `docs/plans/2026-03-13-links-ai-suggest-design.md`
   - 옵션: WebLLM(브라우저), Ollama(클라이언트/서버) 비교

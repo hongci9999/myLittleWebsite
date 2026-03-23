@@ -1,6 +1,6 @@
 # API 명세서
 
-날짜: 2026-03-03
+날짜: 2026-03-24 (§6·§7 스크랩 API 반영)
 
 myLittleWebsite 서버 REST API 명세. 클라이언트는 이 API만 호출하며, DB는 서버에서만 접근한다.
 
@@ -400,7 +400,92 @@ AI 제목·설명·분류 추천. (Ollama 연동)
 
 ---
 
-## 6. 헬스 체크
+## 6. AI 도구 스크랩 API (`/api/ai-scraps`)
+
+AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 직렬화된다.
+
+### GET /api/ai-scraps
+
+공개. 목록.
+
+**Query**
+
+| 파라미터 | 설명 |
+|----------|------|
+| `q` | 검색어 (제목·URL·본문·태그) |
+| `kind` | `sourceKind` 필터 |
+| `tag` | 태그 하나 일치 |
+
+### GET /api/ai-scraps/by-slug/:slug
+
+공개. 슬러그로 단건.
+
+### POST /api/ai-scraps
+
+인증 필요. 생성.
+
+**Body (주요 필드)**  
+`title`, `url`, `sourceKind`, `summary`, `bodyMd`, `tags`, `extraLinks`(`{ label, url }[]`), `slug`(선택)
+
+### PATCH /api/ai-scraps/:id
+
+인증 필요. 부분 수정.
+
+### DELETE /api/ai-scraps/:id
+
+인증 필요.
+
+---
+
+## 7. 칼럼 스크랩 API (`/api/column-scraps`)
+
+블로그·기사·README·유튜브·X 등 **칼럼 스크랩**.
+
+### GET /api/column-scraps
+
+공개.
+
+**Query**
+
+| 파라미터 | 설명 |
+|----------|------|
+| `q` | 검색어 |
+| `kind` | `sourceKind` |
+| `tags` | 쉼표로 여러 태그 → **AND** (모두 포함하는 항목만) |
+
+### GET /api/column-scraps/by-slug/:slug
+
+공개.
+
+### POST /api/column-scraps/ai-fill
+
+인증 필요. URL만내면 Ollama로 `title`, `summary`, `bodyMd`, `sourceKind`, `coverImageUrl`, `tags` 제안.
+
+**Body**
+
+```json
+{ "url": "https://..." }
+```
+
+**에러**  
+`503` — Ollama 연결 실패 등.
+
+### POST /api/column-scraps
+
+인증 필요. 생성.  
+**Body**: `title`, `url`, `sourceKind`, `summary`, `bodyMd`, `coverImageUrl`, `tags`, `extraLinks`, `slug`(선택)
+
+### PATCH /api/column-scraps/:id
+
+인증 필요.
+
+### DELETE /api/column-scraps/:id
+
+인증 필요.
+
+---
+
+## 8. 헬스 체크
 
 ### GET /health
 
@@ -416,9 +501,10 @@ AI 제목·설명·분류 추천. (Ollama 연동)
 
 ---
 
-## 7. 참고
+## 9. 참고
 
 - 설계: `docs/plans/2026-03-03-links-admin-design.md`
 - 구현 계획: `docs/plans/2026-03-03-links-admin-implementation-plan.md`
 - 스키마: `docs/plans/2026-03-03-links-schema.sql`
 - 링크 AI: `docs/plans/2026-03-13-links-ai-suggest-design.md`
+- 칼럼 스크랩: `docs/plans/2026-03-24-column-scraps-migration.sql`, `docs/decisions/0014-column-scraps-and-scrap-ux.md`

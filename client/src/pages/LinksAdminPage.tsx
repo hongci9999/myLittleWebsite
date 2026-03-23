@@ -4,23 +4,24 @@ import { useAuth } from '@/shared/context/AuthContext'
 import {
   fetchLinks,
   fetchDimensions,
-  updateLink,
   deleteLink,
-  collectValueIds,
   buildValueIdToMeta,
   type LinkWithValues,
   type DimensionWithValues,
 } from '@/shared/api/links'
 import { Button } from '@/components/ui/button'
 import { AddLinkDialog } from '@/widgets/AddLinkDialog'
-import { LinkForm } from '@/widgets/LinkForm'
+import LinksTagManager from '@/widgets/LinksTagManager'
+
+type AdminSection = 'links' | 'tags'
 
 export default function LinksAdminPage() {
   const { token, isLoading: authLoading } = useAuth()
   const [links, setLinks] = useState<LinkWithValues[]>([])
   const [dimensions, setDimensions] = useState<DimensionWithValues[]>([])
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [linkFormOpen, setLinkFormOpen] = useState(false)
+  const [linkToEdit, setLinkToEdit] = useState<LinkWithValues | null>(null)
+  const [adminSection, setAdminSection] = useState<AdminSection>('links')
 
   const valueIdToMeta = buildValueIdToMeta(dimensions)
 
@@ -35,29 +36,6 @@ export default function LinksAdminPage() {
   useEffect(() => {
     if (token) loadData()
   }, [token])
-
-  const editingLink = editingId ? links.find((l) => l.id === editingId) : null
-
-  const handleEditSubmit = async (data: {
-    url: string
-    title: string
-    description?: string
-    valueIds: string[]
-  }) => {
-    if (!token || !editingId) return
-    const updated = await updateLink(token, editingId, {
-      url: data.url,
-      title: data.title,
-      description: data.description,
-      valueIds: data.valueIds,
-    })
-    if (updated) {
-      setLinks((prev) =>
-        prev.map((l) => (l.id === editingId ? { ...l, ...updated } : l))
-      )
-      setEditingId(null)
-    }
-  }
 
   const handleDelete = async (id: string) => {
     if (!token || !confirm('삭제할까요?')) return
@@ -85,51 +63,71 @@ export default function LinksAdminPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <div className="mb-10">
-        {!editingId ? (
+      <div className="mb-8 flex flex-wrap gap-2 border-b border-border/40 pb-3">
+        <button
+          type="button"
+          onClick={() => setAdminSection('links')}
+          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+            adminSection === 'links'
+              ? 'bg-secondary text-secondary-foreground shadow-sm'
+              : 'text-muted-foreground hover:bg-muted/60 hover:text-secondary'
+          }`}
+        >
+          링크 관리
+        </button>
+        <button
+          type="button"
+          onClick={() => setAdminSection('tags')}
+          className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+            adminSection === 'tags'
+              ? 'bg-secondary text-secondary-foreground shadow-sm'
+              : 'text-muted-foreground hover:bg-muted/60 hover:text-secondary'
+          }`}
+        >
+          태그 관리
+        </button>
+      </div>
+
+      {adminSection === 'tags' && token && (
+        <div className="mb-10">
+          <LinksTagManager
+            token={token}
+            dimensions={dimensions}
+            setDimensions={setDimensions}
+            onTagsChanged={loadData}
+          />
+        </div>
+      )}
+
+      {adminSection === 'links' && (
+        <div className="mb-10">
           <Button
             size="sm"
             className="rounded-full px-5"
-            onClick={() => setAddDialogOpen(true)}
+            onClick={() => {
+              setLinkToEdit(null)
+              setLinkFormOpen(true)
+            }}
           >
             새 링크 추가
           </Button>
-        ) : (
-          editingLink && (
-            <div className="mx-auto max-w-2xl rounded-2xl border border-border/50 bg-card p-5 shadow-sm">
-              <h2 className="mb-4 text-base font-semibold tracking-tight">
-                링크 수정
-              </h2>
-              <LinkForm
-                key={editingId}
-                token={token!}
-                dimensions={dimensions}
-                setDimensions={setDimensions}
-                initialValues={{
-                  url: editingLink.url,
-                  title: editingLink.title,
-                  description: editingLink.description ?? '',
-                  valueIds: new Set(editingLink.valueIds),
-                }}
-                onSubmit={handleEditSubmit}
-                onCancel={() => setEditingId(null)}
-                submitLabel="저장"
-                compact
-              />
-            </div>
-          )
-        )}
-      </div>
+        </div>
+      )}
 
       <AddLinkDialog
-        open={addDialogOpen}
-        onOpenChange={setAddDialogOpen}
+        open={linkFormOpen}
+        onOpenChange={(open) => {
+          setLinkFormOpen(open)
+          if (!open) setLinkToEdit(null)
+        }}
         token={token!}
         dimensions={dimensions}
         setDimensions={setDimensions}
         onLinkAdded={loadData}
+        linkToEdit={linkToEdit}
       />
 
+      {adminSection === 'links' && (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {links.map((link) => (
           <div
@@ -196,7 +194,10 @@ export default function LinksAdminPage() {
                 variant="outline"
                 size="sm"
                 className="rounded-full"
-                onClick={() => setEditingId(link.id)}
+                onClick={() => {
+                  setLinkToEdit(link)
+                  setLinkFormOpen(true)
+                }}
               >
                 수정
               </Button>
@@ -215,6 +216,7 @@ export default function LinksAdminPage() {
           </div>
         ))}
       </div>
+      )}
     </div>
   )
 }

@@ -3,47 +3,21 @@ import { requireAuth, type AuthenticatedRequest } from '../middleware/auth.js'
 import {
   getDimensionsWithValues,
   getLinks,
+  getFeaturedLinks,
   createLink,
   updateLink,
   deleteLink,
   findValueByLabel,
   createClassificationValue,
+  updateClassificationValue,
+  deleteClassificationValue,
   getDimensionIdBySlug,
+  getLinkUrl,
 } from '../db/queries/links.js'
 import { suggestLinkMeta } from '../services/ollama.js'
+import { fetchWebsiteContent } from '../services/fetch-website.js'
 
 const router = Router()
-
-function collectLabels(dims: Awaited<ReturnType<typeof getDimensionsWithValues>>): string[] {
-  const labels: string[] = []
-  const walk = (vals: { label: string; children?: unknown[] }[]): void => {
-    for (const v of vals) {
-      if (v.label) labels.push(v.label)
-      if (Array.isArray(v.children) && v.children.length) walk(v.children as { label: string; children?: unknown[] }[])
-    }
-  }
-  for (const d of dims) {
-    walk((d.values || []) as { label: string; children?: unknown[] }[])
-  }
-  return [...new Set(labels)]
-}
-
-function collectLabelsForDimension(
-  dims: Awaited<ReturnType<typeof getDimensionsWithValues>>,
-  slug: string
-): string[] {
-  const dim = dims.find((d) => d.slug === slug)
-  if (!dim) return []
-  const labels: string[] = []
-  const walk = (vals: { label: string; children?: unknown[] }[]): void => {
-    for (const v of vals) {
-      if (v.label) labels.push(v.label)
-      if (Array.isArray(v.children) && v.children.length) walk(v.children as { label: string; children?: unknown[] }[])
-    }
-  }
-  walk((dim.values || []) as { label: string; children?: unknown[] }[])
-  return labels
-}
 
 /** GET /api/links/dimensions - 분류 축 + 값 트리 (공개) */
 router.get('/dimensions', async (_, res) => {
@@ -60,6 +34,24 @@ router.get('/dimensions', async (_, res) => {
     }
     console.error('[links] getDimensionsWithValues error:', err)
     res.status(500).json({ error: 'Failed to fetch dimensions' })
+  }
+})
+
+/** GET /api/links/featured - 메인 추천 링크 (공개) */
+router.get('/featured', async (_, res) => {
+  try {
+    const links = await getFeaturedLinks()
+    res.json(links)
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Failed to fetch featured links'
+    if (msg === 'Supabase not configured') {
+      res.status(503).json({
+        error: 'Database not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY in server/.env',
+      })
+      return
+    }
+    console.error('[links] getFeaturedLinks error:', err)
+    res.status(500).json({ error: 'Failed to fetch featured links' })
   }
 })
 
@@ -86,51 +78,26 @@ router.get('/', async (req, res) => {
   }
 })
 
-/** POST /api/links/ai-suggest - AI 제목·설명·분류 추천 (인증 필요). URL만 있어도 됨 */
+/** POST /api/links/ai-suggest - AI 제목·설명·파비콘 추천 (인증 필요). 태그는 수동만 */
 router.post('/ai-suggest', requireAuth, async (req, res) => {
   try {
-    const { authToken } = req as AuthenticatedRequest
     const body = req.body as { url?: string; title?: string }
     if (!body.url?.trim()) {
       res.status(400).json({ error: 'url is required' })
       return
     }
 
-    const dimensions = await getDimensionsWithValues()
-    const availableLabels = collectLabels(dimensions)
-    const purposeLabels = collectLabelsForDimension(dimensions, 'purpose')
-    const mediumLabels = collectLabelsForDimension(dimensions, 'medium')
-
-    const { title, description, suggestedLabels, rawResponse } = await suggestLinkMeta(
+    const { title, description, rawResponse, faviconUrl } = await suggestLinkMeta(
       body.url.trim(),
-      body.title?.trim() ?? '',
-      availableLabels,
-      { purposeLabels, mediumLabels }
+      body.title?.trim() ?? ''
     )
 
-    const valueIds: string[] = []
-
-    for (const { dimension, label } of suggestedLabels) {
-      if (!label?.trim()) continue
-      const existing = await findValueByLabel(label.trim())
-      if (existing) {
-        valueIds.push(existing)
-      } else {
-        const dimId = await getDimensionIdBySlug(dimension)
-        if (dimId) {
-          try {
-            const { id } = await createClassificationValue(authToken, dimId, {
-              label: label.trim(),
-            })
-            valueIds.push(id)
-          } catch (err) {
-            console.warn('[links] createClassificationValue failed:', err)
-          }
-        }
-      }
-    }
-
-    res.json({ title, description, valueIds, rawResponse: rawResponse ?? undefined })
+    res.json({
+      title,
+      description,
+      rawResponse: rawResponse ?? undefined,
+      faviconUrl: faviconUrl ?? undefined,
+    })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'AI suggest failed'
     if (msg.includes('Ollama') || msg.includes('fetch')) {
@@ -144,11 +111,15 @@ router.post('/ai-suggest', requireAuth, async (req, res) => {
   }
 })
 
-/** POST /api/links/values - 새 태그 추가 (인증 필요). 목적(purpose) 또는 종류(medium)에 생성 */
+/** POST /api/links/values - 새 태그 추가 (인증 필요). 목적(purpose) 또는 종류(medium)에 생성. purpose만 parentId 허용 */
 router.post('/values', requireAuth, async (req, res) => {
   try {
     const { authToken } = req as AuthenticatedRequest
-    const body = req.body as { label?: string; dimensionSlug?: string }
+    const body = req.body as {
+      label?: string
+      dimensionSlug?: string
+      parentId?: string | null
+    }
     const label = body.label?.trim()
     const dimensionSlug = body.dimensionSlug?.trim()
     if (!label) {
@@ -157,6 +128,10 @@ router.post('/values', requireAuth, async (req, res) => {
     }
     if (dimensionSlug !== 'purpose' && dimensionSlug !== 'medium') {
       res.status(400).json({ error: 'dimensionSlug must be "purpose" or "medium"' })
+      return
+    }
+    if (body.parentId && dimensionSlug !== 'purpose') {
+      res.status(400).json({ error: 'parentId is only allowed for purpose' })
       return
     }
 
@@ -172,7 +147,10 @@ router.post('/values', requireAuth, async (req, res) => {
       return
     }
 
-    const { id } = await createClassificationValue(authToken, dimId, { label })
+    const { id } = await createClassificationValue(authToken, dimId, {
+      label,
+      parentId: body.parentId ?? undefined,
+    })
     res.status(201).json({ id, label })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Failed to create tag'
@@ -181,6 +159,64 @@ router.post('/values', requireAuth, async (req, res) => {
       return
     }
     console.error('[links] create value error:', err)
+    res.status(500).json({ error: msg })
+  }
+})
+
+/** PATCH /api/links/values/:valueId - 태그 이름 수정 (인증 필요). purpose | medium만 */
+router.patch('/values/:valueId', requireAuth, async (req, res) => {
+  try {
+    const { authToken } = req as AuthenticatedRequest
+    const { valueId } = req.params
+    const body = req.body as { label?: string }
+    const label = body.label?.trim()
+    if (!label) {
+      res.status(400).json({ error: 'label is required' })
+      return
+    }
+    await updateClassificationValue(authToken, valueId, { label })
+    res.status(204).send()
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Failed to update tag'
+    if (msg === 'Tag not found') {
+      res.status(404).json({ error: msg })
+      return
+    }
+    if (msg === 'Only purpose and medium tags can be managed here') {
+      res.status(403).json({ error: msg })
+      return
+    }
+    if (msg === 'Supabase not configured') {
+      res.status(503).json({ error: 'Auth not configured' })
+      return
+    }
+    console.error('[links] update value error:', err)
+    res.status(500).json({ error: msg })
+  }
+})
+
+/** DELETE /api/links/values/:valueId - 태그 삭제 (인증 필요). 링크 연결·하위 태그 CASCADE */
+router.delete('/values/:valueId', requireAuth, async (req, res) => {
+  try {
+    const { authToken } = req as AuthenticatedRequest
+    const { valueId } = req.params
+    await deleteClassificationValue(authToken, valueId)
+    res.status(204).send()
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Failed to delete tag'
+    if (msg === 'Tag not found') {
+      res.status(404).json({ error: msg })
+      return
+    }
+    if (msg === 'Only purpose and medium tags can be managed here') {
+      res.status(403).json({ error: msg })
+      return
+    }
+    if (msg === 'Supabase not configured') {
+      res.status(503).json({ error: 'Auth not configured' })
+      return
+    }
+    console.error('[links] delete value error:', err)
     res.status(500).json({ error: msg })
   }
 })
@@ -194,16 +230,29 @@ router.post('/', requireAuth, async (req, res) => {
       title?: string
       description?: string
       valueIds?: string[]
+      isFeatured?: boolean
+      faviconUrl?: string | null
     }
     if (!body.url || !body.title) {
       res.status(400).json({ error: 'url and title are required' })
       return
     }
+    const trimmedUrl = body.url.trim()
+    let faviconUrl: string | null = null
+    const fromClient = body.faviconUrl?.trim()
+    if (fromClient) {
+      faviconUrl = fromClient
+    } else {
+      const content = await fetchWebsiteContent(trimmedUrl)
+      faviconUrl = content?.faviconUrl ?? null
+    }
     const link = await createLink(authToken, {
-      url: body.url,
+      url: trimmedUrl,
       title: body.title,
       description: body.description,
       valueIds: body.valueIds,
+      isFeatured: body.isFeatured,
+      faviconUrl,
     })
     res.status(201).json(link)
   } catch (err) {
@@ -227,8 +276,37 @@ router.patch('/:id', requireAuth, async (req, res) => {
       title?: string
       description?: string
       valueIds?: string[]
+      isFeatured?: boolean
+      featuredSortOrder?: number
+      faviconUrl?: string | null
     }
-    const link = await updateLink(authToken, id, body)
+
+    let faviconPatch: { faviconUrl?: string | null } = {}
+    if (body.url != null) {
+      const trimmed = body.url.trim()
+      let urlChanged = true
+      try {
+        const previous = await getLinkUrl(authToken, id)
+        if (previous !== null) urlChanged = trimmed !== previous
+      } catch {
+        urlChanged = true
+      }
+      if (urlChanged) {
+        const content = await fetchWebsiteContent(trimmed)
+        faviconPatch = { faviconUrl: content?.faviconUrl ?? null }
+      }
+    }
+
+    const link = await updateLink(authToken, id, {
+      url: body.url,
+      title: body.title,
+      description: body.description,
+      valueIds: body.valueIds,
+      isFeatured: body.isFeatured,
+      featuredSortOrder: body.featuredSortOrder,
+      faviconUrl: body.faviconUrl,
+      ...faviconPatch,
+    })
     res.json(link)
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Failed to update link'

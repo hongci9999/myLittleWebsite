@@ -2,6 +2,16 @@ import { Link, useLocation } from 'react-router-dom'
 import { SIDEBAR_SHORTCUTS } from '@/shared/config/shortcuts'
 import { cn } from '@/lib/utils'
 
+function shortcutIsActive(pathname: string, path: string): boolean {
+  if (path === '/ai-dev-tools') {
+    return pathname === '/ai-dev-tools' || pathname.startsWith('/ai-dev-tools/')
+  }
+  if (path === '/column') {
+    return pathname === '/column' || pathname.startsWith('/column/')
+  }
+  return pathname === path
+}
+
 export default function RightSidebar() {
   const location = useLocation()
 
@@ -16,7 +26,7 @@ export default function RightSidebar() {
         </h2>
         <nav className="mt-3 flex flex-col gap-1.5">
           {SIDEBAR_SHORTCUTS.map(({ path, label, icon }) => {
-            const isActive = location.pathname === path
+            const isActive = shortcutIsActive(location.pathname, path)
             return (
               <Link
                 key={path}

@@ -1,9 +1,9 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/shared/context/AuthContext'
-import { useFavoriteLinks } from '@/shared/hooks/useFavoriteLinks'
 import {
   fetchLinks,
+  updateLink,
   fetchDimensions,
   collectValueIds,
   buildValueIdToMeta,
@@ -11,6 +11,7 @@ import {
   type DimensionWithValues,
 } from '@/shared/api/links'
 import { AddLinkDialog } from '@/widgets/AddLinkDialog'
+import { LinkSiteIcon } from '@/shared/ui/LinkSiteIcon'
 
 const SearchIcon = () => (
   <svg
@@ -64,16 +65,20 @@ type SortKey = 'title' | 'createdAt' | 'sortOrder'
 
 export default function LinksPage() {
   const { token } = useAuth()
-  const { toggleFavorite, isFavorite } = useFavoriteLinks()
   const [links, setLinks] = useState<LinkWithValues[]>([])
   const [dimensions, setDimensions] = useState<DimensionWithValues[]>([])
   const [search, setSearch] = useState('')
   const [selectedByDimension, setSelectedByDimension] = useState<
     Record<string, Set<string>>
   >({})
-  const [sortBy, setSortBy] = useState<SortKey>('sortOrder')
+  const [sortBy, setSortBy] = useState<SortKey>('createdAt')
   const [loading, setLoading] = useState(true)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
+  /** 별 버튼 비활성 표시용 (API 대기 중) */
+  const [pendingFavoriteId, setPendingFavoriteId] = useState<string | null>(
+    null
+  )
+  const favoriteFlightRef = useRef<string | null>(null)
 
   useEffect(() => {
     fetchDimensions().then(setDimensions)
@@ -118,6 +123,52 @@ export default function LinksPage() {
     }
   }, [search, selectedByDimension, refreshKey])
 
+  const handleToggleFeatured = useCallback(
+    async (link: LinkWithValues, index: number) => {
+      if (!token || favoriteFlightRef.current === link.id) return
+      favoriteFlightRef.current = link.id
+      const prevFeatured = !!(link.isFeatured ?? false)
+      const prevFeaturedSort = link.featuredSortOrder ?? 0
+      const nextFeatured = !prevFeatured
+
+      setLinks((prev) =>
+        prev.map((l) =>
+          l.id === link.id
+            ? {
+                ...l,
+                isFeatured: nextFeatured,
+                featuredSortOrder: nextFeatured ? index : prevFeaturedSort,
+              }
+            : l
+        )
+      )
+      setPendingFavoriteId(link.id)
+      try {
+        const ok = await updateLink(token, link.id, {
+          isFeatured: nextFeatured,
+          ...(nextFeatured && { featuredSortOrder: index }),
+        })
+        if (!ok) {
+          setLinks((prev) =>
+            prev.map((l) =>
+              l.id === link.id
+                ? {
+                    ...l,
+                    isFeatured: prevFeatured,
+                    featuredSortOrder: prevFeaturedSort,
+                  }
+                : l
+            )
+          )
+        }
+      } finally {
+        favoriteFlightRef.current = null
+        setPendingFavoriteId(null)
+      }
+    },
+    [token]
+  )
+
   const toggleValue = (dimensionSlug: string, valueId: string) => {
     setSelectedByDimension((prev) => {
       const dimSet = new Set(prev[dimensionSlug] ?? [])
@@ -140,15 +191,28 @@ export default function LinksPage() {
 
   const sortedLinks = useMemo(() => {
     const arr = [...links]
+    const tieBreak = (a: LinkWithValues, b: LinkWithValues) => {
+      const t =
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      if (t !== 0) return t
+      return a.id.localeCompare(b.id)
+    }
     if (sortBy === 'title') {
-      arr.sort((a, b) => a.title.localeCompare(b.title))
+      arr.sort((a, b) => {
+        const c = a.title.localeCompare(b.title)
+        return c !== 0 ? c : tieBreak(a, b)
+      })
     } else if (sortBy === 'createdAt') {
-      arr.sort(
-        (a, b) =>
+      arr.sort((a, b) => {
+        const d =
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
+        return d !== 0 ? d : a.id.localeCompare(b.id)
+      })
     } else {
-      arr.sort((a, b) => a.sortOrder - b.sortOrder)
+      arr.sort((a, b) => {
+        const d = a.sortOrder - b.sortOrder
+        return d !== 0 ? d : tieBreak(a, b)
+      })
     }
     return arr
   }, [links, sortBy])
@@ -343,49 +407,63 @@ export default function LinksPage() {
                   </p>
                 </div>
               ) : (
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {sortedLinks.map((link) => (
+                <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {sortedLinks.map((link, index) => (
                     <a
                       key={link.id}
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group block no-underline"
+                      className="group flex h-full min-h-0 min-w-0 flex-col no-underline"
                     >
-                      <div className="flex h-full flex-col rounded-2xl border border-border/50 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover-bg-card-lg">
-                        <div className="flex items-start justify-between gap-3">
-                          <h3 className="min-w-0 flex-1 font-semibold text-foreground line-clamp-2 group-hover:text-secondary">
-                            {link.title}
-                          </h3>
-                          <div className="flex shrink-0 items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={(e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                                toggleFavorite(link.id)
-                              }}
-                              className={`rounded-md p-1 transition-colors hover-bg ${
-                                isFavorite(link.id)
-                                  ? 'text-secondary'
-                                  : 'text-muted-foreground hover:text-secondary'
-                              }`}
-                              aria-label={
-                                isFavorite(link.id)
-                                  ? '즐겨찾기 해제'
-                                  : '즐겨찾기 추가'
-                              }
+                      <div className="flex h-full min-h-0 flex-col rounded-2xl border border-border/50 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover-bg-card-lg">
+                        {/* 제목칸 — 한 줄 말줄임, 불필요한 하단 여백 없음 */}
+                        <div className="flex shrink-0 items-center justify-between gap-2">
+                          <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                            <LinkSiteIcon
+                              faviconUrl={link.faviconUrl}
+                              className="size-6 shrink-0 rounded-md ring-1 ring-border/40"
+                            />
+                            <h3
+                              className="min-w-0 flex-1 truncate text-base font-semibold leading-normal text-foreground group-hover:text-secondary"
+                              title={link.title}
                             >
-                              <StarIcon filled={isFavorite(link.id)} />
-                            </button>
+                              {link.title}
+                            </h3>
+                          </div>
+                          <div className="flex shrink-0 items-center gap-1">
+                            {token && (
+                              <button
+                                type="button"
+                                disabled={pendingFavoriteId === link.id}
+                                onClick={(e) => {
+                                  e.preventDefault()
+                                  e.stopPropagation()
+                                  void handleToggleFeatured(link, index)
+                                }}
+                                className={`rounded-md p-1 transition-colors hover-bg disabled:pointer-events-none disabled:opacity-40 ${
+                                  link.isFeatured
+                                    ? 'text-secondary'
+                                    : 'text-muted-foreground hover:text-secondary'
+                                }`}
+                                aria-label={
+                                  link.isFeatured
+                                    ? '메인 추천 해제'
+                                    : '메인 추천 추가'
+                                }
+                              >
+                                <StarIcon filled={!!link.isFeatured} />
+                              </button>
+                            )}
                             <span className="rounded-md bg-muted/50 p-1 opacity-70 transition-opacity group-hover:opacity-100">
                               <ExternalLinkIcon />
                             </span>
                           </div>
                         </div>
-                        {link.valueIds.length > 0 && (
-                          <div className="mt-2 flex flex-col gap-1">
-                            {(() => {
+                        {/* 태그칸 — 한두 줄 칩 기준으로 낮게 고정 */}
+                        <div className="mt-2 flex h-12 shrink-0 flex-col gap-0.5 overflow-hidden">
+                          {link.valueIds.length > 0 ? (
+                            (() => {
                               const byDim = link.valueIds.reduce<
                                 Record<string, string[]>
                               >((acc, vid) => {
@@ -400,15 +478,15 @@ export default function LinksPage() {
                                 ([dimLabel, labels]) => (
                                   <div
                                     key={dimLabel}
-                                    className="flex flex-wrap items-center gap-1"
+                                    className="flex min-h-0 flex-wrap items-center gap-1 overflow-hidden"
                                   >
-                                    <span className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground/80">
+                                    <span className="shrink-0 text-[9px] font-medium uppercase tracking-wider text-muted-foreground/80">
                                       {dimLabel}:
                                     </span>
                                     {labels.map((l) => (
                                       <span
                                         key={`${dimLabel}-${l}`}
-                                        className="rounded-full bg-muted/70 px-1.5 py-0.5 font-medium text-[10px] text-muted-foreground"
+                                        className="shrink-0 rounded-full bg-muted/70 px-1.5 py-0.5 font-medium text-[10px] text-muted-foreground"
                                       >
                                         {l}
                                       </span>
@@ -416,32 +494,35 @@ export default function LinksPage() {
                                   </div>
                                 )
                               )
-                            })()}
-                          </div>
-                        )}
-                        {link.description && (
-                          <div className="relative mt-2">
-                            <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                              {link.description}
-                            </p>
-                            <div className="mt-1 flex justify-end">
-                              <span
-                                className="group/more relative inline-block cursor-default text-[10px] text-muted-foreground/80 hover:text-muted-foreground"
-                                title={link.description}
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  e.stopPropagation()
-                                }}
-                              >
-                                더보기
-                                <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-1 hidden max-h-40 w-64 -translate-x-1/2 overflow-auto rounded-lg border border-border/60 bg-popover px-3 py-2 text-xs text-foreground shadow-lg group-hover/more:block">
-                                  {link.description}
+                            })()
+                          ) : null}
+                        </div>
+                        {/* 본문칸 — 2줄 설명 + 더보기 한 줄 분량 */}
+                        <div className="mt-2 flex h-[3.75rem] shrink-0 flex-col justify-between gap-0.5 overflow-hidden">
+                          {link.description ? (
+                            <>
+                              <p className="line-clamp-2 min-h-0 flex-1 text-xs leading-relaxed text-muted-foreground">
+                                {link.description}
+                              </p>
+                              <div className="flex shrink-0 justify-end">
+                                <span
+                                  className="group/more relative inline-block cursor-default text-[10px] text-muted-foreground/80 hover:text-muted-foreground"
+                                  title={link.description}
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    e.stopPropagation()
+                                  }}
+                                >
+                                  더보기
+                                  <span className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1 hidden max-h-40 w-64 -translate-x-1/2 overflow-auto rounded-lg border border-border/60 bg-popover px-3 py-2 text-xs text-foreground shadow-lg group-hover/more:block">
+                                    {link.description}
+                                  </span>
                                 </span>
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                        <p className="mt-auto pt-3 truncate font-mono text-[9px] text-muted-foreground/60">
+                              </div>
+                            </>
+                          ) : null}
+                        </div>
+                        <p className="mt-auto shrink-0 truncate pt-3 font-mono text-[9px] text-muted-foreground/60">
                           {link.url}
                         </p>
                       </div>

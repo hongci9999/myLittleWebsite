@@ -25,6 +25,8 @@ export interface LinkFormValues {
   title: string
   description: string
   valueIds: Set<string>
+  isFeatured?: boolean
+  faviconUrl?: string
 }
 
 interface LinkFormProps {
@@ -37,6 +39,8 @@ interface LinkFormProps {
     title: string
     description?: string
     valueIds: string[]
+    isFeatured?: boolean
+    faviconUrl?: string | null
   }) => Promise<void>
   onCancel?: () => void
   submitLabel?: string
@@ -59,6 +63,12 @@ export default function LinkForm({
   const [valueIds, setValueIds] = useState<Set<string>>(
     initialValues?.valueIds ?? new Set()
   )
+  const [isFeatured, setIsFeatured] = useState(
+    initialValues?.isFeatured ?? false
+  )
+  const [faviconUrl, setFaviconUrl] = useState(
+    initialValues?.faviconUrl ?? ''
+  )
   const [aiLoading, setAiLoading] = useState(false)
   const [aiStep, setAiStep] = useState<AiStep>('idle')
   const [submitLoading, setSubmitLoading] = useState(false)
@@ -68,7 +78,6 @@ export default function LinkForm({
   const [lastAiResult, setLastAiResult] = useState<{
     title: string
     description: string
-    valueIds: string[]
     rawResponse?: string
   } | null>(null)
   const [aiResultDialogOpen, setAiResultDialogOpen] = useState(false)
@@ -79,6 +88,8 @@ export default function LinkForm({
       setTitle(initialValues.title ?? '')
       setDescription(initialValues.description ?? '')
       setValueIds(initialValues.valueIds ?? new Set())
+      setIsFeatured(initialValues.isFeatured ?? false)
+      setFaviconUrl(initialValues.faviconUrl ?? '')
     }
   }, [initialValues])
 
@@ -95,15 +106,13 @@ export default function LinkForm({
       if (result) {
         setTitle(result.title)
         setDescription(result.description)
-        setValueIds(new Set(result.valueIds))
+        if (result.faviconUrl) setFaviconUrl(result.faviconUrl)
         setLastAiResult({
           title: result.title,
           description: result.description,
-          valueIds: result.valueIds,
           rawResponse: result.rawResponse,
         })
         setAiStep('done')
-        await fetchDimensions().then(setDimensions)
       } else {
         setAiStep('error')
         setAiError('Ollama를 실행 중인지 확인하세요.')
@@ -151,6 +160,8 @@ export default function LinkForm({
         title: title.trim(),
         description: description.trim() || undefined,
         valueIds: Array.from(valueIds),
+        isFeatured,
+        faviconUrl: faviconUrl.trim() || undefined,
       })
     } finally {
       setSubmitLoading(false)
@@ -285,6 +296,21 @@ export default function LinkForm({
         </div>
       </div>
 
+      <div className="flex items-center gap-2">
+        <input
+          type="checkbox"
+          id="link-form-is-featured"
+          checked={isFeatured}
+          onChange={(e) => setIsFeatured(e.target.checked)}
+          className="size-4 rounded border-border accent-primary"
+        />
+        <label
+          htmlFor="link-form-is-featured"
+          className="text-sm font-medium text-foreground cursor-pointer"
+        >
+          메인 추천 링크로 표시
+        </label>
+      </div>
       {dimensions.map((dim) => {
         const values = collectValueIds(dim.values)
         const canAdd = dim.slug === 'purpose' || dim.slug === 'medium'

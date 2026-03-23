@@ -6,6 +6,43 @@
 
 ### Added
 
+- **칼럼 스크랩 (`column_scraps`)**
+  - DB: `source_kind`에 `x`(X/트위터), `extra_links` JSONB(라벨+URL 배열). 신규: `docs/plans/2026-03-24-column-scraps-migration.sql`, 기존 DB: `2026-03-24-column-scraps-add-x-kind.sql`, `2026-03-24-column-scraps-extra-links.sql`
+  - API: `GET/POST/PATCH/DELETE /api/column-scraps`, `GET .../by-slug/:slug`, `POST .../ai-fill`(인증, 로컬 Ollama로 폼 자동 채움)
+  - 서버: `fetch-website`에 `og:image` 추출(표지용), `ollama.suggestColumnScrapFromUrl` — HTML 심층 분석 → JSON 필드, 본문 짧으면 확장 재생성; X/Twitter는 fetch 생략(오류 HTML 오염 방지)
+  - 클라이언트: `/column`, `/column/:slug`, `ColumnScrapAdminDialog`, 목록 카드 그리드·필터·⋮ 메뉴(편집·삭제), 상세에 추가 링크·유튜브 형식 임베드(기존)
+  - 마크다운: `MarkdownWithMath`에서 본문 내 YouTube `href`면 iframe(nocookie) + 링크
+  - decisions 0014, learnings 0020, `docs/api-spec.md` §6·§7 스크랩 API
+- **AI 개발도구 목록 UX**
+  - `AiDevToolsPage`: 행 우측 ⋮ 메뉴로 편집·삭제; `AiToolScrapAdminDialog`에서 하단 「전체 목록」 제거(목록은 페이지에서만)
+- **공통 `OverflowMenu`** (`client/src/shared/ui/OverflowMenu.tsx`)
+  - 세로 점 메뉴, 바깥 클릭 닫힘, 카드 클릭과 분리(`stopPropagation`)
+- **칼럼·AI 개발도구 목록·상세 좌우 여백**
+  - `px-5 sm:px-8 md:px-10` 등으로 가독성 개선
+- **링크 관리 페이지 · 태그 관리**
+  - `/links/admin`에서 「링크 관리」 / 「태그 관리」 전환
+  - 목적(purpose)·종류(medium): 상위 태그 추가, 이름 수정, 삭제, 목적은 하위 태그 추가
+  - API: `PATCH /api/links/values/:valueId`, `DELETE /api/links/values/:valueId`, `POST /values`에 `parentId`(목적만) 지원
+  - 위젯: `widgets/LinksTagManager`
+- **즐겨찾기 링크 DB 전환 (사이트 대표 추천)**
+  - `links` 테이블: `is_featured`, `featured_sort_order` 컬럼 추가
+  - `GET /api/links/featured` (공개): 메인 추천 링크 목록
+  - 관리자만 메인 추천 토글 (Links 페이지 별 아이콘, Links 관리 LinkForm 체크박스)
+  - FavoriteLinksWidget: API 조회로 전환, "메인 추천 링크" 문구
+  - decisions 0013: DB 저장 방식 채택
+  - 마이그레이션: `docs/plans/2026-03-23-featured-links-migration.sql`
+
+### Changed
+
+- **칼럼 스크랩 AI 채우기 품질**
+  - 1단계 분석 분량·항목 확대(주제·사실·구조·독자·활용·한계)
+  - `summary`(한 줄)와 `bodyMd`(`## 요약` / `## 상세 정리`) 구조 명시, 상세 분량 목표(1200자+ 등)
+  - 본문이 짧게 나오면 심층 분석 기반으로 마크다운 본문만 한 번 더 생성하는 폴백
+- **스크랩 관리 다이얼로그**
+  - `ColumnScrapAdminDialog`·`AiToolScrapAdminDialog`: 하단 「전체 목록」 제거 → 편집·삭제는 목록 페이지 ⋮ 메뉴에서만
+
+### Added (이전)
+
 - **Supabase Keep-Alive + GitHub Actions**
   - Supabase 무료 티어 7일 비활성 정지 방지
   - `keepalive` 전용 테이블 (id, pinged_at), REST API로 5일마다 조회
@@ -40,10 +77,10 @@
   - 클라이언트: API에서 섹션 목록 조회, `learning/:sectionId/*` 동적 라우팅
   - `.md` 폴더 추가 시 빌드 없이 즉시 목록 반영
   - `decisions 0011` - 학습 기록 동적 섹션 (새 섹션 추가 방법)
-- **즐겨찾기 링크 위젯** (방문자별 localStorage)
+- **즐겨찾기 링크 위젯** (→ 2026-03 DB 전환으로 변경됨)
   - 유용한 링크 페이지: 링크 카드에 별 아이콘, 클릭 시 즐겨찾기 토글
   - 메인 페이지: 위젯 영역에 즐겨찾기 링크 표시, 없으면 "즐겨찾기 링크 없습니다"
-  - `useFavoriteLinks` 훅, `FavoriteLinksWidget`
+  - `useFavoriteLinks` 훅 (DB 전환 시 제거), `FavoriteLinksWidget`
 - **유용한 링크 페이지 + 사이트 전체 관리자 인증**
   - 설계: `docs/plans/2026-03-03-links-admin-design.md`, 구현 계획, 스키마·RLS SQL
   - 인증: Supabase Auth, JWT 기반 서버 검증, Remember Me, `/login` 전용 페이지

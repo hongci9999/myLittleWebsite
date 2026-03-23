@@ -23,10 +23,25 @@
 | 모델 설명 | 24B MoE, 토큰당 2B 활성. 온디바이스용 하이브리드 모델. ~14GB, 32K 컨텍스트 |
 | 관련 문서 | [설계](plans/2026-03-13-links-ai-suggest-design.md), [decisions 0012](decisions/0012-ollama-ai-links.md), [learnings 0018](learnings/0018-local-ai-ollama-webllm.md) |
 
+### 칼럼 스크랩 AI (`POST /api/column-scraps/ai-fill`)
+
+칼럼 스크랩 추가·편집 다이얼로그에서 **로컬 AI로 채우기** 시 호출. URL 기준으로 페이지 fetch(단, X/Twitter는 제외) 후 Ollama로 제목·한 줄 요약·마크다운 본문·형식·표지(og:image)·태그를 채운다. 본문은 `## 요약` / `## 상세 정리` 구조와 다단계 프롬프트로 품질을 맞춘다.
+
+| 항목 | 내용 |
+|------|------|
+| 관련 API | [api-spec §7](api-spec.md) |
+| 의사결정 | [decisions 0014](decisions/0014-column-scraps-and-scrap-ux.md) |
+| 학습 | [learnings 0020](learnings/0020-column-scrap-markdown-youtube.md) |
+| 마이그레이션 | [column-scraps-migration](plans/2026-03-24-column-scraps-migration.sql), [x kind](plans/2026-03-24-column-scraps-add-x-kind.sql), [extra_links](plans/2026-03-24-column-scraps-extra-links.sql) |
+
 ### 최근 계획
 
 | 날짜 | 제목 |
 |------|------|
+| [2026-03-24](./plans/2026-03-24-column-scraps-migration.sql) | 칼럼 스크랩 테이블(통합 마이그레이션) |
+| [2026-03-24](./plans/2026-03-24-column-scraps-add-x-kind.sql) | 칼럼 `source_kind`에 `x` 추가(기존 DB용) |
+| [2026-03-24](./plans/2026-03-24-column-scraps-extra-links.sql) | 칼럼 `extra_links` 컬럼(기존 DB용) |
+| [2026-03-23](./plans/2026-03-23-featured-links-db-design.md) | 즐겨찾기(메인 추천) DB 설계 |
 | [2026-03-13](./plans/2026-03-13-supabase-keepalive-github-actions.md) | Supabase Keep-Alive + GitHub Actions |
 | [2026-03-13](./plans/2026-03-13-links-ai-suggest-design.md) | 링크 AI 자동 설명·분류 |
 | [2026-03-06](./plans/2026-03-06-favorite-links-design.md) | 즐겨찾기 링크 위젯 |
@@ -46,6 +61,8 @@
 - [0010 학습 폴더 config 자동 생성](./decisions/0010-learning-folder-config-generation.md)
 - [0011 학습 기록 동적 섹션](./decisions/0011-learning-dynamic-sections.md)
 - [0012 링크 AI: Ollama 서버 방식 채택](./decisions/0012-ollama-ai-links.md)
+- [0013 메인 추천 링크 DB 저장](./decisions/0013-featured-links-db-storage.md)
+- [0014 칼럼 스크랩·스크랩 목록 UX·마크다운 임베드](./decisions/0014-column-scraps-and-scrap-ux.md)
 
 ### 학습 내용
 
@@ -69,6 +86,7 @@
 | [0017](./learnings/0017-supabase.md) | Supabase 개요 및 이용 방법 | 백엔드, 데이터베이스, 도구 |
 | [0018](./learnings/0018-local-ai-ollama-webllm.md) | 로컬 AI: Ollama와 WebLLM | ai, 백엔드, 프론트, 도구 |
 | [0019](./learnings/0019-github-actions.md) | GitHub Actions 개요 | 도구, 개발방법론, 백엔드 |
+| [0020](./learnings/0020-column-scrap-markdown-youtube.md) | 칼럼 스크랩 AI 파이프라인·마크다운 YouTube | ai, 백엔드, 프론트, 도구 |
 
 ### 에러 픽스
 

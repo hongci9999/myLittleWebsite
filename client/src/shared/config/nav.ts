@@ -1,5 +1,10 @@
 export const MAIN_NAV = [
   { path: '/about', label: '사이트 소개', description: '이 사이트에 대해' },
+  {
+    path: '/ai-dev-tools',
+    label: 'AI 개발 도구',
+    description: '도구 스크랩 검색·목록',
+  },
   { path: '/portfolio', label: '포트폴리오', description: '작업물과 경력' },
   { path: '/learning', label: '학습 기록', description: '기술 학습 정리' },
   { path: '/links', label: '유용한 링크', description: '모아둔 도구 사이트' },

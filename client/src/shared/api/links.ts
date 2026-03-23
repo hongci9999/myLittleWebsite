@@ -55,6 +55,10 @@ export interface LinkWithValues {
   sortOrder: number
   createdAt: string
   valueIds: string[]
+  isFeatured?: boolean
+  featuredSortOrder?: number
+  /** 서버가 페이지 HTML에서 추출해 저장한 파비콘 절대 URL */
+  faviconUrl?: string | null
 }
 
 function authHeaders(token: string): HeadersInit {
@@ -67,6 +71,23 @@ export async function fetchDimensions(): Promise<DimensionWithValues[]> {
   if (!res.ok) return []
   const data = await res.json()
   return data as DimensionWithValues[]
+}
+
+/** 메인 추천 링크 목록 조회 (공개) */
+export async function fetchFeaturedLinks(): Promise<LinkWithValues[]> {
+  const res = await fetch(`${API_BASE}/featured`)
+  if (!res.ok) return []
+  const data = await res.json()
+  return (data as LinkWithValues[]).map((l) => {
+    const row = l as LinkWithValues & { favicon_url?: string | null }
+    return {
+      ...l,
+      sortOrder: l.sortOrder ?? (l as { sort_order?: number }).sort_order ?? 0,
+      createdAt: l.createdAt ?? (l as { created_at?: string }).created_at ?? '',
+      valueIds: l.valueIds ?? [],
+      faviconUrl: l.faviconUrl ?? row.favicon_url ?? null,
+    }
+  })
 }
 
 /** 링크 목록 조회 */
@@ -85,15 +106,29 @@ export async function fetchLinks(filters?: {
   const res = await fetch(url)
   if (!res.ok) return []
   const data = await res.json()
-  return data as LinkWithValues[]
+  return (data as LinkWithValues[]).map((l) => {
+    const row = l as LinkWithValues & { favicon_url?: string | null }
+    return {
+      ...l,
+      sortOrder: l.sortOrder ?? (l as { sort_order?: number }).sort_order ?? 0,
+      createdAt: l.createdAt ?? (l as { created_at?: string }).created_at ?? '',
+      valueIds: l.valueIds ?? [],
+      faviconUrl: l.faviconUrl ?? row.favicon_url ?? null,
+    }
+  })
 }
 
-/** AI 제목·설명·분류 추천 (URL만 있어도 됨) */
+/** AI 제목·설명·파비콘 추천 (URL만 있어도 됨). 태그는 폼에서 수동 선택 */
 export async function suggestLinkMeta(
   token: string,
   url: string,
   title?: string
-): Promise<{ title: string; description: string; valueIds: string[]; rawResponse?: string } | null> {
+): Promise<{
+  title: string
+  description: string
+  rawResponse?: string
+  faviconUrl?: string | null
+} | null> {
   const res = await fetch(`${API_BASE}/ai-suggest`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders(token) },
@@ -101,29 +136,78 @@ export async function suggestLinkMeta(
   })
   if (!res.ok) return null
   const data = await res.json()
-  return data as { title: string; description: string; valueIds: string[]; rawResponse?: string }
+  return data as {
+    title: string
+    description: string
+    rawResponse?: string
+    faviconUrl?: string | null
+  }
 }
 
-/** 새 태그 추가 (목적 또는 종류). 이미 있으면 기존 id 반환 */
+/** 새 태그 추가 (목적 또는 종류). 이미 있으면 기존 id 반환. 목적만 parentId(상위 태그 id) 가능 */
 export async function createTag(
   token: string,
   label: string,
-  dimensionSlug: 'purpose' | 'medium'
+  dimensionSlug: 'purpose' | 'medium',
+  parentId?: string | null
 ): Promise<{ id: string; label: string } | null> {
   const res = await fetch(`${API_BASE}/values`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders(token) },
-    body: JSON.stringify({ label: label.trim(), dimensionSlug }),
+    body: JSON.stringify({
+      label: label.trim(),
+      dimensionSlug,
+      ...(parentId ? { parentId } : {}),
+    }),
   })
   if (!res.ok) return null
   const data = await res.json()
   return data as { id: string; label: string }
 }
 
+/** 태그 이름 수정 (목적·종류) */
+export async function updateTag(
+  token: string,
+  valueId: string,
+  label: string
+): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/values/${encodeURIComponent(valueId)}`,
+    {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', ...authHeaders(token) },
+      body: JSON.stringify({ label: label.trim() }),
+    }
+  )
+  return res.status === 204
+}
+
+/** 태그 삭제 (목적·종류). 링크 연결·하위 태그 CASCADE */
+export async function deleteTag(
+  token: string,
+  valueId: string
+): Promise<boolean> {
+  const res = await fetch(
+    `${API_BASE}/values/${encodeURIComponent(valueId)}`,
+    {
+      method: 'DELETE',
+      headers: authHeaders(token),
+    }
+  )
+  return res.status === 204
+}
+
 /** 링크 추가 */
 export async function createLink(
   token: string,
-  data: { url: string; title: string; description?: string; valueIds?: string[] }
+  data: {
+    url: string
+    title: string
+    description?: string
+    valueIds?: string[]
+    isFeatured?: boolean
+    faviconUrl?: string | null
+  }
 ): Promise<LinkWithValues | null> {
   const res = await fetch(API_BASE, {
     method: 'POST',
@@ -132,11 +216,15 @@ export async function createLink(
   })
   if (!res.ok) return null
   const link = await res.json()
+  const row = link as LinkWithValues & { favicon_url?: string | null }
   return {
     ...link,
     valueIds: data.valueIds ?? [],
     sortOrder: link.sort_order ?? 0,
     createdAt: link.created_at ?? link.createdAt,
+    isFeatured: link.is_featured ?? link.isFeatured ?? false,
+    featuredSortOrder: link.featured_sort_order ?? link.featuredSortOrder ?? 0,
+    faviconUrl: link.faviconUrl ?? row.favicon_url ?? null,
   } as LinkWithValues
 }
 
@@ -149,6 +237,9 @@ export async function updateLink(
     title?: string
     description?: string
     valueIds?: string[]
+    isFeatured?: boolean
+    featuredSortOrder?: number
+    faviconUrl?: string | null
   }
 ): Promise<LinkWithValues | null> {
   const res = await fetch(`${API_BASE}/${id}`, {
@@ -158,11 +249,15 @@ export async function updateLink(
   })
   if (!res.ok) return null
   const link = await res.json()
+  const row = link as LinkWithValues & { favicon_url?: string | null }
   return {
     ...link,
     valueIds: data.valueIds ?? link.valueIds ?? [],
     sortOrder: link.sort_order ?? link.sortOrder ?? 0,
     createdAt: link.created_at ?? link.createdAt,
+    isFeatured: link.is_featured ?? link.isFeatured ?? false,
+    featuredSortOrder: link.featured_sort_order ?? link.featuredSortOrder ?? 0,
+    faviconUrl: link.faviconUrl ?? row.favicon_url ?? null,
   } as LinkWithValues
 }
 

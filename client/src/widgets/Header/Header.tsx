@@ -259,16 +259,23 @@ export default function Header() {
           >
             홈
           </SidebarNavLink>
-          {MAIN_NAV.map(({ path, label }) => (
-            <SidebarNavLink
-              key={path}
-              to={path}
-              isActive={location.pathname === path}
-              onNavigate={closeSidebar}
-            >
-              {label}
-            </SidebarNavLink>
-          ))}
+          {MAIN_NAV.map(({ path, label }) => {
+            const isActive =
+              location.pathname === path ||
+              (path === '/ai-dev-tools' &&
+                location.pathname.startsWith('/ai-dev-tools')) ||
+              (path === '/column' && location.pathname.startsWith('/column'))
+            return (
+              <SidebarNavLink
+                key={path}
+                to={path}
+                isActive={isActive}
+                onNavigate={closeSidebar}
+              >
+                {label}
+              </SidebarNavLink>
+            )
+          })}
         </nav>
       </aside>
     </>

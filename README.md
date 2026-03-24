@@ -52,8 +52,26 @@ myLittleWebsite/
 │   ├── CHANGELOG.md
 │   ├── decisions/   # 의사결정 기록 (ADR)
 │   └── journal/     # 개발 로그
-└── .cursor/         # Cursor AI 룰
+├── .agents/         # 에이전트 스킬 (UI·프론트 품질)
+└── .cursor/         # Cursor 룰 + Superpowers 스킬
 ```
+
+---
+
+## 에이전트 스킬 (Cursor)
+
+AI 보조 작업 시 로드할 수 있는 **스킬**을 저장소에 포함해 두었다. (에디터·요청 문맥에 따라 실제로 쓰이는 스킬은 달라질 수 있다.)
+
+| 묶음 | 경로 | 역할 |
+|------|------|------|
+| **Superpowers** | [.cursor/skills/superpowers/skills/](.cursor/skills/superpowers/skills/) | 브레인스토밍, 계획·실행, TDD, 체계적 디버깅, 완료 전 검증, Git worktree, 코드리뷰 요청·대응 등 워크플로 |
+| **프론트·UI** | [.agents/skills/](.agents/skills/) | 레이아웃·타이포·접근성·모션·디자인 시스템 정렬 등 UI 품질 |
+
+**Superpowers 스킬 이름** (폴더명): `brainstorming`, `dispatching-parallel-agents`, `executing-plans`, `finishing-a-development-branch`, `receiving-code-review`, `requesting-code-review`, `subagent-driven-development`, `systematic-debugging`, `test-driven-development`, `using-git-worktrees`, `using-superpowers`, `verification-before-completion`, `writing-plans`, `writing-skills`
+
+**`.agents` 스킬 이름** (폴더명): `adapt`, `animate`, `arrange`, `audit`, `bolder`, `clarify`, `colorize`, `critique`, `delight`, `distill`, `extract`, `frontend-design`, `harden`, `normalize`, `onboard`, `optimize`, `overdrive`, `polish`, `quieter`, `teach-impeccable`, `typeset`
+
+개념 정리: [docs/learnings/0002-superpowers.md](docs/learnings/0002-superpowers.md) · 의사결정: [docs/decisions/0003-superpowers.md](docs/decisions/0003-superpowers.md)
 
 ---
 

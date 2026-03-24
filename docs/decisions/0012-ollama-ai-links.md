@@ -26,6 +26,6 @@
 
 ## 결과/참고
 
-- `server/src/services/ollama.ts` — Ollama API 호출
+- `server/src/services/ai/` — 제안 로직·프롬프트·`AiTextProvider`(기본 Ollama); `server/src/services/ollama.ts`는 라우트 호환 재export ([0015](./0015-ai-text-provider-abstraction.md))
 - `docs/plans/2026-03-13-links-ai-suggest-design.md` — 설계·옵션 상세
 - `docs/learnings/0018-local-ai-ollama-webllm.md` — Ollama, WebLLM 기술 상세

@@ -36,5 +36,5 @@
 
 ## 참고
 
-- 코드: `server/src/services/ollama.ts`, `client/src/shared/ui/MarkdownWithMath.tsx`, `client/src/shared/lib/youtube.ts`
+- 코드: `server/src/services/ai/`(칼럼 스크랩 제안), `client/src/shared/ui/MarkdownWithMath.tsx`, `client/src/shared/lib/youtube.ts`
 - 의사결정: `docs/decisions/0014-column-scraps-and-scrap-ux.md`

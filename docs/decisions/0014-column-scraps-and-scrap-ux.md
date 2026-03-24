@@ -40,6 +40,6 @@
 ## 결과/참고
 
 - 마이그레이션: `docs/plans/2026-03-24-column-scraps-migration.sql`, `2026-03-24-column-scraps-add-x-kind.sql`, `2026-03-24-column-scraps-extra-links.sql`
-- 구현: `server/src/services/ollama.ts`, `fetch-website.ts`, `routes/column-scraps.ts`, `client/.../MarkdownWithMath.tsx`, `OverflowMenu.tsx`
+- 구현: `server/src/services/ai/`(`suggest-column-scrap` 등), `fetch-website.ts`, `routes/column-scraps.ts`, `client/.../MarkdownWithMath.tsx`, `OverflowMenu.tsx` ([0015](./0015-ai-text-provider-abstraction.md))
 - API 명세: `docs/api-spec.md` §6·§7
 - 학습: `docs/learnings/0020-column-scrap-markdown-youtube.md`

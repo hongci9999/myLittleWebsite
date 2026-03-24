@@ -36,8 +36,9 @@
 | **모델 설명** | 24B 파라미터 MoE(Mixture of Experts) 구조, 토큰당 2B 활성 파라미터. 온디바이스·엣지 배포용 하이브리드 모델(State Space + attention). ~14GB, 32K 컨텍스트 |
 | **용도** | 링크 URL만 입력해도 제목·설명·분류 태그 자동 생성 |
 | **환경 변수** | `OLLAMA_HOST` (기본 `http://localhost:11434`), `OLLAMA_MODEL` (기본 `lfm2:24b`) |
+| **서버 코드** | `server/src/services/ai/` (프롬프트·`AiTextProvider`·유스케이스), `server/src/services/ollama.ts`는 라우트용 재export |
 
-AI 기능 사용 전에 `ollama run lfm2:24b`로 모델을 실행해 두어야 한다. 상세: [docs/plans/2026-03-13-links-ai-suggest-design.md](docs/plans/2026-03-13-links-ai-suggest-design.md), [docs/decisions/0012-ollama-ai-links.md](docs/decisions/0012-ollama-ai-links.md)
+AI 기능 사용 전에 `ollama run lfm2:24b`로 모델을 실행해 두어야 한다. 상세: [docs/plans/2026-03-13-links-ai-suggest-design.md](docs/plans/2026-03-13-links-ai-suggest-design.md), [docs/decisions/0012-ollama-ai-links.md](docs/decisions/0012-ollama-ai-links.md), 구조·API 교체 용이성: [docs/decisions/0015-ai-text-provider-abstraction.md](docs/decisions/0015-ai-text-provider-abstraction.md)
 
 ---
 

@@ -9,6 +9,7 @@ import {
   isSourceKind,
   type SourceKind,
 } from '../db/queries/ai-scraps.js'
+import { suggestAiToolScrapFromUrl } from '../services/ollama.js'
 
 const router = Router()
 
@@ -87,6 +88,36 @@ router.get('/by-slug/:slug', async (req, res) => {
     }
     console.error('[ai-scraps] getBySlug error:', err)
     res.status(500).json({ error: 'Failed to fetch scrap' })
+  }
+})
+
+/** POST /api/ai-scraps/ai-fill — 로컬 Ollama로 URL 기준 폼 필드 제안 (인증 필요) */
+router.post('/ai-fill', requireAuth, async (req, res) => {
+  try {
+    const url = (req.body as { url?: string })?.url?.trim()
+    if (!url) {
+      res.status(400).json({ error: 'url is required' })
+      return
+    }
+    const result = await suggestAiToolScrapFromUrl(url)
+    res.json({
+      title: result.title,
+      summary: result.summary,
+      bodyMd: result.bodyMd,
+      sourceKind: result.sourceKind,
+      tags: result.tags,
+      rawResponse: result.rawResponse,
+    })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'AI fill failed'
+    if (msg.includes('Ollama') || msg.includes('fetch')) {
+      res.status(503).json({
+        error: 'Ollama를 실행 중인지 확인하세요. (OLLAMA_HOST, OLLAMA_MODEL)',
+      })
+      return
+    }
+    console.error('[ai-scraps] ai-fill error:', err)
+    res.status(500).json({ error: msg })
   }
 })
 

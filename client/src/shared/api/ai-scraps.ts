@@ -117,6 +117,54 @@ export async function deleteAiScrap(token: string, id: string): Promise<boolean>
   return res.ok
 }
 
+/** 로컬 Ollama: URL만으로 제목·요약·본문·종류·태그 제안 */
+export interface AiToolScrapAiFill {
+  title: string
+  summary: string
+  bodyMd: string
+  sourceKind: SourceKind
+  tags: string[]
+  rawResponse?: string
+}
+
+export async function suggestAiToolScrapAiFill(
+  token: string,
+  url: string
+): Promise<AiToolScrapAiFill> {
+  const res = await fetch(`${API_BASE}/ai-fill`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify({ url }),
+  })
+  const errJson = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    throw new Error((errJson as { error?: string }).error || 'AI 채우기 실패')
+  }
+  const data = errJson as Record<string, unknown>
+  const tagsRaw = data.tags
+  const tags = Array.isArray(tagsRaw)
+    ? tagsRaw
+        .filter((t): t is string => typeof t === 'string')
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .slice(0, 5)
+    : []
+  const sk = data.sourceKind
+  const sourceKind: SourceKind =
+    typeof sk === 'string' && SOURCE_KIND_OPTIONS.some((o) => o.value === sk)
+      ? (sk as SourceKind)
+      : 'doc'
+
+  return {
+    title: String(data.title ?? ''),
+    summary: String(data.summary ?? ''),
+    bodyMd: String(data.bodyMd ?? ''),
+    sourceKind,
+    tags,
+    rawResponse: data.rawResponse != null ? String(data.rawResponse) : undefined,
+  }
+}
+
 export const SOURCE_KIND_OPTIONS: { value: SourceKind; label: string }[] = [
   { value: 'mcp', label: 'MCP' },
   { value: 'skill', label: '스킬 / 스킬 팩' },

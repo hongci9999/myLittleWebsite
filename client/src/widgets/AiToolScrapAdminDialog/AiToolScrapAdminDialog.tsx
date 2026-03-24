@@ -5,6 +5,7 @@ import {
   createAiScrap,
   fetchAiScrapBySlug,
   SOURCE_KIND_OPTIONS,
+  suggestAiToolScrapAiFill,
   updateAiScrap,
   type AiToolScrap,
   type SourceKind,
@@ -54,6 +55,7 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
   const [editing, setEditing] = useState<AiToolScrap | null>(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
+  const [aiFillLoading, setAiFillLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
@@ -104,6 +106,28 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
   }, [editing, open])
 
   const normalizedExtras = form.extraLinks.filter((r) => r.url.trim())
+
+  async function handleAiFill() {
+    if (!token || !form.url.trim()) return
+    setMessage(null)
+    setAiFillLoading(true)
+    try {
+      const r = await suggestAiToolScrapAiFill(token, form.url.trim())
+      setForm((f) => ({
+        ...f,
+        title: r.title || f.title,
+        summary: r.summary || f.summary,
+        bodyMd: r.bodyMd || f.bodyMd,
+        sourceKind: r.sourceKind,
+        tagsStr: r.tags.length ? r.tags.join(', ') : f.tagsStr,
+      }))
+      setMessage('로컬 AI로 필드를 채웠습니다. 확인 후 저장하세요.')
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : 'AI 채우기 실패')
+    } finally {
+      setAiFillLoading(false)
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -212,7 +236,10 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                 </Button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-border/60 bg-muted/20 p-4">
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-4 rounded-xl border border-border/60 bg-muted/20 p-4"
+              >
                 <div className="grid gap-3 sm:grid-cols-2">
                   <label className="block sm:col-span-2">
                     <span className="text-xs font-medium text-muted-foreground">제목 *</span>
@@ -224,15 +251,30 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                     />
                   </label>
                   <label className="block sm:col-span-2">
-                    <span className="text-xs font-medium text-muted-foreground">URL *</span>
+                    <span className="flex flex-wrap items-center justify-between gap-2 text-xs font-medium text-muted-foreground">
+                      <span>원문 URL *</span>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={!form.url.trim() || aiFillLoading || saving}
+                        onClick={() => void handleAiFill()}
+                      >
+                        {aiFillLoading ? 'AI 분석 중…' : '로컬 AI로 채우기'}
+                      </Button>
+                    </span>
                     <input
                       required
                       type="text"
                       inputMode="url"
                       value={form.url}
                       onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
+                      placeholder="https://…"
                       className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm"
                     />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Ollama가 실행 중이어야 합니다. 서버 환경변수 OLLAMA_HOST, OLLAMA_MODEL.
+                    </p>
                   </label>
                   <label className="block">
                     <span className="text-xs font-medium text-muted-foreground">종류 *</span>
@@ -264,7 +306,9 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                 </div>
 
                 <label className="block">
-                  <span className="text-xs font-medium text-muted-foreground">한 줄 요약</span>
+                  <span className="text-xs font-medium text-muted-foreground">
+                    카드 한 줄 요약 (목록에 표시)
+                  </span>
                   <textarea
                     value={form.summary}
                     onChange={(e) => setForm((f) => ({ ...f, summary: e.target.value }))}
@@ -274,21 +318,14 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                 </label>
 
                 <label className="block">
-                  <span className="text-xs font-medium text-muted-foreground">본문 (Markdown)</span>
+                  <span className="text-xs font-medium text-muted-foreground">
+                    상세 페이지 본문 (Markdown) — 요약·메모
+                  </span>
                   <textarea
                     value={form.bodyMd}
                     onChange={(e) => setForm((f) => ({ ...f, bodyMd: e.target.value }))}
                     rows={10}
                     className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm leading-relaxed"
-                  />
-                </label>
-
-                <label className="block">
-                  <span className="text-xs font-medium text-muted-foreground">태그 (쉼표)</span>
-                  <input
-                    value={form.tagsStr}
-                    onChange={(e) => setForm((f) => ({ ...f, tagsStr: e.target.value }))}
-                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
                   />
                 </label>
 
@@ -299,6 +336,9 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                       행 추가
                     </Button>
                   </div>
+                  <p className="mt-1 text-[11px] text-muted-foreground">
+                    원문 외 참고·관련 문서 URL (상세 페이지에 목록으로 표시)
+                  </p>
                   <div className="mt-2 space-y-2">
                     {form.extraLinks.map((row, i) => (
                       <div
@@ -313,7 +353,7 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                             setForm((f) => ({ ...f, extraLinks: next }))
                           }}
                           placeholder="라벨"
-                          className="sm:w-32 rounded border border-border bg-background px-2 py-1.5 text-sm"
+                          className="rounded border border-border bg-background px-2 py-1.5 text-sm sm:w-32"
                         />
                         <input
                           value={row.url}
@@ -338,6 +378,18 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                     ))}
                   </div>
                 </div>
+
+                <label className="block">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    태그 (쉼표로 여러 개 — 목록에서 태그 필터와 맞는 항목만 표시)
+                  </span>
+                  <input
+                    value={form.tagsStr}
+                    onChange={(e) => setForm((f) => ({ ...f, tagsStr: e.target.value }))}
+                    placeholder="예: MCP, Cursor, 스킬"
+                    className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+                  />
+                </label>
 
                 <Button type="submit" disabled={saving}>
                   {saving ? '저장 중…' : editing ? '수정 저장' : '추가'}

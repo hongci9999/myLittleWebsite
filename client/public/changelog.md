@@ -34,6 +34,13 @@
 
 ### Changed
 
+- **서버 AI 제안 코드 구조** (`server/src/services/ai/`)
+  - `AiTextProvider` + Ollama 구현(`createOllamaTextProvider`) + `getAiTextProvider()` 레지스트리
+  - 기능별 프롬프트 객체: `prompts/link-meta`, `column-scrap`, `ai-tool-scrap`
+  - 유스케이스: `suggest-link-meta`, `suggest-column-scrap`, `suggest-ai-tool-scrap`; `services/ollama.ts`는 라우트 호환 재export
+  - decisions [0015](decisions/0015-ai-text-provider-abstraction.md), learnings [0021](learnings/0021-server-ai-prompt-provider-layout.md)
+- **스크랩 관리 다이얼로그 피드백**
+  - `ColumnScrapAdminDialog`·`AiToolScrapAdminDialog`: 인라인 `message` state 제거, 저장·AI 채우기 실패 시 `window.alert`
 - **칼럼 스크랩 AI 채우기 품질**
   - 1단계 분석 분량·항목 확대(주제·사실·구조·독자·활용·한계)
   - `summary`(한 줄)와 `bodyMd`(`## 요약` / `## 상세 정리`) 구조 명시, 상세 분량 목표(1200자+ 등)

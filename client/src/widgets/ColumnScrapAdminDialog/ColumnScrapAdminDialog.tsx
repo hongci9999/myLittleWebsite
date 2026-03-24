@@ -386,7 +386,7 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
 
                 <label className="block">
                   <span className="text-xs font-medium text-muted-foreground">
-                    태그 (쉼표로 여러 개 — 필터는 모두 포함할 때만 표시)
+                    태그 (쉼표로 여러 개 — 카드에 표시)
                   </span>
                   <input
                     value={form.tagsStr}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   deleteColumnScrap,
@@ -36,7 +36,6 @@ export default function ColumnPage() {
   const [q, setQ] = useState('')
   const [debouncedQ, setDebouncedQ] = useState('')
   const [kind, setKind] = useState<ColumnSourceKind | ''>('')
-  const [selectedTags, setSelectedTags] = useState<Set<string>>(new Set())
   const [adminOpen, setAdminOpen] = useState(false)
   const [adminSlug, setAdminSlug] = useState<string | null>(null)
 
@@ -73,33 +72,6 @@ export default function ColumnPage() {
       void load()
     })
   }, [load])
-
-  const items = useMemo(() => {
-    if (selectedTags.size === 0) return rawItems
-    const need = [...selectedTags].map((t) => t.toLowerCase())
-    return rawItems.filter((item) =>
-      need.every((t) => item.tags.some((x) => x.toLowerCase() === t))
-    )
-  }, [rawItems, selectedTags])
-
-  const tagUniverse = useMemo(() => {
-    const set = new Set<string>()
-    for (const item of rawItems) {
-      for (const t of item.tags) {
-        if (t.trim()) set.add(t)
-      }
-    }
-    return [...set].sort((a, b) => a.localeCompare(b, 'ko'))
-  }, [rawItems])
-
-  const toggleTag = (tag: string) => {
-    setSelectedTags((prev) => {
-      const next = new Set(prev)
-      if (next.has(tag)) next.delete(tag)
-      else next.add(tag)
-      return next
-    })
-  }
 
   const filterControl =
     'h-9 rounded-lg border border-border bg-background px-2.5 text-sm text-foreground outline-none ring-primary/40 focus-visible:ring-2'
@@ -159,43 +131,6 @@ export default function ColumnPage() {
               )}
             </div>
           </div>
-
-          {tagUniverse.length > 0 ? (
-            <div className="mt-3 border-t border-border/40 pt-3">
-              <p className="mb-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-                태그 (선택한 태그를 모두 포함하는 카드만 — AND)
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {tagUniverse.map((t) => {
-                  const on = selectedTags.has(t)
-                  return (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => toggleTag(t)}
-                      className={cn(
-                        'rounded-full border px-2.5 py-1 text-xs font-medium transition-colors',
-                        on
-                          ? 'border-primary/50 bg-primary/15 text-foreground'
-                          : 'border-border/60 bg-muted/30 text-muted-foreground hover:border-primary/30 hover:text-foreground'
-                      )}
-                    >
-                      {t}
-                    </button>
-                  )
-                })}
-                {selectedTags.size > 0 ? (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedTags(new Set())}
-                    className="rounded-full border border-dashed border-border/70 px-2.5 py-1 text-xs text-muted-foreground hover:text-foreground"
-                  >
-                    태그 필터 해제
-                  </button>
-                ) : null}
-              </div>
-            </div>
-          ) : null}
         </div>
 
         {dbOff && (
@@ -213,13 +148,13 @@ export default function ColumnPage() {
         <div className="mt-8">
           {loading ? (
             <p className="text-sm text-muted-foreground">불러오는 중…</p>
-          ) : items.length === 0 ? (
+          ) : rawItems.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              항목이 없거나 필터에 맞는 스크랩이 없습니다.
+              항목이 없거나 검색·형식 필터에 맞는 스크랩이 없습니다.
             </p>
           ) : (
             <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {items.map((item) => (
+              {rawItems.map((item) => (
                 <div
                   key={item.id}
                   className="group relative flex min-h-0 min-w-0 cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"

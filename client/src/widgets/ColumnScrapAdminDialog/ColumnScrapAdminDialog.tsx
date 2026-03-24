@@ -52,17 +52,19 @@ type Props = {
   initialSlug: string | null
 }
 
-export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Props) {
+export function ColumnScrapAdminDialog({
+  open,
+  onOpenChange,
+  initialSlug,
+}: Props) {
   const { token, isLoading: authLoading } = useAuth()
   const [editing, setEditing] = useState<ColumnScrap | null>(null)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [aiFillLoading, setAiFillLoading] = useState(false)
-  const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
     if (!open) {
-      setMessage(null)
       setEditing(null)
       return
     }
@@ -106,7 +108,6 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!token) return
-    setMessage(null)
     setSaving(true)
     try {
       const tags = form.tagsStr
@@ -131,7 +132,6 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
           tags,
           extraLinks: normalizedExtras,
         })
-        setMessage('저장했습니다.')
       } else {
         await createColumnScrap(token, {
           title: form.title.trim(),
@@ -144,12 +144,11 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
           tags,
           extraLinks: normalizedExtras,
         })
-        setMessage('추가했습니다.')
         setEditing(null)
       }
       notifyColumnScrapsChanged()
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : '실패')
+      window.alert(err instanceof Error ? err.message : '실패')
     } finally {
       setSaving(false)
     }
@@ -157,7 +156,6 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
 
   async function handleAiFill() {
     if (!token || !form.url.trim()) return
-    setMessage(null)
     setAiFillLoading(true)
     try {
       const r = await suggestColumnScrapAiFill(token, form.url.trim())
@@ -170,16 +168,18 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
         coverImageUrl: r.coverImageUrl ?? f.coverImageUrl,
         tagsStr: r.tags.length ? r.tags.join(', ') : f.tagsStr,
       }))
-      setMessage('로컬 AI로 필드를 채웠습니다. 확인 후 저장하세요.')
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : 'AI 채우기 실패')
+      window.alert(err instanceof Error ? err.message : 'AI 채우기 실패')
     } finally {
       setAiFillLoading(false)
     }
   }
 
   function addExtraRow() {
-    setForm((f) => ({ ...f, extraLinks: [...f.extraLinks, { label: '', url: '' }] }))
+    setForm((f) => ({
+      ...f,
+      extraLinks: [...f.extraLinks, { label: '', url: '' }],
+    }))
   }
 
   function removeExtraRow(i: number) {
@@ -194,9 +194,28 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
       <DialogContent className="max-h-[min(90vh,900px)] max-w-3xl w-[min(100vw-1.5rem,42rem)] gap-0 overflow-y-auto p-0">
         <DialogHeader className="sticky top-0 z-10 border-b border-border/60 bg-card px-5 py-4 text-left">
           <DialogTitle>칼럼 스크랩 추가·편집</DialogTitle>
-          <p className="text-sm text-muted-foreground">
-            카드에 보일 요약·표지 URL·분류 태그, 상세용 마크다운·추가 링크(관련 글 등)를 넣을 수 있습니다.
-          </p>
+
+          {!authLoading && token ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/40 pt-3">
+              <Button
+                type="submit"
+                form="column-scrap-admin-form"
+                disabled={saving}
+              >
+                {saving ? '저장 중…' : editing ? '수정 저장' : '추가'}
+              </Button>
+              {editing ? (
+                <Button type="button" variant="outline" size="sm" asChild>
+                  <Link
+                    to={`/column/${encodeURIComponent(editing.slug)}`}
+                    onClick={() => onOpenChange(false)}
+                  >
+                    상세 보기
+                  </Link>
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
         </DialogHeader>
 
         <div className="space-y-4 px-5 py-4">
@@ -215,29 +234,22 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
             </p>
           ) : (
             <>
-              {message ? (
-                <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 text-sm text-foreground">
-                  {message}
-                </p>
-              ) : null}
-
-              <div className="flex flex-wrap gap-2">
-                <Button type="button" variant="secondary" size="sm" onClick={() => setEditing(null)}>
-                  새 스크랩
-                </Button>
-              </div>
-
               <form
+                id="column-scrap-admin-form"
                 onSubmit={handleSubmit}
                 className="space-y-4 rounded-xl border border-border/60 bg-muted/20 p-4"
               >
                 <div className="grid gap-3 sm:grid-cols-2">
                   <label className="block sm:col-span-2">
-                    <span className="text-xs font-medium text-muted-foreground">제목 *</span>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      제목 *
+                    </span>
                     <input
                       required
                       value={form.title}
-                      onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, title: e.target.value }))
+                      }
                       className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
                     />
                   </label>
@@ -259,16 +271,21 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                       type="text"
                       inputMode="url"
                       value={form.url}
-                      onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, url: e.target.value }))
+                      }
                       className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm"
                       placeholder="https://…"
                     />
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Ollama가 실행 중이어야 합니다. 서버 환경변수 OLLAMA_HOST, OLLAMA_MODEL.
+                      Ollama가 실행 중이어야 합니다. 서버 환경변수 OLLAMA_HOST,
+                      OLLAMA_MODEL.
                     </p>
                   </label>
                   <label className="block">
-                    <span className="text-xs font-medium text-muted-foreground">형식 *</span>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      형식 *
+                    </span>
                     <select
                       value={form.sourceKind}
                       onChange={(e) =>
@@ -287,10 +304,14 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                     </select>
                   </label>
                   <label className="block">
-                    <span className="text-xs font-medium text-muted-foreground">슬러그 (선택)</span>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      슬러그 (선택)
+                    </span>
                     <input
                       value={form.slug}
-                      onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, slug: e.target.value }))
+                      }
                       className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm"
                     />
                   </label>
@@ -302,7 +323,9 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                   </span>
                   <textarea
                     value={form.summary}
-                    onChange={(e) => setForm((f) => ({ ...f, summary: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, summary: e.target.value }))
+                    }
                     rows={2}
                     className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
                   />
@@ -314,7 +337,9 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                   </span>
                   <input
                     value={form.coverImageUrl}
-                    onChange={(e) => setForm((f) => ({ ...f, coverImageUrl: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, coverImageUrl: e.target.value }))
+                    }
                     type="text"
                     inputMode="url"
                     placeholder="https://…"
@@ -328,7 +353,9 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                   </span>
                   <textarea
                     value={form.bodyMd}
-                    onChange={(e) => setForm((f) => ({ ...f, bodyMd: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, bodyMd: e.target.value }))
+                    }
                     rows={10}
                     className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm leading-relaxed"
                   />
@@ -336,8 +363,15 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
 
                 <div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-muted-foreground">추가 링크</span>
-                    <Button type="button" variant="outline" size="sm" onClick={addExtraRow}>
+                    <span className="text-xs font-medium text-muted-foreground">
+                      추가 링크
+                    </span>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addExtraRow}
+                    >
                       행 추가
                     </Button>
                   </div>
@@ -390,25 +424,13 @@ export function ColumnScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                   </span>
                   <input
                     value={form.tagsStr}
-                    onChange={(e) => setForm((f) => ({ ...f, tagsStr: e.target.value }))}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, tagsStr: e.target.value }))
+                    }
                     placeholder="예: 프론트, 리액트, 아키텍처"
                     className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
                   />
                 </label>
-
-                <Button type="submit" disabled={saving}>
-                  {saving ? '저장 중…' : editing ? '수정 저장' : '추가'}
-                </Button>
-                {editing ? (
-                  <Button type="button" variant="outline" size="sm" asChild className="ml-2">
-                    <Link
-                      to={`/column/${encodeURIComponent(editing.slug)}`}
-                      onClick={() => onOpenChange(false)}
-                    >
-                      상세 보기
-                    </Link>
-                  </Button>
-                ) : null}
               </form>
             </>
           )}

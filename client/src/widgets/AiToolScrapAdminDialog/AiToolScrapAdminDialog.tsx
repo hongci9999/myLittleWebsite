@@ -56,11 +56,9 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [aiFillLoading, setAiFillLoading] = useState(false)
-  const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
     if (!open) {
-      setMessage(null)
       setEditing(null)
       return
     }
@@ -109,7 +107,6 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
 
   async function handleAiFill() {
     if (!token || !form.url.trim()) return
-    setMessage(null)
     setAiFillLoading(true)
     try {
       const r = await suggestAiToolScrapAiFill(token, form.url.trim())
@@ -121,9 +118,8 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
         sourceKind: r.sourceKind,
         tagsStr: r.tags.length ? r.tags.join(', ') : f.tagsStr,
       }))
-      setMessage('로컬 AI로 필드를 채웠습니다. 확인 후 저장하세요.')
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : 'AI 채우기 실패')
+      window.alert(err instanceof Error ? err.message : 'AI 채우기 실패')
     } finally {
       setAiFillLoading(false)
     }
@@ -132,7 +128,6 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!token) return
-    setMessage(null)
     setSaving(true)
     try {
       const tags = form.tagsStr
@@ -153,7 +148,6 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
             url: r.url.trim(),
           })),
         })
-        setMessage('저장했습니다.')
       } else {
         await createAiScrap(token, {
           title: form.title.trim(),
@@ -168,12 +162,11 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
             url: r.url.trim(),
           })),
         })
-        setMessage('추가했습니다.')
         setEditing(null)
       }
       notifyAiScrapsChanged()
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : '실패')
+      window.alert(err instanceof Error ? err.message : '실패')
     } finally {
       setSaving(false)
     }
@@ -201,6 +194,23 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
           <p className="text-sm text-muted-foreground">
             URL·요약·마크다운을 저장합니다. 슬러그는 비우면 제목에서 자동 생성됩니다.
           </p>
+          {!authLoading && token ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/40 pt-3">
+              <Button type="submit" form="ai-scrap-admin-form" disabled={saving}>
+                {saving ? '저장 중…' : editing ? '수정 저장' : '추가'}
+              </Button>
+              {editing ? (
+                <Button type="button" variant="outline" size="sm" asChild>
+                  <Link
+                    to={`/ai-dev-tools/${encodeURIComponent(editing.slug)}`}
+                    onClick={() => onOpenChange(false)}
+                  >
+                    상세 보기
+                  </Link>
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
         </DialogHeader>
 
         <div className="space-y-4 px-5 py-4">
@@ -219,24 +229,8 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
             </p>
           ) : (
             <>
-              {message ? (
-                <p className="rounded-lg border border-border bg-muted/40 px-3 py-2 text-sm text-foreground">
-                  {message}
-                </p>
-              ) : null}
-
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setEditing(null)}
-                >
-                  새 스크랩
-                </Button>
-              </div>
-
               <form
+                id="ai-scrap-admin-form"
                 onSubmit={handleSubmit}
                 className="space-y-4 rounded-xl border border-border/60 bg-muted/20 p-4"
               >
@@ -390,20 +384,6 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                     className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
                   />
                 </label>
-
-                <Button type="submit" disabled={saving}>
-                  {saving ? '저장 중…' : editing ? '수정 저장' : '추가'}
-                </Button>
-                {editing ? (
-                  <Button type="button" variant="outline" size="sm" asChild className="ml-2">
-                    <Link
-                      to={`/ai-dev-tools/${encodeURIComponent(editing.slug)}`}
-                      onClick={() => onOpenChange(false)}
-                    >
-                      상세 보기
-                    </Link>
-                  </Button>
-                ) : null}
               </form>
             </>
           )}

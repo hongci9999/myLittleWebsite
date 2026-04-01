@@ -39,6 +39,7 @@
 
 | 날짜                                                                  | 제목                                         |
 | --------------------------------------------------------------------- | -------------------------------------------- |
+| [2026-04-01](./plans/2026-04-01-main-widget-section-refinement-design.md) | 메인 위젯 섹션 리디자인(구조 강조)          |
 | [2026-03-24](./plans/2026-03-24-column-scraps-migration.sql)          | 칼럼 스크랩 테이블(통합 마이그레이션)        |
 | [2026-03-24](./plans/2026-03-24-column-scraps-add-x-kind.sql)         | 칼럼 `source_kind`에 `x` 추가(기존 DB용)     |
 | [2026-03-24](./plans/2026-03-24-column-scraps-extra-links.sql)        | 칼럼 `extra_links` 컬럼(기존 DB용)           |

@@ -6,6 +6,14 @@
 
 ### Added
 
+- **메인 위젯 섹션 벤토 그리드 기초 적용**
+  - `WidgetGrid` 추가: `/main` 위젯 영역을 12컬럼 기반 그리드로 관리
+  - `main-widget-layout` 설정 추가: 위젯별 `col-span`/`row-span` 배치 메타 분리
+  - `EmptyPlaceholderWidget` 추가: 우측 7x7 슬롯을 임시 위젯으로 시각화
+- **메인 위젯 섹션 리디자인 계획 문서**
+  - `docs/plans/2026-04-01-main-widget-section-refinement-design.md` 추가
+  - 구조 강조(벤토 리듬·위계·상태 일관성) 방향으로 개선 범위/검증 기준 정리
+
 - **칼럼 스크랩 (`column_scraps`)**
   - DB: `source_kind`에 `x`(X/트위터), `extra_links` JSONB(라벨+URL 배열). 신규: `docs/plans/2026-03-24-column-scraps-migration.sql`, 기존 DB: `2026-03-24-column-scraps-add-x-kind.sql`, `2026-03-24-column-scraps-extra-links.sql`
   - API: `GET/POST/PATCH/DELETE /api/column-scraps`, `GET .../by-slug/:slug`, `POST .../ai-fill`(인증, 로컬 Ollama로 폼 자동 채움)
@@ -33,6 +41,15 @@
   - 마이그레이션: `docs/plans/2026-03-23-featured-links-migration.sql`
 
 ### Changed
+
+- **메인 위젯 섹션 UI 조정**
+  - `FavoriteLinksWidget`: 헤더 영역 축소, 제목 톤을 회색 계열로 조정, 로딩 스켈레톤/포커스 스타일 정리
+  - 링크 타이틀 hover 시 전체 글자색이 바뀌던 동작 제거(가독성/일관성 개선)
+  - 문구 정리: "메인 추천 링크" → "즐겨찾기 링크"
+- **메인 히어로 정리**
+  - `Hero`의 미사용 `introWidget` 참조 제거 (타입체크 오류 예방)
+- **그리드 셀 크기 동기화 방식 개선**
+  - `WidgetGrid`에서 `ResizeObserver` 기반으로 셀 단위 크기를 계산해 열/행 1칸 스케일을 동일하게 적용
 
 - **서버 AI 제안 코드 구조** (`server/src/services/ai/`)
   - `AiTextProvider` + Ollama 구현(`createOllamaTextProvider`) + `getAiTextProvider()` 레지스트리

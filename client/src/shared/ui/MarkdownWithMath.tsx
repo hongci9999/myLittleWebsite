@@ -5,6 +5,7 @@ import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
 import { cn } from '@/lib/utils'
 import { parseYoutubeVideoId, youtubeNocookieEmbedSrc } from '@/shared/lib/youtube'
+import { MermaidDiagram } from '@/shared/ui/MermaidDiagram'
 
 interface Props {
   children: string
@@ -58,6 +59,21 @@ export function MarkdownWithMath({ children, className }: Props) {
         rehypePlugins={[rehypeKatex]}
         components={{
           a: MarkdownAnchor,
+          code: ({ className, children, ...props }) => {
+            const match = /language-(\w+)/.exec(className ?? '')
+            const lang = match?.[1]?.toLowerCase()
+            const text = String(children ?? '')
+
+            if (lang === 'mermaid') {
+              return <MermaidDiagram code={text} />
+            }
+
+            return (
+              <code className={className} {...props}>
+                {children}
+              </code>
+            )
+          },
         }}
       >
         {children}

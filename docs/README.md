@@ -91,6 +91,7 @@
 | [0019](./learnings/0019-github-actions.md)                   | GitHub Actions 개요                           | 도구, 개발방법론, 백엔드       |
 | [0020](./learnings/0020-column-scrap-markdown-youtube.md)    | 칼럼 스크랩 AI 파이프라인·마크다운 YouTube    | ai, 백엔드, 프론트, 도구       |
 | [0021](./learnings/0021-server-ai-prompt-provider-layout.md) | 서버 AI 프롬프트 모듈·AiTextProvider 레이아웃 | ai, 백엔드, 아키텍처, 도구     |
+| [0022](./learnings/0022-mermaid-diagram-basics.md)           | Mermaid 다이어그램 기초                       | 프론트, 도구, 개발방법론, 아키텍처 |
 
 ### 에러 픽스
 

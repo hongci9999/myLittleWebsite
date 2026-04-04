@@ -1,5 +1,6 @@
 import { isColumnSourceKind } from '../../db/queries/column-scraps.js'
 import { fetchWebsiteContent } from '../fetch-website.js'
+import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { ColumnScrapPrompts } from './prompts/column-scrap.prompts.js'
 import { getAiTextProvider } from './providers/registry.js'
@@ -87,6 +88,7 @@ export async function suggestColumnScrapFromUrl(url: string): Promise<ColumnScra
   }
 
   const content = await fetchWebsiteContent(trimmed)
+  assertYoutubeTranscriptForAi(trimmed, content)
   const coverImageUrl = content?.ogImageUrl ?? null
   let siteAnalysis = ''
 

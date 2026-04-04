@@ -131,7 +131,10 @@
   .group-hover-bg {
     @apply transition-colors group-hover:bg-secondary/40;
   }
+
 }
+
+/* 헤더 AI 전광판: transform은 AiStatusTicker에서 rAF로 갱신 */
 
 /* 테마 전환: oklch 색상이 자연스럽게 이어지도록 transition 적용 */
 [data-theme] *,

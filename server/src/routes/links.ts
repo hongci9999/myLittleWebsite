@@ -15,6 +15,7 @@ import {
   getLinkUrl,
 } from '../db/queries/links.js'
 import { suggestLinkMeta } from '../services/ollama.js'
+import { YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE } from '../services/youtube-transcript-text.js'
 import { fetchWebsiteContent } from '../services/fetch-website.js'
 
 const router = Router()
@@ -100,6 +101,10 @@ router.post('/ai-suggest', requireAuth, async (req, res) => {
     })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'AI suggest failed'
+    if (msg === YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE) {
+      res.status(400).json({ error: msg })
+      return
+    }
     if (msg.includes('Ollama') || msg.includes('fetch')) {
       res.status(503).json({
         error: 'Ollama를 실행 중인지 확인하세요. (ollama run lfm2:24b)',

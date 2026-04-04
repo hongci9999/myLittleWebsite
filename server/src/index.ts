@@ -5,6 +5,7 @@ import authRoutes from './routes/auth.js'
 import linksRoutes from './routes/links.js'
 import aiScrapsRoutes from './routes/ai-scraps.js'
 import columnScrapsRoutes from './routes/column-scraps.js'
+import { getAiProviderPublicInfo } from './services/ai/index.js'
 
 const app = express()
 const PORT = Number(process.env.PORT) || 3001
@@ -13,6 +14,11 @@ app.use(express.json())
 
 app.get('/health', (_, res) => {
   res.json({ status: 'ok' })
+})
+
+/** 공개 설정 요약(헤더 AI 상태 등). 인증 불필요 */
+app.get('/api/meta', (_, res) => {
+  res.json({ ai: getAiProviderPublicInfo() })
 })
 
 app.use('/api/auth', authRoutes)

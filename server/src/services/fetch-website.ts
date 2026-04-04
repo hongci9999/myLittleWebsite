@@ -4,6 +4,7 @@
  */
 
 import * as cheerio from 'cheerio'
+import { parseYoutubeVideoId, tryFetchYoutubeTranscriptPlain } from './youtube-transcript-text.js'
 
 export interface WebsiteContent {
   url: string
@@ -16,6 +17,11 @@ export interface WebsiteContent {
   faviconUrl: string | null
   /** og:image 또는 twitter:image (카드 표지용) */
   ogImageUrl: string | null
+  /**
+   * 유튜브 URL인데 자막을 가져오지 못한 경우 true.
+   * AI 제안은 이 경우 실행하지 않는다.
+   */
+  youtubeMissingTranscript?: boolean
 }
 
 function parseIconSize(area: string): number {
@@ -99,18 +105,46 @@ const MAX_BODY_CHARS = 8000
 const USER_AGENT =
   'Mozilla/5.0 (compatible; myLittleWebsite/1.0; +https://github.com)'
 
+/** HTML fetch 실패했지만 자막만으로 AI 입력을 구성할 때 */
+function websiteContentFromYoutubeTranscriptOnly(
+  pageUrl: string,
+  videoId: string,
+  transcript: string
+): WebsiteContent {
+  return {
+    url: pageUrl,
+    title: 'YouTube 동영상',
+    metaDescription: '',
+    bodyText: transcript,
+    fullText: `제목: YouTube 동영상\n\n동영상 자막 기반 텍스트:\n\n${transcript}`,
+    faviconUrl: 'https://www.youtube.com/favicon.ico',
+    ogImageUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+    youtubeMissingTranscript: false,
+  }
+}
+
 /**
- * URL fetch 후 HTML에서 title, meta description, 본문 텍스트 추출
+ * URL fetch 후 HTML에서 title, meta description, 본문 텍스트 추출.
+ * YouTube는 HTML에 본문이 거의 없어 **자막(transcript)** 이 있으면 그것을 본문으로 넣는다.
  */
 export async function fetchWebsiteContent(url: string): Promise<WebsiteContent | null> {
+  const trimmed = url.trim()
+  const ytId = parseYoutubeVideoId(trimmed)
+  const ytTranscript = ytId ? await tryFetchYoutubeTranscriptPlain(trimmed) : null
+
   try {
-    const res = await fetch(url, {
+    const res = await fetch(trimmed, {
       headers: { 'User-Agent': USER_AGENT },
       signal: AbortSignal.timeout(10000),
     })
-    if (!res.ok) return null
+    if (!res.ok) {
+      if (ytId && ytTranscript) {
+        return websiteContentFromYoutubeTranscriptOnly(trimmed, ytId, ytTranscript)
+      }
+      return null
+    }
     const html = await res.text()
-    const finalUrl = res.url || url
+    const finalUrl = res.url || trimmed
     const $ = cheerio.load(html)
 
     const title = $('title').first().text().trim() || ''
@@ -133,22 +167,42 @@ export async function fetchWebsiteContent(url: string): Promise<WebsiteContent |
     const parts: string[] = []
     if (title) parts.push(`제목: ${title}`)
     if (metaDesc) parts.push(`메타 설명: ${metaDesc}`)
-    if (bodyText) parts.push(`본문: ${bodyText}`)
+    if (ytTranscript) {
+      parts.push(`동영상 자막 기반 텍스트 (요약·본문 작성의 주요 근거로 사용):\n${ytTranscript}`)
+    } else if (ytId) {
+      parts.push(
+        '【참고】자막을 가져오지 못했습니다. 아래 페이지 추출 텍스트만으로 추론하세요. 사실 관계는 원문 영상을 확인하세요.'
+      )
+    }
+    if (!ytTranscript && bodyText) {
+      parts.push(`본문: ${bodyText}`)
+    } else if (ytTranscript && bodyText.length > 0 && bodyText.length <= 1800) {
+      parts.push(`페이지에서 추가로 추출한 텍스트:\n${bodyText}`)
+    }
 
-    const fullText = parts.join('\n\n') || url
+    const fullText = parts.join('\n\n') || trimmed
     const faviconUrl = extractFaviconUrl($, finalUrl)
-    const ogImageUrl = extractOgImageUrl($, finalUrl)
+    let ogImageUrl = extractOgImageUrl($, finalUrl)
+    if (!ogImageUrl && ytId) {
+      ogImageUrl = `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`
+    }
+
+    const bodyTextOut = ytTranscript ?? bodyText
 
     return {
       url: finalUrl,
       title,
       metaDescription: metaDesc,
-      bodyText,
+      bodyText: bodyTextOut,
       fullText,
       faviconUrl,
       ogImageUrl,
+      youtubeMissingTranscript: Boolean(ytId && !ytTranscript),
     }
   } catch {
+    if (ytId && ytTranscript) {
+      return websiteContentFromYoutubeTranscriptOnly(trimmed, ytId, ytTranscript)
+    }
     return null
   }
 }

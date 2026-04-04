@@ -6,6 +6,18 @@
 
 ### Added
 
+- **서버 AI: Gemini(Google) 텍스트 제공자**
+  - 환경 변수: `AI_TEXT_PROVIDER=ollama`(기본) \| `google` \| `gemini`, `GEMINI_API_KEY` 또는 `GOOGLE_AI_API_KEY`, 선택 `GEMINI_MODEL`
+  - `server/src/services/ai/providers/gemini-text-provider.ts`, 레지스트리·`getAiProviderPublicInfo()` 확장
+  - 의사결정: [0016](decisions/0016-gemini-youtube-transcript-and-public-meta.md), 학습: [0023](learnings/0023-youtube-transcript-cjs-load.md)
+- **유튜브 URL → 자막 텍스트 병합** (`youtube-transcript`, `createRequire`로 CJS 로드)
+  - `fetchWebsiteContent`에 자막 병합·`youtubeMissingTranscript` 플래그
+  - 링크 AI 제안·칼럼 스크랩·AI 도구 스크랩 AI 경로: 유튜브인데 자막 없으면 400(고정 안내 메시지)
+- **공개 `GET /api/meta`**
+  - 응답 `{ ai: { mode: 'api' \| 'local', label: string } }` — 헤더 등 비인증 표시용
+- **헤더 AI 상태** (`AiStatusTicker`)
+  - `/api/meta`의 `ai.label` 한 줄 표시, 클릭 시 `sessionStorage`로 해당 탭 세션에서만 숨김(전광판·인사 티커 제거)
+
 - **메인 위젯 섹션 벤토 그리드 기초 적용**
   - `WidgetGrid` 추가: `/main` 위젯 영역을 12컬럼 기반 그리드로 관리
   - `main-widget-layout` 설정 추가: 위젯별 `col-span`/`row-span` 배치 메타 분리
@@ -64,6 +76,7 @@
   - 본문이 짧게 나오면 심층 분석 기반으로 마크다운 본문만 한 번 더 생성하는 폴백
 - **스크랩 관리 다이얼로그**
   - `ColumnScrapAdminDialog`·`AiToolScrapAdminDialog`: 하단 「전체 목록」 제거 → 편집·삭제는 목록 페이지 ⋮ 메뉴에서만
+  - 동 다이얼로그: AI 자동 입력 버튼 문구 「AI 채우기」 등 정리
 
 ### Added (이전)
 

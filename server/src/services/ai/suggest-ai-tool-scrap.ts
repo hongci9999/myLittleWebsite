@@ -1,5 +1,6 @@
 import { isSourceKind as isAiScrapSourceKind } from '../../db/queries/ai-scraps.js'
 import { fetchWebsiteContent } from '../fetch-website.js'
+import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { AiToolScrapPrompts } from './prompts/ai-tool-scrap.prompts.js'
 import { getAiTextProvider } from './providers/registry.js'
@@ -81,6 +82,7 @@ export async function suggestAiToolScrapFromUrl(url: string): Promise<AiToolScra
   }
 
   const content = await fetchWebsiteContent(trimmed)
+  assertYoutubeTranscriptForAi(trimmed, content)
   let siteAnalysis = ''
 
   if (content && content.fullText.trim().length > 40) {

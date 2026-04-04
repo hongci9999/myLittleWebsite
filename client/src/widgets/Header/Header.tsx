@@ -11,6 +11,7 @@ import { useTheme } from '@/shared/context/ThemeContext'
 import { THEME_OPTIONS } from '@/shared/config/themes'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { AiStatusTicker } from './AiStatusTicker'
 
 type BreadcrumbItem = { label: string; href?: string }
 
@@ -187,7 +188,9 @@ export default function Header() {
             </nav>
           </div>
 
-          <div className="flex items-center gap-3">
+          <AiStatusTicker />
+
+          <div className="flex shrink-0 items-center gap-3">
             <Button variant="outline" size="sm" asChild>
               <Link
                 to={

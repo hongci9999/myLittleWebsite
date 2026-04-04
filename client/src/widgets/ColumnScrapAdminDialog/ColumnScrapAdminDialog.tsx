@@ -263,7 +263,7 @@ export function ColumnScrapAdminDialog({
                         disabled={!form.url.trim() || aiFillLoading || saving}
                         onClick={() => void handleAiFill()}
                       >
-                        {aiFillLoading ? 'AI 분석 중…' : '로컬 AI로 채우기'}
+                        {aiFillLoading ? 'AI 분석 중…' : 'AI 채우기'}
                       </Button>
                     </span>
                     <input
@@ -277,10 +277,6 @@ export function ColumnScrapAdminDialog({
                       className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm"
                       placeholder="https://…"
                     />
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Ollama가 실행 중이어야 합니다. 서버 환경변수 OLLAMA_HOST,
-                      OLLAMA_MODEL.
-                    </p>
                   </label>
                   <label className="block">
                     <span className="text-xs font-medium text-muted-foreground">

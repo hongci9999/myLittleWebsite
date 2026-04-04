@@ -1,4 +1,5 @@
 import { fetchWebsiteContent } from '../fetch-website.js'
+import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { LinkMetaPrompts } from './prompts/link-meta.prompts.js'
 import { getAiTextProvider } from './providers/registry.js'
@@ -12,6 +13,7 @@ import type { AiSuggestResult } from './types.js'
 export async function suggestLinkMeta(url: string, title: string): Promise<AiSuggestResult> {
   const ai = getAiTextProvider()
   const content = await fetchWebsiteContent(url)
+  assertYoutubeTranscriptForAi(url, content)
   const faviconUrl = content?.faviconUrl ?? null
   let siteAnalysis = ''
 

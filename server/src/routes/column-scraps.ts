@@ -10,6 +10,7 @@ import {
   type ColumnSourceKind,
 } from '../db/queries/column-scraps.js'
 import { suggestColumnScrapFromUrl } from '../services/ollama.js'
+import { YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE } from '../services/youtube-transcript-text.js'
 
 const router = Router()
 
@@ -119,6 +120,10 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
     })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'AI fill failed'
+    if (msg === YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE) {
+      res.status(400).json({ error: msg })
+      return
+    }
     if (msg.includes('Ollama') || msg.includes('fetch')) {
       res.status(503).json({
         error: 'Ollama를 실행 중인지 확인하세요. (OLLAMA_HOST, OLLAMA_MODEL)',

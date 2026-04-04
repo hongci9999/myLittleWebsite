@@ -22,6 +22,8 @@
 | 모델      | **lfm2:24b** (Liquid AI LFM2-24B-A2B)                                                                                                                                                                                                                                                                       |
 | 모델 설명 | 24B MoE, 토큰당 2B 활성. 온디바이스용 하이브리드 모델. ~14GB, 32K 컨텍스트                                                                                                                                                                                                                                  |
 | 서버 코드 | `server/src/services/ai/` ([구조 요약](learnings/0021-server-ai-prompt-provider-layout.md)), 라우트 호환 진입점 `services/ollama.ts`                                                                                                                                                                        |
+| Gemini    | `AI_TEXT_PROVIDER=google` 또는 `gemini`, `GEMINI_API_KEY` — [decisions 0016](decisions/0016-gemini-youtube-transcript-and-public-meta.md)                                                                                                                                                                    |
+| 유튜브    | AI 제안 전 자막 병합·없으면 400 — 동 의사결정, [learnings 0023](learnings/0023-youtube-transcript-cjs-load.md)                                                                                                                                                                                              |
 | 관련 문서 | [설계](plans/2026-03-13-links-ai-suggest-design.md), [decisions 0012](decisions/0012-ollama-ai-links.md), [0015 구조·교체](decisions/0015-ai-text-provider-abstraction.md), [learnings 0018](learnings/0018-local-ai-ollama-webllm.md), [0021 레이아웃](learnings/0021-server-ai-prompt-provider-layout.md) |
 
 ### 칼럼 스크랩 AI (`POST /api/column-scraps/ai-fill`)
@@ -66,6 +68,7 @@
 - [0013 메인 추천 링크 DB 저장](./decisions/0013-featured-links-db-storage.md)
 - [0014 칼럼 스크랩·스크랩 목록 UX·마크다운 임베드](./decisions/0014-column-scraps-and-scrap-ux.md)
 - [0015 서버 AI 텍스트 제공자 추상화·프롬프트 모듈화](./decisions/0015-ai-text-provider-abstraction.md)
+- [0016 Gemini·유튜브 자막·공개 /api/meta](./decisions/0016-gemini-youtube-transcript-and-public-meta.md)
 
 ### 학습 내용
 
@@ -92,6 +95,7 @@
 | [0020](./learnings/0020-column-scrap-markdown-youtube.md)    | 칼럼 스크랩 AI 파이프라인·마크다운 YouTube    | ai, 백엔드, 프론트, 도구       |
 | [0021](./learnings/0021-server-ai-prompt-provider-layout.md) | 서버 AI 프롬프트 모듈·AiTextProvider 레이아웃 | ai, 백엔드, 아키텍처, 도구     |
 | [0022](./learnings/0022-mermaid-diagram-basics.md)           | Mermaid 다이어그램 기초                       | 프론트, 도구, 개발방법론, 아키텍처 |
+| [0023](./learnings/0023-youtube-transcript-cjs-load.md)      | youtube-transcript CJS require(tsx)           | ai, 백엔드, 도구, npm            |
 
 ### 에러 픽스
 

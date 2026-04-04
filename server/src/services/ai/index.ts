@@ -3,9 +3,15 @@
  * 텍스트 생성은 AiTextProvider — 기본 구현은 Ollama, 교체 시 registry만 확장하면 된다.
  */
 export type { AiTextProvider } from './providers/types.js'
+export { createGeminiTextProvider } from './providers/gemini-text-provider.js'
+export type { GeminiTextProviderOptions } from './providers/gemini-text-provider.js'
 export { createOllamaTextProvider } from './providers/ollama-text-provider.js'
 export type { OllamaTextProviderOptions } from './providers/ollama-text-provider.js'
-export { getAiTextProvider } from './providers/registry.js'
+export {
+  getAiTextProvider,
+  getAiProviderPublicInfo,
+  type AiProviderPublicInfo,
+} from './providers/registry.js'
 
 export type { AiSuggestResult, AiToolScrapAiFillResult, ColumnScrapAiFillResult } from './types.js'
 

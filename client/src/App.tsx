@@ -20,6 +20,7 @@ import AdminLoginPage from './pages/AdminLoginPage'
 import ImpeccableSkillsIntroPage from './pages/ImpeccableSkillsIntroPage'
 import AiDevToolsPage from './pages/AiDevToolsPage'
 import AiDevToolScrapDetailPage from './pages/AiDevToolScrapDetailPage'
+import AiSmokeTestPage from './pages/AiSmokeTestPage'
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
           <Route path="links" element={<LinksPage />} />
           <Route path="skills-intro" element={<ImpeccableSkillsIntroPage />} />
           <Route path="project" element={<ProjectPage />} />
+          <Route path="ai-smoke-test" element={<AiSmokeTestPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

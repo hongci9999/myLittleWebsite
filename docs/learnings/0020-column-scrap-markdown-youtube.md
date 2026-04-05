@@ -30,7 +30,7 @@
 
 ## 상세 설명 (이해한 내용)
 
-- 환경 변수: `OLLAMA_HOST`, `OLLAMA_MODEL` (기본 `lfm2:24b` 등).
+- 환경 변수: `OLLAMA_HOST`, `OLLAMA_MODEL` (미설정 시 코드 기본 `gemma4`).
 - `fetch-website`는 본문 길이 상한이 있어 **아주 긴 페이지**는 잘린 텍스트만 분석에 쓴다.
 - 칼럼과 무관하게 `MarkdownWithMath`를 쓰는 페이지(패치노트 등)에도 **동일한 YouTube 동작**이 적용된다.
 

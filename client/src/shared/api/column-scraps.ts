@@ -1,3 +1,8 @@
+import {
+  aiProviderBodyField,
+  aiProviderRequestHeaders,
+} from '@/shared/lib/ai-provider-preference'
+
 export type ColumnSourceKind = 'blog' | 'article' | 'readme' | 'youtube' | 'x' | 'other'
 
 export interface ColumnScrapExtraLink {
@@ -39,6 +44,7 @@ function authHeaders(token: string): HeadersInit {
   return {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
+    ...aiProviderRequestHeaders(),
   }
 }
 
@@ -187,7 +193,7 @@ export async function suggestColumnScrapAiFill(
   const res = await fetch(`${API_BASE}/ai-fill`, {
     method: 'POST',
     headers: authHeaders(token),
-    body: JSON.stringify({ url }),
+    body: JSON.stringify({ url, ...aiProviderBodyField() }),
   })
   const errJson = await res.json().catch(() => ({}))
   if (!res.ok) {

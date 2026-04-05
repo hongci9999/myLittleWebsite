@@ -31,14 +31,14 @@
 
 | 항목          | 내용                                                                                                                                                     |
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **실행 환경** | [Ollama](https://ollama.com) — 로컬 LLM 서버 (`localhost:11434`)                                                                                         |
-| **모델**      | **lfm2:24b** (Liquid AI LFM2-24B-A2B)                                                                                                                    |
-| **모델 설명** | 24B 파라미터 MoE(Mixture of Experts) 구조, 토큰당 2B 활성 파라미터. 온디바이스·엣지 배포용 하이브리드 모델(State Space + attention). ~14GB, 32K 컨텍스트 |
-| **용도**      | 링크 URL만 입력해도 제목·설명·분류 태그 자동 생성                                                                                                        |
-| **환경 변수** | `OLLAMA_HOST` (기본 `http://localhost:11434`), `OLLAMA_MODEL` (기본 `lfm2:24b`)                                                                          |
+| **실행 환경** | [Ollama](https://ollama.com) — 로컬 LLM 서버 (`localhost:11434`), 또는 **Gemini API** (`GEMINI_API_KEY`)                                                |
+| **모델(로컬)** | 기본 **`gemma4`** (`OLLAMA_MODEL` 미설정 시, `server/.../ollama-text-provider.ts`의 `DEFAULT_OLLAMA_MODEL`)                                              |
+| **선택**      | 사이트 헤더의 AI 표시를 눌러 **로컬 / API** 전환(브라우저에 저장, 기본 로컬). 요청 헤더 `X-AI-Provider: local` \| `api`                                  |
+| **용도**      | 링크·스크랩 등에서 URL 기준 제목·설명·태그 등 자동 제안                                                                                                  |
+| **환경 변수** | `OLLAMA_HOST`, `OLLAMA_MODEL`; API 모드 시 `GEMINI_API_KEY`(또는 `GOOGLE_AI_API_KEY`), 선택 `GEMINI_MODEL`                                               |
 | **서버 코드** | `server/src/services/ai/` (프롬프트·`AiTextProvider`·유스케이스), `server/src/services/ollama.ts`는 라우트용 재export                                    |
 
-AI 기능 사용 전에 `ollama run lfm2:24b`로 모델을 실행해 두어야 한다. 상세: [docs/plans/2026-03-13-links-ai-suggest-design.md](docs/plans/2026-03-13-links-ai-suggest-design.md), [docs/decisions/0012-ollama-ai-links.md](docs/decisions/0012-ollama-ai-links.md), 구조·API 교체 용이성: [docs/decisions/0015-ai-text-provider-abstraction.md](docs/decisions/0015-ai-text-provider-abstraction.md)
+로컬 모드 사용 전에 `ollama pull gemma4` / `ollama run gemma4` 등으로 모델을 받아 두면 된다. 상세: [docs/plans/2026-03-13-links-ai-suggest-design.md](docs/plans/2026-03-13-links-ai-suggest-design.md), [docs/decisions/0012-ollama-ai-links.md](docs/decisions/0012-ollama-ai-links.md), 구조·API 교체 용이성: [docs/decisions/0015-ai-text-provider-abstraction.md](docs/decisions/0015-ai-text-provider-abstraction.md)
 
 ---
 

@@ -35,12 +35,36 @@ URL: ${url}
 `
   },
 
-  metadataJson(contextBlock: string, titleHintLine: string): string {
+  metadataJson(
+    contextBlock: string,
+    titleHintLine: string,
+    classificationCatalog: string | null
+  ): string {
+    const baseRules = `규칙:
+- title은 사이트 이름(브랜드명·서비스명)만. 설명·문구 아님. 예: "shadcn/ui", "React", "GitHub" (O) / "React 컴포넌트 라이브러리" (X, 이건 description)
+- description은 문어체로 작성. "이 사이트는", "~은/는"으로 시작하지 말고, 기능·역할만 바로 설명.`
+
+    if (classificationCatalog?.trim()) {
+      return `${contextBlock}${titleHintLine}
+
+${baseRules}
+- valueIds: 아래 목록에 나온 **id 문자열(UUID)만** 배열로 넣으세요. 목록에 없는 id를 만들지 마세요. 맞는 태그가 없으면 [].
+- 각 분류 축에서 복수 선택 가능. 정말 맞는 것만 고르세요(보통 1~4개).
+
+## 분류 태그 후보 (이 id만 사용)
+${classificationCatalog.trim()}
+
+반드시 아래 JSON 형식으로만 답해주세요. 다른 텍스트 없이 JSON만 출력하세요.
+{
+  "title": "사이트 이름 (20자 이내, 브랜드·서비스명만)",
+  "description": "한 줄 설명 (50자 이내, 문어체, 기능만)",
+  "valueIds": ["uuid-목록에서-복사", "..."]
+}`
+    }
+
     return `${contextBlock}${titleHintLine}
 
-규칙:
-- title은 사이트 이름(브랜드명·서비스명)만. 설명·문구 아님. 예: "shadcn/ui", "React", "GitHub" (O) / "React 컴포넌트 라이브러리" (X, 이건 description)
-- description은 문어체로 작성. "이 사이트는", "~은/는"으로 시작하지 말고, 기능·역할만 바로 설명.
+${baseRules}
 
 반드시 아래 JSON 형식으로만 답해주세요. 다른 텍스트 없이 JSON만 출력하세요.
 {

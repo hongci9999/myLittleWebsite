@@ -4,6 +4,8 @@ import type { SourceKind as AiScrapSourceKind } from '../../db/queries/ai-scraps
 export interface AiSuggestResult {
   title: string
   description: string
+  /** 분류값 id — 클라이언트 체크박스 자동 선택용(서버에서 카탈로그 대조 후 검증) */
+  valueIds?: string[]
   rawResponse?: string
   faviconUrl?: string | null
 }

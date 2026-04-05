@@ -43,6 +43,11 @@ function useBreadcrumb(pathname: string): BreadcrumbItem[] {
     return items
   }
 
+  if (pathname === '/ai-smoke-test') {
+    items.push({ label: '연결 테스트', href: undefined })
+    return items
+  }
+
   const fsBreadcrumb = getFileStructureBreadcrumb(pathname)
   if (fsBreadcrumb) {
     items.push(...fsBreadcrumb)
@@ -188,6 +193,7 @@ export default function Header() {
             </nav>
           </div>
 
+          {/* 헤더 중앙: AI 연결 상태 전광판(문구는 /api/meta, 구현은 AiStatusTicker.tsx) */}
           <AiStatusTicker />
 
           <div className="flex shrink-0 items-center gap-3">

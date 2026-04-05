@@ -9,6 +9,7 @@ import {
   isColumnSourceKind,
   type ColumnSourceKind,
 } from '../db/queries/column-scraps.js'
+import { parseAiRequestPreference } from '../services/ai/index.js'
 import { suggestColumnScrapFromUrl } from '../services/ollama.js'
 import { YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE } from '../services/youtube-transcript-text.js'
 
@@ -108,7 +109,8 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
       res.status(400).json({ error: 'url is required' })
       return
     }
-    const result = await suggestColumnScrapFromUrl(url)
+    const pref = parseAiRequestPreference(req.headers, req.body)
+    const result = await suggestColumnScrapFromUrl(url, pref)
     res.json({
       title: result.title,
       summary: result.summary,
@@ -124,9 +126,15 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
       res.status(400).json({ error: msg })
       return
     }
+    if (msg.includes('GEMINI_API_KEY') || msg.includes('GOOGLE_AI_API_KEY')) {
+      res.status(503).json({
+        error: 'API 모드에는 서버에 GEMINI_API_KEY(또는 GOOGLE_AI_API_KEY)가 필요합니다.',
+      })
+      return
+    }
     if (msg.includes('Ollama') || msg.includes('fetch')) {
       res.status(503).json({
-        error: 'Ollama를 실행 중인지 확인하세요. (OLLAMA_HOST, OLLAMA_MODEL)',
+        error: 'Ollama를 실행 중인지 확인하세요. (ollama run gemma4)',
       })
       return
     }

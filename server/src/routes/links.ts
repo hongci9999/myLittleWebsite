@@ -14,6 +14,7 @@ import {
   getDimensionIdBySlug,
   getLinkUrl,
 } from '../db/queries/links.js'
+import { parseAiRequestPreference } from '../services/ai/index.js'
 import { suggestLinkMeta } from '../services/ollama.js'
 import { YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE } from '../services/youtube-transcript-text.js'
 import { fetchWebsiteContent } from '../services/fetch-website.js'
@@ -79,7 +80,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-/** POST /api/links/ai-suggest - AI 제목·설명·파비콘 추천 (인증 필요). 태그는 수동만 */
+/** POST /api/links/ai-suggest - AI 제목·설명·파비콘·분류 태그(valueIds) 추천 (인증 필요) */
 router.post('/ai-suggest', requireAuth, async (req, res) => {
   try {
     const body = req.body as { url?: string; title?: string }
@@ -88,9 +89,18 @@ router.post('/ai-suggest', requireAuth, async (req, res) => {
       return
     }
 
-    const { title, description, rawResponse, faviconUrl } = await suggestLinkMeta(
+    let dimensions: Awaited<ReturnType<typeof getDimensionsWithValues>> = []
+    try {
+      dimensions = await getDimensionsWithValues()
+    } catch {
+      /* 분류 조회 실패 시에도 제목·설명 AI는 동작 */
+    }
+    const pref = parseAiRequestPreference(req.headers, req.body)
+    const { title, description, rawResponse, faviconUrl, valueIds } = await suggestLinkMeta(
       body.url.trim(),
-      body.title?.trim() ?? ''
+      body.title?.trim() ?? '',
+      pref,
+      dimensions
     )
 
     res.json({
@@ -98,6 +108,7 @@ router.post('/ai-suggest', requireAuth, async (req, res) => {
       description,
       rawResponse: rawResponse ?? undefined,
       faviconUrl: faviconUrl ?? undefined,
+      valueIds: valueIds ?? undefined,
     })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'AI suggest failed'
@@ -105,9 +116,15 @@ router.post('/ai-suggest', requireAuth, async (req, res) => {
       res.status(400).json({ error: msg })
       return
     }
+    if (msg.includes('GEMINI_API_KEY') || msg.includes('GOOGLE_AI_API_KEY')) {
+      res.status(503).json({
+        error: 'API 모드에는 서버에 GEMINI_API_KEY(또는 GOOGLE_AI_API_KEY)가 필요합니다.',
+      })
+      return
+    }
     if (msg.includes('Ollama') || msg.includes('fetch')) {
       res.status(503).json({
-        error: 'Ollama를 실행 중인지 확인하세요. (ollama run lfm2:24b)',
+        error: 'Ollama를 실행 중인지 확인하세요. (ollama run gemma4)',
       })
       return
     }

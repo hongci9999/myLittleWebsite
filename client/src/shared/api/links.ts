@@ -1,3 +1,8 @@
+import {
+  aiProviderBodyField,
+  aiProviderRequestHeaders,
+} from '@/shared/lib/ai-provider-preference'
+
 const API_BASE = '/api/links'
 
 export interface DimensionWithValues {
@@ -118,7 +123,7 @@ export async function fetchLinks(filters?: {
   })
 }
 
-/** AI 제목·설명·파비콘 추천 (URL만 있어도 됨). 태그는 폼에서 수동 선택 */
+/** AI 제목·설명·파비콘·분류 태그(valueIds) 추천 (URL만 있어도 됨) */
 export async function suggestLinkMeta(
   token: string,
   url: string,
@@ -126,19 +131,25 @@ export async function suggestLinkMeta(
 ): Promise<{
   title: string
   description: string
+  valueIds?: string[]
   rawResponse?: string
   faviconUrl?: string | null
 } | null> {
   const res = await fetch(`${API_BASE}/ai-suggest`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeaders(token) },
-    body: JSON.stringify({ url, title: title ?? '' }),
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(token),
+      ...aiProviderRequestHeaders(),
+    },
+    body: JSON.stringify({ url, title: title ?? '', ...aiProviderBodyField() }),
   })
   if (!res.ok) return null
   const data = await res.json()
   return data as {
     title: string
     description: string
+    valueIds?: string[]
     rawResponse?: string
     faviconUrl?: string | null
   }

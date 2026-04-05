@@ -5,11 +5,16 @@
 export type { AiTextProvider } from './providers/types.js'
 export { createGeminiTextProvider } from './providers/gemini-text-provider.js'
 export type { GeminiTextProviderOptions } from './providers/gemini-text-provider.js'
-export { createOllamaTextProvider } from './providers/ollama-text-provider.js'
+export {
+  createOllamaTextProvider,
+  DEFAULT_OLLAMA_MODEL,
+} from './providers/ollama-text-provider.js'
 export type { OllamaTextProviderOptions } from './providers/ollama-text-provider.js'
 export {
   getAiTextProvider,
-  getAiProviderPublicInfo,
+  getAiProviderOptionsMeta,
+  parseAiRequestPreference,
+  type AiRequestPreference,
   type AiProviderPublicInfo,
 } from './providers/registry.js'
 

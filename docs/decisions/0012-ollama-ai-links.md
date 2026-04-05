@@ -13,7 +13,7 @@
 
 - 서버(Express)와 Ollama를 같은 PC/인스턴스에서 실행
 - 클라이언트 → 우리 API → 서버 내부 Ollama (`localhost:11434`)
-- 모델: `lfm2:24b` (기본 `OLLAMA_MODEL`)
+- 모델: `OLLAMA_MODEL`로 지정 (코드 기본 태그 `gemma4`; 도입 당시 예시 `lfm2:24b`)
 - 환경 변수: `OLLAMA_HOST` (기본 `http://localhost:11434`)
 
 ## 이유 (다른 선택지를 배제한 이유)

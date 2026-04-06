@@ -4,7 +4,10 @@ export type AiProviderPublicInfo = {
 }
 
 export type PublicMetaResponse = {
-  ai: AiProviderPublicInfo
+  ai: {
+    local: AiProviderPublicInfo
+    api: AiProviderPublicInfo
+  }
 }
 
 export async function fetchPublicMeta(): Promise<PublicMetaResponse | null> {

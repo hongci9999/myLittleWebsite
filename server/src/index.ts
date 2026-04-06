@@ -5,7 +5,9 @@ import authRoutes from './routes/auth.js'
 import linksRoutes from './routes/links.js'
 import aiScrapsRoutes from './routes/ai-scraps.js'
 import columnScrapsRoutes from './routes/column-scraps.js'
-import { getAiProviderPublicInfo } from './services/ai/index.js'
+import aiSmokeRoutes from './routes/ai-smoke.js'
+import geekNewsRoutes from './routes/geeknews.js'
+import { getAiProviderOptionsMeta } from './services/ai/index.js'
 
 const app = express()
 const PORT = Number(process.env.PORT) || 3001
@@ -16,13 +18,21 @@ app.get('/health', (_, res) => {
   res.json({ status: 'ok' })
 })
 
-/** 공개 설정 요약(헤더 AI 상태 등). 인증 불필요 */
-app.get('/api/meta', (_, res) => {
-  res.json({ ai: getAiProviderPublicInfo() })
+/** Vite 프록시(`/api`)로만 접근하는 헬스 (브라우저에서 사이트↔API 확인용) */
+app.get('/api/health', (_, res) => {
+  res.json({ status: 'ok' })
 })
+
+/** 공개 설정 요약. `ai` → 헤더 전광판(AiStatusTicker) 표시 문자열의 출처 */
+app.get('/api/meta', (_, res) => {
+  res.json({ ai: getAiProviderOptionsMeta() })
+})
+
+app.use('/api/ai-smoke', aiSmokeRoutes)
 
 app.use('/api/auth', authRoutes)
 app.use('/api/links', linksRoutes)
+app.use('/api/geeknews', geekNewsRoutes)
 app.use('/api/ai-scraps', aiScrapsRoutes)
 app.use('/api/column-scraps', columnScrapsRoutes)
 app.use('/api/learning', learningRoutes)

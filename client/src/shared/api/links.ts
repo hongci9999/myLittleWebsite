@@ -1,4 +1,15 @@
+import {
+  aiProviderBodyField,
+  aiProviderRequestHeaders,
+} from '@/shared/lib/ai-provider-preference'
+import {
+  fetchWithResourceCache,
+  getCachedResource,
+} from '@/shared/lib/resource-cache'
+
 const API_BASE = '/api/links'
+const FEATURED_LINKS_CACHE_KEY = 'links:featured'
+const FEATURED_LINKS_CACHE_TTL_MS = 1000 * 60 * 5
 
 export interface DimensionWithValues {
   id: string
@@ -90,6 +101,18 @@ export async function fetchFeaturedLinks(): Promise<LinkWithValues[]> {
   })
 }
 
+export function getCachedFeaturedLinks(): LinkWithValues[] | null {
+  return getCachedResource<LinkWithValues[]>(FEATURED_LINKS_CACHE_KEY)
+}
+
+export async function fetchFeaturedLinksCached(): Promise<LinkWithValues[]> {
+  return fetchWithResourceCache({
+    key: FEATURED_LINKS_CACHE_KEY,
+    ttlMs: FEATURED_LINKS_CACHE_TTL_MS,
+    fetcher: fetchFeaturedLinks,
+  })
+}
+
 /** 링크 목록 조회 */
 export async function fetchLinks(filters?: {
   valueIds?: string[]
@@ -118,7 +141,7 @@ export async function fetchLinks(filters?: {
   })
 }
 
-/** AI 제목·설명·파비콘 추천 (URL만 있어도 됨). 태그는 폼에서 수동 선택 */
+/** AI 제목·설명·파비콘·분류 태그(valueIds) 추천 (URL만 있어도 됨) */
 export async function suggestLinkMeta(
   token: string,
   url: string,
@@ -126,19 +149,25 @@ export async function suggestLinkMeta(
 ): Promise<{
   title: string
   description: string
+  valueIds?: string[]
   rawResponse?: string
   faviconUrl?: string | null
 } | null> {
   const res = await fetch(`${API_BASE}/ai-suggest`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeaders(token) },
-    body: JSON.stringify({ url, title: title ?? '' }),
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(token),
+      ...aiProviderRequestHeaders(),
+    },
+    body: JSON.stringify({ url, title: title ?? '', ...aiProviderBodyField() }),
   })
   if (!res.ok) return null
   const data = await res.json()
   return data as {
     title: string
     description: string
+    valueIds?: string[]
     rawResponse?: string
     faviconUrl?: string | null
   }

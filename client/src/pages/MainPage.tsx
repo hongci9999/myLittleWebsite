@@ -3,8 +3,8 @@
  * 콘텐츠 영역 = 위젯 그리드 (추천 링크 등)
  */
 import type { ComponentType } from 'react'
-import EmptyPlaceholderWidget from '@/widgets/EmptyPlaceholderWidget'
 import FavoriteLinksWidget from '@/widgets/FavoriteLinksWidget'
+import GeekNewsWidget from '@/widgets/GeekNewsWidget'
 import { WidgetGrid } from '@/widgets/WidgetGrid'
 import {
   MAIN_WIDGET_LAYOUT,
@@ -13,7 +13,7 @@ import {
 
 const WIDGET_COMPONENTS: Record<MainWidgetId, ComponentType> = {
   'favorite-links': FavoriteLinksWidget,
-  'empty-placeholder': EmptyPlaceholderWidget,
+  'geeknews-latest': GeekNewsWidget,
 }
 
 export default function MainPage() {

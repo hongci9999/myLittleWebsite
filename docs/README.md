@@ -19,10 +19,11 @@
 | 항목      | 내용                                                                                                                                                                                                                                                                                                        |
 | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 실행 환경 | [Ollama](https://ollama.com) (`localhost:11434`)                                                                                                                                                                                                                                                            |
-| 모델      | **lfm2:24b** (Liquid AI LFM2-24B-A2B)                                                                                                                                                                                                                                                                       |
-| 모델 설명 | 24B MoE, 토큰당 2B 활성. 온디바이스용 하이브리드 모델. ~14GB, 32K 컨텍스트                                                                                                                                                                                                                                  |
+| 모델      | 기본 **`gemma4`** (`OLLAMA_MODEL`, 코드 기본값 `DEFAULT_OLLAMA_MODEL`)                                                                                                                                                                                                                                      |
+| 모델 설명 | Ollama에 등록한 태그 사용. 미설정 시 서버 기본 태그는 `gemma4`                                                                                                                                                                                                                                              |
+| 연결 점검 | 클라이언트 `/ai-smoke-test`, API 헬스·Ollama 스모크 — [api-spec §9](./api-spec.md)                                                                                                                                                                                                                            |
 | 서버 코드 | `server/src/services/ai/` ([구조 요약](learnings/0021-server-ai-prompt-provider-layout.md)), 라우트 호환 진입점 `services/ollama.ts`                                                                                                                                                                        |
-| Gemini    | `AI_TEXT_PROVIDER=google` 또는 `gemini`, `GEMINI_API_KEY` — [decisions 0016](decisions/0016-gemini-youtube-transcript-and-public-meta.md)                                                                                                                                                                    |
+| Gemini    | 헤더/API에서 **API 모드** 선택 시. `GEMINI_API_KEY`(또는 `GOOGLE_AI_API_KEY`), 선택 `GEMINI_MODEL` — [decisions 0016](decisions/0016-gemini-youtube-transcript-and-public-meta.md)                                                                                                                             |
 | 유튜브    | AI 제안 전 자막 병합·없으면 400 — 동 의사결정, [learnings 0023](learnings/0023-youtube-transcript-cjs-load.md)                                                                                                                                                                                              |
 | 관련 문서 | [설계](plans/2026-03-13-links-ai-suggest-design.md), [decisions 0012](decisions/0012-ollama-ai-links.md), [0015 구조·교체](decisions/0015-ai-text-provider-abstraction.md), [learnings 0018](learnings/0018-local-ai-ollama-webllm.md), [0021 레이아웃](learnings/0021-server-ai-prompt-provider-layout.md) |
 
@@ -41,6 +42,7 @@
 
 | 날짜                                                                  | 제목                                         |
 | --------------------------------------------------------------------- | -------------------------------------------- |
+| [2026-04-06](./plans/2026-04-06-geeknews-rss-widget-implementation.md) | 메인 GeekNews RSS 위젯 구현 계획            |
 | [2026-04-01](./plans/2026-04-01-main-widget-section-refinement-design.md) | 메인 위젯 섹션 리디자인(구조 강조)          |
 | [2026-03-24](./plans/2026-03-24-column-scraps-migration.sql)          | 칼럼 스크랩 테이블(통합 마이그레이션)        |
 | [2026-03-24](./plans/2026-03-24-column-scraps-add-x-kind.sql)         | 칼럼 `source_kind`에 `x` 추가(기존 DB용)     |
@@ -96,11 +98,13 @@
 | [0021](./learnings/0021-server-ai-prompt-provider-layout.md) | 서버 AI 프롬프트 모듈·AiTextProvider 레이아웃 | ai, 백엔드, 아키텍처, 도구     |
 | [0022](./learnings/0022-mermaid-diagram-basics.md)           | Mermaid 다이어그램 기초                       | 프론트, 도구, 개발방법론, 아키텍처 |
 | [0023](./learnings/0023-youtube-transcript-cjs-load.md)      | youtube-transcript CJS require(tsx)           | ai, 백엔드, 도구, npm            |
+| [0024](./learnings/0024-rss-basics.md)                       | RSS 개요와 활용 방법                          | 도구, 개발방법론, 백엔드         |
 
 ### 에러 픽스
 
 | 번호                                                  | 제목                            |
 | ----------------------------------------------------- | ------------------------------- |
 | [0001](./error-fixes/0001-learning-folder-session.md) | 학습 폴더·config 관련 오류 모음 |
+| [0002](./error-fixes/0002-main-widget-reload-cache.md) | 메인 위젯 페이지 이동 후 재로딩 문제 |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

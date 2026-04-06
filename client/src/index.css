@@ -134,7 +134,7 @@
 
 }
 
-/* 헤더 AI 전광판: transform은 AiStatusTicker에서 rAF로 갱신 */
+/* 헤더 AI 전광판(AiStatusTicker): 닫힌 상태는 「로컬 AI」/「API」만; 상세는 툴팁·메뉴 */
 
 /* 테마 전환: oklch 색상이 자연스럽게 이어지도록 transition 적용 */
 [data-theme] *,

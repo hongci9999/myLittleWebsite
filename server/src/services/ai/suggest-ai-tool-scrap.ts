@@ -3,7 +3,7 @@ import { fetchWebsiteContent } from '../fetch-website.js'
 import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { AiToolScrapPrompts } from './prompts/ai-tool-scrap.prompts.js'
-import { getAiTextProvider } from './providers/registry.js'
+import { getAiTextProvider, type AiRequestPreference } from './providers/registry.js'
 import type { AiToolScrapAiFillResult } from './types.js'
 import { inferAiToolSourceKindFromUrl, isXOrTwitterHost, xStatusHandleFromUrl } from './url-hints.js'
 
@@ -28,8 +28,11 @@ function parseTagsJson(tags: unknown, max: number, fallback: string[]): string[]
 /**
  * AI 도구 스크랩 폼용: URL만으로 제목·요약·마크다운·종류(mcp/skill/…)·태그 제안
  */
-export async function suggestAiToolScrapFromUrl(url: string): Promise<AiToolScrapAiFillResult> {
-  const ai = getAiTextProvider()
+export async function suggestAiToolScrapFromUrl(
+  url: string,
+  preference: AiRequestPreference
+): Promise<AiToolScrapAiFillResult> {
+  const ai = getAiTextProvider(preference)
   const trimmed = url.trim()
   if (!trimmed) {
     throw new Error('url is required')

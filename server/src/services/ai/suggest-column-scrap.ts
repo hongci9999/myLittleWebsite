@@ -3,7 +3,7 @@ import { fetchWebsiteContent } from '../fetch-website.js'
 import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { ColumnScrapPrompts } from './prompts/column-scrap.prompts.js'
-import { getAiTextProvider } from './providers/registry.js'
+import { getAiTextProvider, type AiRequestPreference } from './providers/registry.js'
 import type { ColumnScrapAiFillResult } from './types.js'
 import {
   inferColumnSourceKindFromUrl,
@@ -32,8 +32,11 @@ function parseTagsJson(tags: unknown, max: number, fallback: string[]): string[]
 /**
  * 칼럼 스크랩 폼용: URL만으로 제목·요약·마크다운 메모·형식·표지(og:image)·태그 제안
  */
-export async function suggestColumnScrapFromUrl(url: string): Promise<ColumnScrapAiFillResult> {
-  const ai = getAiTextProvider()
+export async function suggestColumnScrapFromUrl(
+  url: string,
+  preference: AiRequestPreference
+): Promise<ColumnScrapAiFillResult> {
+  const ai = getAiTextProvider(preference)
   const trimmed = url.trim()
   if (!trimmed) {
     throw new Error('url is required')

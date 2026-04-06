@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { fetchFeaturedLinks, type LinkWithValues } from '@/shared/api/links'
+import {
+  fetchFeaturedLinksCached,
+  getCachedFeaturedLinks,
+  type LinkWithValues,
+} from '@/shared/api/links'
 import { BentoCard } from '@/shared/ui/BentoCard'
 import { LinkSiteIcon } from '@/shared/ui/LinkSiteIcon'
 
@@ -35,11 +39,12 @@ function FavoriteLinksSkeleton() {
 }
 
 export default function FavoriteLinksWidget() {
-  const [featuredLinks, setFeaturedLinks] = useState<LinkWithValues[]>([])
-  const [loading, setLoading] = useState(true)
+  const cached = getCachedFeaturedLinks()
+  const [featuredLinks, setFeaturedLinks] = useState<LinkWithValues[]>(cached ?? [])
+  const [loading, setLoading] = useState(cached === null)
 
   useEffect(() => {
-    fetchFeaturedLinks().then(setFeaturedLinks).finally(() => setLoading(false))
+    fetchFeaturedLinksCached().then(setFeaturedLinks).finally(() => setLoading(false))
   }, [])
 
   return (

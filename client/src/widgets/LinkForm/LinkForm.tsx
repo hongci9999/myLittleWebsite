@@ -107,6 +107,10 @@ export default function LinkForm({
         setTitle(result.title)
         setDescription(result.description)
         if (result.faviconUrl) setFaviconUrl(result.faviconUrl)
+        if (result.valueIds?.length) {
+          const suggested = result.valueIds
+          setValueIds((prev) => new Set([...prev, ...suggested]))
+        }
         setLastAiResult({
           title: result.title,
           description: result.description,
@@ -115,7 +119,7 @@ export default function LinkForm({
         setAiStep('done')
       } else {
         setAiStep('error')
-        setAiError('Ollama를 실행 중인지 확인하세요.')
+        setAiError('로컬 Ollama 또는 API(Gemini) 설정을 확인하세요.')
       }
     } catch {
       setAiStep('error')

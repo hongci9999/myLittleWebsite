@@ -26,6 +26,13 @@
   - `WidgetGrid` 추가: `/main` 위젯 영역을 12컬럼 기반 그리드로 관리
   - `main-widget-layout` 설정 추가: 위젯별 `col-span`/`row-span` 배치 메타 분리
   - `EmptyPlaceholderWidget` 추가: 우측 7x7 슬롯을 임시 위젯으로 시각화
+- **GeekNews 최신 위젯 추가**
+  - 메인 빈 슬롯을 `오늘의 GeekNews` 위젯으로 교체, 최신 5개 노출
+  - 서버 API `GET /api/geeknews/latest?limit=5` 추가
+  - RSS 파싱(`item`/`entry`) + 메모리 캐시 TTL 적용
+- **RSS 학습 문서 추가/보강**
+  - `learnings/0024-rss-basics.md` 추가
+  - GeekNews 위젯 적용 사례와 구현 포인트 정리
 - **메인 위젯 섹션 리디자인 계획 문서**
   - `docs/plans/2026-04-01-main-widget-section-refinement-design.md` 추가
   - 구조 강조(벤토 리듬·위계·상태 일관성) 방향으로 개선 범위/검증 기준 정리
@@ -67,6 +74,7 @@
   - `FavoriteLinksWidget`: 헤더 영역 축소, 제목 톤을 회색 계열로 조정, 로딩 스켈레톤/포커스 스타일 정리
   - 링크 타이틀 hover 시 전체 글자색이 바뀌던 동작 제거(가독성/일관성 개선)
   - 문구 정리: "메인 추천 링크" → "즐겨찾기 링크"
+  - 우측 빈 슬롯을 GeekNews 위젯으로 전환
 - **메인 히어로 정리**
   - `Hero`의 미사용 `introWidget` 참조 제거 (타입체크 오류 예방)
 - **그리드 셀 크기 동기화 방식 개선**

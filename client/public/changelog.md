@@ -6,10 +6,33 @@
 
 ### Added
 
+- **링크 AI: 분류 태그(`valueIds`) 자동 제안** — `POST /api/links/ai-suggest`가 DB 분류 축·값 카탈로그를 프롬프트에 넣고, 검증된 id만 응답; `LinkForm`에서 기존 선택에 병합
+- **연결 테스트** — 페이지 `/ai-smoke-test`, `GET /api/health`(Vite 프록시용), `GET /api/ai-smoke/local`(Ollama tags + 짧은 generate)
+- **클라이언트 AI 제공자 기본 설정** — `shared/lib/ai-provider-preference.ts`: `localStorage` + 요청 헤더 `X-AI-Provider` + POST 본문 `aiProvider`(프록시 환경 대비)
+
+- **서버 AI: Gemini(Google) 텍스트 제공자**
+  - API 모드: `X-AI-Provider: api` 또는 JSON `aiProvider: "api"`, `GEMINI_API_KEY` 또는 `GOOGLE_AI_API_KEY`, 선택 `GEMINI_MODEL`
+  - `server/src/services/ai/providers/gemini-text-provider.ts`, 레지스트리 `getAiTextProvider(preference)` 분기
+  - 의사결정: [0016](decisions/0016-gemini-youtube-transcript-and-public-meta.md), 학습: [0023](learnings/0023-youtube-transcript-cjs-load.md)
+- **유튜브 URL → 자막 텍스트 병합** (`youtube-transcript`, `createRequire`로 CJS 로드)
+  - `fetchWebsiteContent`에 자막 병합·`youtubeMissingTranscript` 플래그
+  - 링크 AI 제안·칼럼 스크랩·AI 도구 스크랩 AI 경로: 유튜브인데 자막 없으면 400(고정 안내 메시지)
+- **공개 `GET /api/meta`**
+  - 응답 `ai: { local, api }` — 각각 `mode`·`label`(모델·호스트 요약), 헤더 제공자 UI·툴팁용
+- **헤더 AI 상태** (`AiStatusTicker`)
+  - 닫힌 상태: 「로컬 AI」/「API」만 표시. 클릭 시 드롭다운으로 전환, `localStorage` 저장(기본 로컬). 상세 라벨은 툴팁·메뉴
+
 - **메인 위젯 섹션 벤토 그리드 기초 적용**
   - `WidgetGrid` 추가: `/main` 위젯 영역을 12컬럼 기반 그리드로 관리
   - `main-widget-layout` 설정 추가: 위젯별 `col-span`/`row-span` 배치 메타 분리
   - `EmptyPlaceholderWidget` 추가: 우측 7x7 슬롯을 임시 위젯으로 시각화
+- **GeekNews 최신 위젯 추가**
+  - 메인 빈 슬롯을 `오늘의 GeekNews` 위젯으로 교체, 최신 5개 노출
+  - 서버 API `GET /api/geeknews/latest?limit=5` 추가
+  - RSS 파싱(`item`/`entry`) + 메모리 캐시 TTL 적용
+- **RSS 학습 문서 추가/보강**
+  - `learnings/0024-rss-basics.md` 추가
+  - GeekNews 위젯 적용 사례와 구현 포인트 정리
 - **메인 위젯 섹션 리디자인 계획 문서**
   - `docs/plans/2026-04-01-main-widget-section-refinement-design.md` 추가
   - 구조 강조(벤토 리듬·위계·상태 일관성) 방향으로 개선 범위/검증 기준 정리
@@ -42,10 +65,16 @@
 
 ### Changed
 
+- **AI 제공자 라우팅** — 전역 `AI_TEXT_PROVIDER` 환경 변수 단일 분기 제거. 요청마다 `X-AI-Provider` / `aiProvider`로 Ollama·Gemini 선택(미지정 시 로컬)
+- **기본 Ollama 모델** — `gemma4` (`DEFAULT_OLLAMA_MODEL`, `ollama-text-provider.ts` + 레지스트리 메타)
+- **Vite 개발 서버 `/api` 프록시** — 대상 `127.0.0.1`, 장시간 AI 채우기용 `proxyReq.setTimeout(600_000)`
+- **문서** — 루트/README, `docs/README`, `docs/api-spec`(메타·헬스·스모크·ai-suggest·ai-fill), decisions [0012](decisions/0012-ollama-ai-links.md), learnings [0020](learnings/0020-column-scrap-markdown-youtube.md)
+
 - **메인 위젯 섹션 UI 조정**
   - `FavoriteLinksWidget`: 헤더 영역 축소, 제목 톤을 회색 계열로 조정, 로딩 스켈레톤/포커스 스타일 정리
   - 링크 타이틀 hover 시 전체 글자색이 바뀌던 동작 제거(가독성/일관성 개선)
   - 문구 정리: "메인 추천 링크" → "즐겨찾기 링크"
+  - 우측 빈 슬롯을 GeekNews 위젯으로 전환
 - **메인 히어로 정리**
   - `Hero`의 미사용 `introWidget` 참조 제거 (타입체크 오류 예방)
 - **그리드 셀 크기 동기화 방식 개선**
@@ -64,6 +93,7 @@
   - 본문이 짧게 나오면 심층 분석 기반으로 마크다운 본문만 한 번 더 생성하는 폴백
 - **스크랩 관리 다이얼로그**
   - `ColumnScrapAdminDialog`·`AiToolScrapAdminDialog`: 하단 「전체 목록」 제거 → 편집·삭제는 목록 페이지 ⋮ 메뉴에서만
+  - 동 다이얼로그: AI 자동 입력 버튼 문구 「AI 채우기」 등 정리
 
 ### Added (이전)
 

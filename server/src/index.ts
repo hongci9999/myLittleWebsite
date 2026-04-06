@@ -6,6 +6,7 @@ import linksRoutes from './routes/links.js'
 import aiScrapsRoutes from './routes/ai-scraps.js'
 import columnScrapsRoutes from './routes/column-scraps.js'
 import aiSmokeRoutes from './routes/ai-smoke.js'
+import geekNewsRoutes from './routes/geeknews.js'
 import { getAiProviderOptionsMeta } from './services/ai/index.js'
 
 const app = express()
@@ -31,6 +32,7 @@ app.use('/api/ai-smoke', aiSmokeRoutes)
 
 app.use('/api/auth', authRoutes)
 app.use('/api/links', linksRoutes)
+app.use('/api/geeknews', geekNewsRoutes)
 app.use('/api/ai-scraps', aiScrapsRoutes)
 app.use('/api/column-scraps', columnScrapsRoutes)
 app.use('/api/learning', learningRoutes)

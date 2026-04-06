@@ -2,8 +2,14 @@ import {
   aiProviderBodyField,
   aiProviderRequestHeaders,
 } from '@/shared/lib/ai-provider-preference'
+import {
+  fetchWithResourceCache,
+  getCachedResource,
+} from '@/shared/lib/resource-cache'
 
 const API_BASE = '/api/links'
+const FEATURED_LINKS_CACHE_KEY = 'links:featured'
+const FEATURED_LINKS_CACHE_TTL_MS = 1000 * 60 * 5
 
 export interface DimensionWithValues {
   id: string
@@ -92,6 +98,18 @@ export async function fetchFeaturedLinks(): Promise<LinkWithValues[]> {
       valueIds: l.valueIds ?? [],
       faviconUrl: l.faviconUrl ?? row.favicon_url ?? null,
     }
+  })
+}
+
+export function getCachedFeaturedLinks(): LinkWithValues[] | null {
+  return getCachedResource<LinkWithValues[]>(FEATURED_LINKS_CACHE_KEY)
+}
+
+export async function fetchFeaturedLinksCached(): Promise<LinkWithValues[]> {
+  return fetchWithResourceCache({
+    key: FEATURED_LINKS_CACHE_KEY,
+    ttlMs: FEATURED_LINKS_CACHE_TTL_MS,
+    fetcher: fetchFeaturedLinks,
   })
 }
 

@@ -33,6 +33,9 @@
 - **RSS 학습 문서 추가/보강**
   - `learnings/0024-rss-basics.md` 추가
   - GeekNews 위젯 적용 사례와 구현 포인트 정리
+- **에러 픽스 문서 추가**
+  - `error-fixes/0002-main-widget-reload-cache.md` 추가
+  - 메인 위젯 페이지 이동 후 재로딩 이슈 원인/수정/재사용 패턴 기록
 - **메인 위젯 섹션 리디자인 계획 문서**
   - `docs/plans/2026-04-01-main-widget-section-refinement-design.md` 추가
   - 구조 강조(벤토 리듬·위계·상태 일관성) 방향으로 개선 범위/검증 기준 정리
@@ -75,6 +78,10 @@
   - 링크 타이틀 hover 시 전체 글자색이 바뀌던 동작 제거(가독성/일관성 개선)
   - 문구 정리: "메인 추천 링크" → "즐겨찾기 링크"
   - 우측 빈 슬롯을 GeekNews 위젯으로 전환
+- **메인 위젯 데이터 로딩 방식 개선**
+  - 페이지 이동 후 메인 복귀 시 위젯이 매번 재로딩되는 문제를 완화
+  - 공통 캐시 유틸 `shared/lib/resource-cache.ts` 추가
+  - `FavoriteLinksWidget`, `GeekNewsWidget`에 캐시 우선 렌더 + 중복 요청 방지 적용
 - **메인 히어로 정리**
   - `Hero`의 미사용 `introWidget` 참조 제거 (타입체크 오류 예방)
 - **그리드 셀 크기 동기화 방식 개선**

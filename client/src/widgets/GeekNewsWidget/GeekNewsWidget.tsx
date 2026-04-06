@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
-  fetchGeekNewsLatest,
+  fetchGeekNewsLatestCached,
+  getCachedGeekNewsLatest,
   type GeekNewsItem,
 } from '@/shared/api/geeknews'
 import { BentoCard } from '@/shared/ui/BentoCard'
@@ -35,12 +36,13 @@ function GeekNewsSkeleton() {
 }
 
 export default function GeekNewsWidget() {
-  const [items, setItems] = useState<GeekNewsItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const cached = getCachedGeekNewsLatest(DEFAULT_LIMIT)
+  const [items, setItems] = useState<GeekNewsItem[]>(cached ?? [])
+  const [loading, setLoading] = useState(cached === null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchGeekNewsLatest(DEFAULT_LIMIT)
+    fetchGeekNewsLatestCached(DEFAULT_LIMIT)
       .then((nextItems) => {
         setItems(nextItems)
         if (nextItems.length === 0) {

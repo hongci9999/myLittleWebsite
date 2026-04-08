@@ -7,6 +7,7 @@ import aiScrapsRoutes from './routes/ai-scraps.js'
 import columnScrapsRoutes from './routes/column-scraps.js'
 import aiSmokeRoutes from './routes/ai-smoke.js'
 import geekNewsRoutes from './routes/geeknews.js'
+import tarotRoutes from './routes/tarot.js'
 import { getAiProviderOptionsMeta } from './services/ai/index.js'
 
 const app = express()
@@ -36,6 +37,7 @@ app.use('/api/geeknews', geekNewsRoutes)
 app.use('/api/ai-scraps', aiScrapsRoutes)
 app.use('/api/column-scraps', columnScrapsRoutes)
 app.use('/api/learning', learningRoutes)
+app.use('/api/tarot', tarotRoutes)
 
 app.listen(PORT, '127.0.0.1', () => {
   console.log(`Server running at http://localhost:${PORT}`)

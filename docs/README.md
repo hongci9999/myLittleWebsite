@@ -43,6 +43,8 @@
 | 날짜                                                                  | 제목                                         |
 | --------------------------------------------------------------------- | -------------------------------------------- |
 | [2026-04-06](./plans/2026-04-06-geeknews-rss-widget-implementation.md) | 메인 GeekNews RSS 위젯 구현 계획            |
+| [2026-04-08](./plans/2026-04-08-tarot-daily-widget-design.md) | 타로 오늘의 운세 위젯 디자인 |
+| [2026-04-08](./plans/2026-04-08-tarot-daily-widget-implementation.md) | 타로 오늘의 운세 위젯 구현 계획 |
 | [2026-04-01](./plans/2026-04-01-main-widget-section-refinement-design.md) | 메인 위젯 섹션 리디자인(구조 강조)          |
 | [2026-03-24](./plans/2026-03-24-column-scraps-migration.sql)          | 칼럼 스크랩 테이블(통합 마이그레이션)        |
 | [2026-03-24](./plans/2026-03-24-column-scraps-add-x-kind.sql)         | 칼럼 `source_kind`에 `x` 추가(기존 DB용)     |
@@ -71,6 +73,7 @@
 - [0014 칼럼 스크랩·스크랩 목록 UX·마크다운 임베드](./decisions/0014-column-scraps-and-scrap-ux.md)
 - [0015 서버 AI 텍스트 제공자 추상화·프롬프트 모듈화](./decisions/0015-ai-text-provider-abstraction.md)
 - [0016 Gemini·유튜브 자막·공개 /api/meta](./decisions/0016-gemini-youtube-transcript-and-public-meta.md)
+- [0017 타로 위젯 해석 스키마·제공자 전략](./decisions/0017-tarot-reading-schema-and-provider-strategy.md)
 
 ### 학습 내용
 

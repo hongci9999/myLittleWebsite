@@ -5,6 +5,7 @@
 import type { ComponentType } from 'react'
 import FavoriteLinksWidget from '@/widgets/FavoriteLinksWidget'
 import GeekNewsWidget from '@/widgets/GeekNewsWidget'
+import TarotDailyWidget from '@/widgets/TarotDailyWidget'
 import { WidgetGrid } from '@/widgets/WidgetGrid'
 import {
   MAIN_WIDGET_LAYOUT,
@@ -14,6 +15,7 @@ import {
 const WIDGET_COMPONENTS: Record<MainWidgetId, ComponentType> = {
   'favorite-links': FavoriteLinksWidget,
   'geeknews-latest': GeekNewsWidget,
+  'tarot-daily': TarotDailyWidget,
 }
 
 export default function MainPage() {

@@ -6,6 +6,20 @@
 
 ### Added
 
+- **메인 타로 운세 위젯(메이저 아르카나 3장)**
+  - `TarotDailyWidget` 추가: 초기 흐림 뒷면 3장 + `운세보기` 시작 버튼
+  - 카드별 독립 연출: 클릭 시 회전→정/역 방향 확정→앞면 공개
+  - 애니메이션 중 재클릭 시 해당 카드만 즉시 앞면 공개
+- **타로 해석 API 통합**
+  - `POST /api/tarot/reading` 추가
+  - 로컬(rule-based)/API(LLM) 경로 모두 공통 `TarotReadingResponse` 스키마 반환
+  - API 출력 비정형 시 서버 정규화로 필드 보정
+- **타로 해석 로컬 엔진/프롬프트**
+  - `tarot-local-interpreter`(규칙 기반) 및 `tarot-reading.prompts`(API JSON 강제) 추가
+- **타로 관련 설계·구현 계획 및 ADR**
+  - 계획: `docs/plans/2026-04-08-tarot-daily-widget-design.md`, `docs/plans/2026-04-08-tarot-daily-widget-implementation.md`
+  - 결정: `docs/decisions/0017-tarot-reading-schema-and-provider-strategy.md`
+
 - **링크 AI: 분류 태그(`valueIds`) 자동 제안** — `POST /api/links/ai-suggest`가 DB 분류 축·값 카탈로그를 프롬프트에 넣고, 검증된 id만 응답; `LinkForm`에서 기존 선택에 병합
 - **연결 테스트** — 페이지 `/ai-smoke-test`, `GET /api/health`(Vite 프록시용), `GET /api/ai-smoke/local`(Ollama tags + 짧은 generate)
 - **클라이언트 AI 제공자 기본 설정** — `shared/lib/ai-provider-preference.ts`: `localStorage` + 요청 헤더 `X-AI-Provider` + POST 본문 `aiProvider`(프록시 환경 대비)

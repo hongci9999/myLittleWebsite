@@ -23,3 +23,4 @@ export type { AiSuggestResult, AiToolScrapAiFillResult, ColumnScrapAiFillResult 
 export { suggestLinkMeta } from './suggest-link-meta.js'
 export { suggestColumnScrapFromUrl } from './suggest-column-scrap.js'
 export { suggestAiToolScrapFromUrl } from './suggest-ai-tool-scrap.js'
+export { suggestTarotReading, normalizeTarotCards } from './suggest-tarot-reading.js'

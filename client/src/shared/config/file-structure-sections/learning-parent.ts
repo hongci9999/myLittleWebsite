@@ -4,6 +4,7 @@
  */
 import { registerFileStructureParent } from '../file-structure'
 import type { FileStructureSection } from '../file-structure'
+import { infoEngineerPracticalSection } from './learning-info-engineer-practical'
 import { infoEngineerSection } from './learning-info-engineer'
 
 /** 브레드크럼용 스텁 - 서버에 등록 시 여기에 추가 */
@@ -16,5 +17,5 @@ const STUB_SECTIONS: FileStructureSection[] = [
 registerFileStructureParent({
   parentPath: '/learning',
   parentLabel: '학습 기록',
-  sections: [infoEngineerSection, ...STUB_SECTIONS],
+  sections: [infoEngineerSection, infoEngineerPracticalSection, ...STUB_SECTIONS],
 })

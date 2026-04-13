@@ -15,13 +15,18 @@ export const LEARNINGS_ROOT =
 export interface LearningSectionConfig {
   sectionId: string
   label: string
-  /** learnings 하위 폴더명 (예: 정처기, 독후감) */
+  /** learnings 하위 폴더명 (예: 정보처리기사_필기, 독후감) */
   folderName: string
 }
 
 /** 등록된 섹션 목록 - 새 섹션 추가 시 여기에 추가 */
 export const LEARNING_SECTIONS: LearningSectionConfig[] = [
-  { sectionId: 'info-engineer', label: '정보처리기사', folderName: '정처기' },
+  { sectionId: 'info-engineer', label: '정보처리기사 필기', folderName: '정보처리기사_필기' },
+  {
+    sectionId: 'info-engineer-practical',
+    label: '정보처리기사 실기',
+    folderName: '정보처리기사_실기',
+  },
   { sectionId: 'big-data-analyst', label: '빅데이터분석기사', folderName: '빅데이터분석기사' },
   // { sectionId: 'book-reviews', label: '독후감', folderName: '독후감' },
   // { sectionId: 'db-engineer', label: '데이터베이스기사', folderName: '데이터베이스기사' },

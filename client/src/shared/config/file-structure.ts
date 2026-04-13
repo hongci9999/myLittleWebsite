@@ -21,7 +21,7 @@ export interface FileStructureNode {
 export interface FileStructureSection {
   sectionId: string
   sectionLabel: string
-  /** md fetch용 base path (예: /learnings/정처기) */
+  /** md fetch용 base path (예: /learnings/정보처리기사_필기) */
   basePath: string
   nodes: FileStructureNode[]
 }

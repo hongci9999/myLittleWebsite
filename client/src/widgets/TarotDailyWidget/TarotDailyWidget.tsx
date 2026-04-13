@@ -1,6 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { fetchTarotReading, type TarotReadingResponse } from '@/shared/api/tarot'
-import { createTarotDraw } from './model/tarot-draw'
+import {
+  createFreshTarotDailySnapshot,
+  loadTarotDailySnapshot,
+  saveTarotDailySnapshot,
+} from './model/tarot-daily-persistence'
 import type { TarotCardUiState, TarotDrawCard } from './model/types'
 import { TarotSpread } from './ui/TarotSpread'
 
@@ -18,13 +22,21 @@ function spinTurnsWithStop(targetDeg: number): number {
 }
 
 export default function TarotDailyWidget() {
-  const [started, setStarted] = useState(false)
-  const [cards, setCards] = useState<TarotDrawCard[]>(createTarotDraw())
-  const [rotations, setRotations] = useState<number[]>([0, 0, 0])
-  const [reading, setReading] = useState<TarotReadingResponse | null>(null)
+  const initial = useMemo(
+    () => loadTarotDailySnapshot() ?? createFreshTarotDailySnapshot(),
+    []
+  )
+  const [started, setStarted] = useState(initial.started)
+  const [cards, setCards] = useState<TarotDrawCard[]>(initial.cards)
+  const [rotations, setRotations] = useState<number[]>(initial.rotations)
+  const [reading, setReading] = useState<TarotReadingResponse | null>(initial.reading)
   const [readingLoading, setReadingLoading] = useState(false)
   const [readingError, setReadingError] = useState<string | null>(null)
   const timersRef = useRef<Record<number, TimeoutBucket>>({})
+
+  useEffect(() => {
+    saveTarotDailySnapshot({ started, cards, rotations, reading })
+  }, [started, cards, rotations, reading])
 
   const clearCardTimers = (index: number) => {
     const bucket = timersRef.current[index]

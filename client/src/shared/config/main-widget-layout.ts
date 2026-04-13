@@ -25,6 +25,6 @@ export const MAIN_WIDGET_LAYOUT: WidgetLayoutItem[] = [
   {
     id: 'tarot-daily',
     enabled: true,
-    gridClassName: 'min-w-0 md:col-span-5 md:row-span-5',
+    gridClassName: 'min-w-0 md:col-span-5 md:row-span-6',
   },
 ]

@@ -62,15 +62,19 @@ export function TarotSpread({
         </div>
       </div>
 
-      <div className="mt-4 h-52 overflow-y-auto rounded-md border border-border/60 p-3">
+      <div className="mt-4 h-[13rem] overflow-y-auto rounded-md border border-border/60 p-3">
         {readingLoading && (
-          <p className="text-xs text-muted-foreground">카드를 해석하고 있습니다...</p>
+          <p className="text-xs text-muted-foreground">
+            카드를 해석하고 있습니다...
+          </p>
         )}
         {readingError && <p className="text-xs text-red-500">{readingError}</p>}
 
         {reading ? (
           <>
-            <h3 className="text-xs font-semibold tracking-tight">오늘의 해석</h3>
+            <h3 className="text-xs font-semibold tracking-tight">
+              오늘의 해석
+            </h3>
             <div className="mt-2 space-y-1.5">
               {reading.cards.map((card) => (
                 <p
@@ -78,8 +82,12 @@ export function TarotSpread({
                   className="text-[11px] leading-relaxed text-muted-foreground"
                 >
                   <span className="font-semibold text-foreground">
-                    {card.slot === 'past' ? '과거' : card.slot === 'present' ? '현재' : '조언'} ·{' '}
-                    {card.name}
+                    {card.slot === 'past'
+                      ? '과거'
+                      : card.slot === 'present'
+                        ? '현재'
+                        : '조언'}{' '}
+                    · {card.name}
                   </span>{' '}
                   {card.interpretation}
                 </p>

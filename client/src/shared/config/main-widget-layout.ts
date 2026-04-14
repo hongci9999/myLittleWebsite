@@ -20,7 +20,7 @@ export const MAIN_WIDGET_LAYOUT: WidgetLayoutItem[] = [
   {
     id: 'geeknews-latest',
     enabled: true,
-    gridClassName: 'min-w-0 md:col-span-7 md:row-span-7',
+    gridClassName: 'min-w-0 md:col-span-7 md:row-span-5',
   },
   {
     id: 'tarot-daily',

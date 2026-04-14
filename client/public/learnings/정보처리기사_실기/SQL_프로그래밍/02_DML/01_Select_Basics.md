@@ -15,6 +15,8 @@
 - **WHERE**: 행 필터. `BETWEEN`, `IN`, `LIKE`, `IS NULL` 등과 조합.
 - **ORDER BY**: 정렬. `ASC` 기본, `DESC` 명시.
 - **INSERT / UPDATE / DELETE**: 데이터 변경. WHERE 누락 시 전체 행에 영향(시험에서 함정으로 자주 등장).
+- **논리 연산**: `AND` / `OR` / `NOT`. 복잡하면 **괄호**로 묶어 우선순위를 명확히(지문과 동일하게).
+- **NULL과 WHERE**: `WHERE 컬 = NULL`은 **항상 UNKNOWN**(행에서 제외). 반드시 **`IS NULL` / `IS NOT NULL`**.
 
 ---
 
@@ -35,6 +37,7 @@ FROM   테이블 [별칭]
 WHERE 컬럼 BETWEEN A AND B
 WHERE 컬럼 IN (값1, 값2, ...)
 WHERE 컬럼 LIKE '패턴%'   -- % 임의 길이, _ 한 글자
+WHERE 컬럼 LIKE '%50\%%' ESCAPE '\'   -- %·_를 글자로 쓸 때 ESCAPE(지문에 나오면)
 WHERE 컬럼 IS NULL
 WHERE 컬럼 IS NOT NULL
 ```
@@ -43,6 +46,8 @@ WHERE 컬럼 IS NOT NULL
 
 ```sql
 INSERT INTO 테이블 (컬1, 컬2) VALUES (값1, 값2);
+INSERT INTO 테이블 VALUES (값1, 값2);  -- 컬럼 목록 생략 시 테이블 정의 순서·개수와 정확히 일치
+INSERT INTO 테이블 (컬1, 컬2) VALUES (a1, b1), (a2, b2);  -- 다중 행(지문·DBMS에 따라)
 INSERT INTO 테이블 SELECT ... ;
 ```
 
@@ -107,6 +112,7 @@ WHERE 급여 < 200;
 - `WHERE 성명 LIKE '김%'` → 행 **1**만.
 - `UPDATE ... WHERE 부서코드='10'` → **2행** 갱신(1, 3).
 - `DELETE ... WHERE 급여 < 200` → **0행** 삭제.
+- `WHERE 부서코드 = NULL` → **0행**(UNKNOWN → 행 제외). `IS NULL`과 구분해서 암기.
 
 ---
 
@@ -115,5 +121,6 @@ WHERE 급여 < 200;
 - [ ] `WHERE` 없는 `UPDATE`/`DELETE`가 **전체 행**을 바꾼다는 점 인지.
 - [ ] `NULL` 비교는 `= NULL`이 아니라 **`IS NULL`**.
 - [ ] 문자열 리터럴은 작은따옴표 `'...'`.
+- [ ] 상위 N건·페이징 문법(`LIMIT`, `FETCH`, `ROWNUM` 등)은 **교재·기출** 우선 → `04_기타/02_DBMS_및_실기_문법_참고.md`.
 
-다음: `02_Functions_and_GroupBy.md`
+다음: `02_Functions_and_GroupBy.md` · DDL·제약: `../01_DDL/02_Constraints.md`

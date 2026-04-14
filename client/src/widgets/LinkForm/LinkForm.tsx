@@ -103,27 +103,22 @@ export default function LinkForm({
       await new Promise((r) => setTimeout(r, 200))
       setAiStep('analyzing')
       const result = await suggestLinkMeta(token, url.trim(), title.trim())
-      if (result) {
-        setTitle(result.title)
-        setDescription(result.description)
-        if (result.faviconUrl) setFaviconUrl(result.faviconUrl)
-        if (result.valueIds?.length) {
-          const suggested = result.valueIds
-          setValueIds((prev) => new Set([...prev, ...suggested]))
-        }
-        setLastAiResult({
-          title: result.title,
-          description: result.description,
-          rawResponse: result.rawResponse,
-        })
-        setAiStep('done')
-      } else {
-        setAiStep('error')
-        setAiError('로컬 Ollama 또는 API(Gemini) 설정을 확인하세요.')
+      setTitle(result.title)
+      setDescription(result.description)
+      if (result.faviconUrl) setFaviconUrl(result.faviconUrl)
+      if (result.valueIds?.length) {
+        const suggested = result.valueIds
+        setValueIds((prev) => new Set([...prev, ...suggested]))
       }
-    } catch {
+      setLastAiResult({
+        title: result.title,
+        description: result.description,
+        rawResponse: result.rawResponse,
+      })
+      setAiStep('done')
+    } catch (e) {
       setAiStep('error')
-      setAiError('AI 추천을 불러오지 못했습니다.')
+      setAiError(e instanceof Error ? e.message : 'AI 추천을 불러오지 못했습니다.')
     } finally {
       setAiLoading(false)
     }

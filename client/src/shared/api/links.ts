@@ -152,19 +152,58 @@ export async function suggestLinkMeta(
   valueIds?: string[]
   rawResponse?: string
   faviconUrl?: string | null
-} | null> {
-  const res = await fetch(`${API_BASE}/ai-suggest`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeaders(token),
-      ...aiProviderRequestHeaders(),
-    },
-    body: JSON.stringify({ url, title: title ?? '', ...aiProviderBodyField() }),
-  })
-  if (!res.ok) return null
-  const data = await res.json()
-  return data as {
+}> {
+  let res: Response
+  try {
+    res = await fetch(`${API_BASE}/ai-suggest`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders(token),
+        ...aiProviderRequestHeaders(),
+      },
+      body: JSON.stringify({ url, title: title ?? '', ...aiProviderBodyField() }),
+    })
+  } catch {
+    throw new Error(
+      'API 서버에 연결할 수 없습니다. 백엔드가 실행 중인지 확인하세요. 저장소 루트에서 `npm run dev`를 쓰면 클라이언트와 API가 함께 올라갑니다.'
+    )
+  }
+
+  const rawText = await res.text()
+  let body: unknown = {}
+  if (rawText.trim()) {
+    try {
+      body = JSON.parse(rawText) as unknown
+    } catch {
+      body = {}
+    }
+  }
+
+  const serverError =
+    body &&
+    typeof body === 'object' &&
+    'error' in body &&
+    typeof (body as { error: unknown }).error === 'string'
+      ? (body as { error: string }).error.trim()
+      : ''
+
+  if (!res.ok) {
+    if (res.status === 401) {
+      throw new Error(
+        serverError || '인증이 필요합니다. 로그인이 만료되었을 수 있으니 다시 로그인한 뒤 시도하세요.'
+      )
+    }
+    if (res.status === 503) {
+      throw new Error(
+        serverError ||
+          'AI를 사용할 수 없습니다. 로컬 모드면 Ollama 실행·모델(`OLLAMA_MODEL`)을, API 모드면 서버의 Gemini 키 설정을 확인하세요.'
+      )
+    }
+    throw new Error(serverError || `AI 추천 요청 실패 (${res.status})`)
+  }
+
+  return body as {
     title: string
     description: string
     valueIds?: string[]

@@ -83,6 +83,11 @@ const infoEngineerPracticalSection: FileStructureSection = {
               "slug": "01_Builtin_Functions_and_View",
               "title": "01_Builtin_Functions_and_View",
               "filePath": "SQL_프로그래밍/04_기타/01_Builtin_Functions_and_View.md"
+            },
+            {
+              "slug": "02_DBMS_및_실기_문법_참고",
+              "title": "02_DBMS_및_실기_문법_참고",
+              "filePath": "SQL_프로그래밍/04_기타/02_DBMS_및_실기_문법_참고.md"
             }
           ]
         },
@@ -90,6 +95,11 @@ const infoEngineerPracticalSection: FileStructureSection = {
           "id": "99_Practice_Problems",
           "name": "Practice_Problems",
           "docs": [
+            {
+              "slug": "01_Join_서브쿼리_통합예제",
+              "title": "01_Join_서브쿼리_통합예제",
+              "filePath": "SQL_프로그래밍/99_Practice_Problems/01_Join_서브쿼리_통합예제.md"
+            },
             {
               "slug": "2024_Past_Exam_SQL",
               "title": "2024_Past_Exam_SQL",

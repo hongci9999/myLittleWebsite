@@ -41,7 +41,16 @@ ALTER TABLE 테이블명 ADD 컬럼명 데이터타입 [제약];
 ALTER TABLE 테이블명 DROP COLUMN 컬럼명;
 
 -- 컬럼 이름/타입 변경 등은 제품마다 상이 — 문제에서 제시된 문법을 따름
+
+-- 제약 추가/삭제 (자주 출제)
+ALTER TABLE 테이블명
+  ADD CONSTRAINT 제약명 PRIMARY KEY (컬럼명);
+
+ALTER TABLE 테이블명
+  DROP CONSTRAINT 제약명;
 ```
+
+> `MODIFY`, `ALTER COLUMN`, `RENAME COLUMN` 등 세부 문법은 DBMS별 차이가 크므로 **문제에 나온 형태를 그대로** 쓰는 것이 안전합니다.
 
 ### DROP TABLE
 
@@ -72,6 +81,7 @@ CREATE TABLE 사원 (
 );
 
 ALTER TABLE 사원 ADD 입사일 DATE DEFAULT CURRENT_DATE;
+ALTER TABLE 사원 ADD CONSTRAINT CK_사원번호 CHECK (사원번호 > 0);
 
 DROP TABLE 사원 RESTRICT;
 ```
@@ -83,6 +93,8 @@ DROP TABLE 사원 RESTRICT;
 | 상황 | 기대 결과 |
 |------|-----------|
 | `CREATE TABLE 부서` 성공 | `부서` 테이블이 카탈로그에 등록되고, 빈 테이블로 조회 가능 (`SELECT * FROM 부서` → 행 0건). |
+| `ALTER TABLE 사원 ADD 입사일 DATE DEFAULT CURRENT_DATE` 성공 | 기존 행은 DBMS/설정에 따라 기본값 또는 NULL 처리될 수 있으므로 지문 기준으로 판단. |
+| `ALTER TABLE 사원 ADD CONSTRAINT ...` 시 기존 데이터가 조건 위반 | 제약 추가 자체가 **실패**(오류). |
 | `DROP TABLE 사원 RESTRICT`인데 `사원`을 참조하는 FK가 다른 테이블에 있음 | **오류**로 삭제 실패(RESTRICT). |
 | `DROP TABLE 사원 CASCADE`(문제 조건상 허용 시) | 사원 및 그에 따른 의존 객체 처리가 CASCADE 규칙에 따라 진행(문제에서 제시된 결과표를 그대로 선택). |
 
@@ -91,7 +103,9 @@ DROP TABLE 사원 RESTRICT;
 ## 5. 실기 전략 체크리스트
 
 - [ ] PRIMARY KEY / FOREIGN KEY / NOT NULL이 **테이블 정의 안에 일관되게** 들어갔는지 확인.
+- [ ] `ALTER TABLE` 문제면 **컬럼 변경인지 / 제약 변경인지** 먼저 구분.
 - [ ] `DROP ... CASCADE | RESTRICT`를 **문맥(참조 관계)**과 함께 읽기.
 - [ ] 문제가 Oracle/MySQL/ANSI 중 무엇을 전제로 하는지(있으면) 문법 차이 주의.
+- [ ] 제약 관련 상세는 `02_Constraints.md`와 함께 확인.
 
 다음: `02_Constraints.md`에서 제약조건을 세분화해 정리합니다.

@@ -5,6 +5,7 @@
 import fs from 'fs'
 import path from 'path'
 import {
+  getSectionBasePath,
   getSectionConfig,
   getSectionFolderPath,
 } from '../config/learning-sections.js'
@@ -69,17 +70,25 @@ function scanDir(dirPath: string, baseRelPath = ''): { docs: ScanDoc[]; children
 export function scanLearningSection(sectionId: string): FileStructureSectionResponse | null {
   const config = getSectionConfig(sectionId)
   const dirPath = getSectionFolderPath(sectionId)
-  if (!config || !dirPath) return null
+  const basePath = getSectionBasePath(sectionId)
+  if (!config || !dirPath || !basePath) return null
 
   if (!fs.existsSync(dirPath)) {
-    return { sectionId, sectionLabel: config.label, basePath: `/learnings/${config.folderName}`, nodes: [] }
+    return { sectionId, sectionLabel: config.label, basePath, nodes: [] }
   }
 
-  const topDirs = fs
+  const entries = fs
     .readdirSync(dirPath, { withFileTypes: true })
-    .filter((e) => e.isDirectory())
-    .map((e) => e.name)
-    .sort()
+    .sort((a, b) => a.name.localeCompare(b.name))
+
+  const topDirs = entries.filter((e) => e.isDirectory()).map((e) => e.name)
+  const topDocs = entries
+    .filter((e) => e.isFile() && e.name.endsWith('.md'))
+    .map((e) => {
+      const slug = slugFromFilename(e.name)
+      return { slug, title: slug, filePath: e.name }
+    })
+    .sort((a, b) => a.title.localeCompare(b.title))
 
   const nodes = topDirs.map((nodeId) => {
     const nodePath = path.join(dirPath, nodeId)
@@ -93,10 +102,18 @@ export function scanLearningSection(sectionId: string): FileStructureSectionResp
     return node
   })
 
+  if (topDocs.length > 0) {
+    nodes.unshift({
+      id: '__root-docs',
+      name: '프로젝트 학습 노트 문서',
+      docs: topDocs,
+    })
+  }
+
   return {
     sectionId,
     sectionLabel: config.label,
-    basePath: `/learnings/${config.folderName}`,
+    basePath,
     nodes,
   }
 }

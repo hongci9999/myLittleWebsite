@@ -11,6 +11,8 @@ import {
 } from '@/shared/config/file-structure'
 import { Button } from '@/components/ui/button'
 
+const ROOT_DOCS_NODE_ID = '__root-docs'
+
 interface Props {
   parentPath: string
   sectionId: string
@@ -42,7 +44,12 @@ export default function FileStructureBrowserPage({
 
   if (result.type === 'node-list') {
     const currentPath = buildPath(parentPath, sectionId, result.pathSegments)
-    if (result.nodes.length === 0) {
+    const rootDocsNode = result.nodes.find((node) => node.id === ROOT_DOCS_NODE_ID)
+    const directDocs = rootDocsNode?.docs ?? []
+    const visibleNodes = result.nodes.filter((node) => node.id !== ROOT_DOCS_NODE_ID)
+
+    const isEmpty = visibleNodes.length === 0 && directDocs.length === 0
+    if (isEmpty) {
       return (
         <div className="mx-auto max-w-3xl px-6 py-16">
           <p className="text-muted-foreground">준비 중입니다.</p>
@@ -52,7 +59,15 @@ export default function FileStructureBrowserPage({
     return (
       <div className="mx-auto max-w-3xl px-6 py-16">
         <ul className="flex flex-col gap-2">
-          {result.nodes.map((node) => (
+          {directDocs.map((doc) => (
+            <li key={`root-doc-${doc.slug}`}>
+              <FileListItem
+                to={`${currentPath}/${ROOT_DOCS_NODE_ID}/${doc.slug}`}
+                label={doc.title}
+              />
+            </li>
+          ))}
+          {visibleNodes.map((node) => (
             <li key={node.id}>
               <FileListItem
                 to={`${currentPath}/${node.id}`}
@@ -92,7 +107,10 @@ export default function FileStructureBrowserPage({
   }
 
   // result.type === 'doc'
-  const backPath = buildPath(parentPath, sectionId, result.pathSegments)
+  const backPath =
+    result.pathSegments.length === 1 && result.pathSegments[0] === ROOT_DOCS_NODE_ID
+      ? buildPath(parentPath, sectionId, [])
+      : buildPath(parentPath, sectionId, result.pathSegments)
   return (
     <DocViewer
       doc={result.doc}

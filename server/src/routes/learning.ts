@@ -1,6 +1,8 @@
 import { Router } from 'express'
+import fs from 'fs'
+import path from 'path'
 import { getSections, getSectionWithNodes } from '../db/queries/learning.js'
-import { LEARNING_SECTIONS } from '../config/learning-sections.js'
+import { LEARNING_SECTIONS, getSectionBasePath, getSectionFolderPath } from '../config/learning-sections.js'
 import { scanLearningSection } from '../services/learning-scan.js'
 
 const router = Router()
@@ -24,9 +26,9 @@ router.get('/sections', async (_, res) => {
   const sections = LEARNING_SECTIONS.map((s) => ({
     sectionId: s.sectionId,
     sectionLabel: s.label,
-    basePath: `/learnings/${s.folderName}`,
+    basePath: s.basePath ?? (s.folderName ? `/learnings/${s.folderName}` : ''),
     nodes: [],
-  }))
+  })).filter((s) => s.basePath)
   res.json(sections)
 })
 
@@ -46,6 +48,34 @@ router.get('/sections/:sectionId', async (req, res) => {
     return res.status(404).json({ error: 'Section not found' })
   }
   res.json(scanned)
+})
+
+/** GET /api/learning/raw/:sectionId/* - 섹션 파일 원문(마크다운) 조회 */
+router.get('/raw/:sectionId/*', (req, res) => {
+  const { sectionId } = req.params
+  const relPath = Array.isArray(req.params[0]) ? req.params[0].join('/') : req.params[0]
+  if (!relPath || !relPath.endsWith('.md')) {
+    return res.status(400).send('Invalid markdown path')
+  }
+
+  const sectionDir = getSectionFolderPath(sectionId)
+  const basePath = getSectionBasePath(sectionId)
+  if (!sectionDir || !basePath || !basePath.startsWith('/api/learning/raw/')) {
+    return res.status(404).send('Section not found')
+  }
+
+  const normalized = path.normalize(relPath)
+  const target = path.resolve(sectionDir, normalized)
+  const relative = path.relative(path.resolve(sectionDir), target)
+  if (relative.startsWith('..') || path.isAbsolute(relative)) {
+    return res.status(403).send('Forbidden')
+  }
+  if (!fs.existsSync(target) || !fs.statSync(target).isFile()) {
+    return res.status(404).send('File not found')
+  }
+
+  const content = fs.readFileSync(target, 'utf-8')
+  res.type('text/markdown; charset=utf-8').send(content)
 })
 
 export default router

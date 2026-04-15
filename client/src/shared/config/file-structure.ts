@@ -171,16 +171,20 @@ function buildBreadcrumbFromPath(
 
     if (node) {
       currentPath = `${currentPath}/${node.id}`
-      items.push({ label: node.name, href: currentPath })
+      const isRootDocsNode = node.id === '__root-docs'
+      if (!isRootDocsNode) {
+        items.push({ label: node.name, href: currentPath })
+      }
 
       if (node.children?.length) {
         currentNodes = node.children
       } else if (node.docs?.length) {
-        if (i === pathParts.length - 1) {
+        if (i === pathParts.length - 1 && !isRootDocsNode) {
           items[items.length - 1].href = undefined
           return items
         }
-        const doc = node.docs.find((d) => d.slug === pathParts[i + 1])
+        const docPartIndex = isRootDocsNode ? i : i + 1
+        const doc = node.docs.find((d) => d.slug === pathParts[docPartIndex])
         if (doc) {
           items.push({ label: doc.title, href: undefined })
           return items

@@ -6,6 +6,12 @@
 
 ### Added
 
+- **첫 AWS 배포 실습 가이드** — `docs/plans/2026-05-04-aws-first-deploy-walkthrough.md` (로컬 빌드·LISTEN_HOST·S3·CloudFront·**Elastic Beanstalk**(zip·환경 속성·헬스·CORS)·GitHub 연동 안내); [0025 허브](docs/learnings/0025-aws-deployment-series-hub.md)에서 링크
+- **AWS 배포 학습 시리즈 (`docs/learnings/0025`–`0033`)**
+  - 허브·목차(0025), 배포 공통 개념(0026), 네트워크·HTTPS(0027), AWS 계정·IAM·과금(0028)
+  - Vite 정적 배포 S3·CloudFront(0029), Express API 호스팅 선택지(0030), 프론트·API 연결·CORS(0031)
+  - GitHub Actions·OIDC 개요(0032), 운영·보안·트러블슈팅(0033)
+  - `docs/README.md` 학습 표에 시리즈 안내 및 행 추가
 - **메인 타로 운세 위젯(메이저 아르카나 3장)**
   - `TarotDailyWidget` 추가: 초기 흐림 뒷면 3장 + `운세보기` 시작 버튼
   - 카드별 독립 연출: 클릭 시 회전→정/역 방향 확정→앞면 공개
@@ -80,8 +86,14 @@
   - decisions 0013: DB 저장 방식 채택
   - 마이그레이션: `docs/plans/2026-03-23-featured-links-migration.sql`
 
+### Fixed
+
+- **`npm run build`(server)** — `learning.ts` 와일드카드 경로에서 `req.params[0]` 타입 오류 수정(`wildcardTail` 헬퍼).
+- **`youtube-transcript` 로드** — `node dist/index.js`·Elastic Beanstalk에서 `ERR_PACKAGE_PATH_NOT_EXPORTED` 방지: `package.json` 경로로 패키지 루트를 잡은 뒤 `dist/youtube-transcript.esm.js` 를 동적 `import` ([0023](docs/learnings/0023-youtube-transcript-cjs-load.md) 보강).
+
 ### Changed
 
+- **서버 리스닝 주소** — 배포 시 외부에서 붙을 수 있도록 `LISTEN_HOST` 환경 변수 추가(기본 `127.0.0.1`, AWS 등에서는 `0.0.0.0`)
 - **AI 제공자 라우팅** — 전역 `AI_TEXT_PROVIDER` 환경 변수 단일 분기 제거. 요청마다 `X-AI-Provider` / `aiProvider`로 Ollama·Gemini 선택(미지정 시 로컬)
 - **기본 Ollama 모델** — `gemma4` (`DEFAULT_OLLAMA_MODEL`, `ollama-text-provider.ts` + 레지스트리 메타)
 - **Vite 개발 서버 `/api` 프록시** — 대상 `127.0.0.1`, 장시간 AI 채우기용 `proxyReq.setTimeout(600_000)`
@@ -120,7 +132,7 @@
 
 - **Supabase Keep-Alive + GitHub Actions**
   - Supabase 무료 티어 7일 비활성 정지 방지
-  - `keepalive` 전용 테이블 (id, pinged_at), REST API로 5일마다 조회
+  - `keepalive` 전용 테이블 (id, pinged_at), REST API로 매일 조회
   - `.github/workflows/supabase-keepalive.yml` cron 스케줄
   - GitHub Secrets: `SUPABASE_URL`, `SUPABASE_ANON_KEY` 필요
   - 설계: `docs/plans/2026-03-13-supabase-keepalive-github-actions.md`

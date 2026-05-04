@@ -17,6 +17,12 @@
 - 오류 예: `does not provide an export named 'fetchTranscript'`.
 - `server/src/services/youtube-transcript-text.ts`에서 `const require = createRequire(import.meta.url)` 후 `require('youtube-transcript')`로 `fetchTranscript`만 꺼내 타입 단언으로 사용한다.
 
+### 보강 (2026-05): `node dist/index.js`·Elastic Beanstalk
+
+- `require('youtube-transcript')` 는 패키지 `main`(CJS) 때문에 **`exports is not defined in ES module scope`** 로 깨질 수 있음.
+- `require.resolve('youtube-transcript/dist/youtube-transcript.esm.js')` 는 패키지 **`exports`** 에 서브패스가 없으면 **`ERR_PACKAGE_PATH_NOT_EXPORTED`** (EB 로그에서 앱 즉시 크래시).
+- 현재 코드: `require.resolve('youtube-transcript/package.json')` → `dirname` → `dist/youtube-transcript.esm.js` 를 `pathToFileURL` + 동적 `import()` 로 로드.
+
 ## 참고
 
 - 의사결정·맥락: [decisions 0016](../decisions/0016-gemini-youtube-transcript-and-public-meta.md)

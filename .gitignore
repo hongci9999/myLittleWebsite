@@ -41,3 +41,6 @@ client/dist/
 # 정처기 (루트 소스 폴더, client/public/learnings/정보처리기사_필기 등으로 복사·스캔)
 /정처기/
 
+# EB 등 로컬에서 만든 배포 zip (실수 커밋 방지)
+server/*.zip
+

@@ -12,6 +12,8 @@ import { getAiProviderOptionsMeta } from './services/ai/index.js'
 
 const app = express()
 const PORT = Number(process.env.PORT) || 3001
+/** 로컬: `127.0.0.1`(기본). AWS·컨테이너 등 외부 접속 시 `LISTEN_HOST=0.0.0.0` */
+const LISTEN_HOST = process.env.LISTEN_HOST ?? '127.0.0.1'
 
 app.use(express.json())
 
@@ -39,6 +41,6 @@ app.use('/api/column-scraps', columnScrapsRoutes)
 app.use('/api/learning', learningRoutes)
 app.use('/api/tarot', tarotRoutes)
 
-app.listen(PORT, '127.0.0.1', () => {
-  console.log(`Server running at http://localhost:${PORT}`)
+app.listen(PORT, LISTEN_HOST, () => {
+  console.log(`Server listening on http://${LISTEN_HOST}:${PORT}`)
 })

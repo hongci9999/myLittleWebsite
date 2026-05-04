@@ -50,10 +50,17 @@ router.get('/sections/:sectionId', async (req, res) => {
   res.json(scanned)
 })
 
+/** 와일드카드 `*` — path-to-regexp가 `params['0']`에 넣음. @types/express는 sectionId만 알려 줌 */
+function wildcardTail(params: { sectionId: string }): string | undefined {
+  const p = params as Record<string, string | string[] | undefined>
+  const v = p['0']
+  return Array.isArray(v) ? v.join('/') : v
+}
+
 /** GET /api/learning/raw/:sectionId/* - 섹션 파일 원문(마크다운) 조회 */
 router.get('/raw/:sectionId/*', (req, res) => {
   const { sectionId } = req.params
-  const relPath = Array.isArray(req.params[0]) ? req.params[0].join('/') : req.params[0]
+  const relPath = wildcardTail(req.params)
   if (!relPath || !relPath.endsWith('.md')) {
     return res.status(400).send('Invalid markdown path')
   }

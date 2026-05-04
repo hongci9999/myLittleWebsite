@@ -1,12 +1,31 @@
 import { createRequire } from 'node:module'
+import { dirname, join } from 'node:path'
+import { pathToFileURL } from 'node:url'
 
-/** tsx 엔트리 실행 시 패키지 main(CJS)이 잡혀 named ESM import가 실패하므로 require로 로드 */
+type FetchTranscriptFn = (
+  videoId: string,
+  config?: { lang?: string; fetch?: typeof fetch }
+) => Promise<Array<{ text: string; duration: number; offset: number; lang?: string }>>
+
+/**
+ * - `require('youtube-transcript')` / `import('youtube-transcript')` 는 CJS 메인 때문에 Node에서 깨질 수 있음.
+ * - `require.resolve('youtube-transcript/dist/...')` 는 package `exports` 에 없으면 `ERR_PACKAGE_PATH_NOT_EXPORTED` (EB 빌치).
+ * → `youtube-transcript/package.json` 까지만 resolve 후 디스크 상 `dist/*.esm.js` 를 file URL 로 import.
+ */
 const require = createRequire(import.meta.url)
-const { fetchTranscript } = require('youtube-transcript') as {
-  fetchTranscript: (
-    videoId: string,
-    config?: { lang?: string; fetch?: typeof fetch }
-  ) => Promise<Array<{ text: string; duration: number; offset: number; lang?: string }>>
+const youtubeTranscriptEsmUrl = pathToFileURL(
+  join(dirname(require.resolve('youtube-transcript/package.json')), 'dist', 'youtube-transcript.esm.js')
+).href
+
+let fetchTranscriptPromise: Promise<FetchTranscriptFn> | null = null
+
+async function getFetchTranscript(): Promise<FetchTranscriptFn> {
+  if (!fetchTranscriptPromise) {
+    fetchTranscriptPromise = import(youtubeTranscriptEsmUrl).then(
+      (m) => m.fetchTranscript as FetchTranscriptFn
+    )
+  }
+  return fetchTranscriptPromise
 }
 
 /** AI 제안 API가 클라이언트에 그대로 넘길 메시지 */
@@ -62,6 +81,7 @@ export async function tryFetchYoutubeTranscriptPlain(videoUrl: string): Promise<
   const id = parseYoutubeVideoId(videoUrl)
   if (!id) return null
   try {
+    const fetchTranscript = await getFetchTranscript()
     const chunks = await fetchTranscript(videoUrl.trim(), { fetch })
     let t = chunks.map((c) => c.text).join(' ').replace(/\s+/g, ' ').trim()
     if (!t) return null

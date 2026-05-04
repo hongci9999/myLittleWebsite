@@ -42,6 +42,7 @@
 
 | 날짜                                                                  | 제목                                         |
 | --------------------------------------------------------------------- | -------------------------------------------- |
+| [2026-05-04](./plans/2026-05-04-aws-first-deploy-walkthrough.md)     | 첫 AWS 배포 실습 가이드 (단계별)            |
 | [2026-04-06](./plans/2026-04-06-geeknews-rss-widget-implementation.md) | 메인 GeekNews RSS 위젯 구현 계획            |
 | [2026-04-08](./plans/2026-04-08-tarot-daily-widget-design.md) | 타로 오늘의 운세 위젯 디자인 |
 | [2026-04-08](./plans/2026-04-08-tarot-daily-widget-implementation.md) | 타로 오늘의 운세 위젯 구현 계획 |
@@ -77,6 +78,8 @@
 
 ### 학습 내용
 
+**AWS 배포 학습 시리즈**(목차·읽는 순서): [0025 허브](./learnings/0025-aws-deployment-series-hub.md) — 공통 개념(0026) → 네트워크·HTTPS(0027) → AWS 계정·IAM(0028) → 정적 프론트(0029) → Node API(0030) → 연결·CORS(0031) → CI/CD(0032) → 운영·트러블슈팅(0033).
+
 | 번호                                                         | 제목                                          | 태그                           |
 | ------------------------------------------------------------ | --------------------------------------------- | ------------------------------ |
 | [0001](./learnings/0001-npm-workspaces.md)                   | npm workspaces                                | 도구, 개발방법론               |
@@ -102,6 +105,15 @@
 | [0022](./learnings/0022-mermaid-diagram-basics.md)           | Mermaid 다이어그램 기초                       | 프론트, 도구, 개발방법론, 아키텍처 |
 | [0023](./learnings/0023-youtube-transcript-cjs-load.md)      | youtube-transcript CJS require(tsx)           | ai, 백엔드, 도구, npm            |
 | [0024](./learnings/0024-rss-basics.md)                       | RSS 개요와 활용 방법                          | 도구, 개발방법론, 백엔드         |
+| [0025](./learnings/0025-aws-deployment-series-hub.md)        | AWS 배포 학습 시리즈 (허브·목차)               | 배포, aws, 인프라, 개발방법론, 도구 |
+| [0026](./learnings/0026-deployment-common-concepts.md)      | 배포 공통 개념 (빌드·환경·정적 vs API)        | 배포, 개발방법론, 백엔드, 프론트, 아키텍처 |
+| [0027](./learnings/0027-network-domain-https-for-deployment.md) | 네트워크·도메인·HTTPS (배포 맥락)           | 배포, 인프라, 프론트, 백엔드     |
+| [0028](./learnings/0028-aws-account-region-iam-billing.md)   | AWS 계정·리전·IAM·과금                       | 배포, aws, 인프라, 도구, 개발방법론 |
+| [0029](./learnings/0029-aws-static-frontend-vite-s3-cloudfront.md) | 정적 프론트(Vite) on AWS (S3·CloudFront) | 배포, aws, 프론트, 인프라, 도구 |
+| [0030](./learnings/0030-aws-node-express-api-deployment.md)  | Node(Express) API on AWS                     | 배포, aws, 백엔드, 인프라, 도구   |
+| [0031](./learnings/0031-frontend-backend-integration-cors.md) | 프론트·API 연결 (베이스 URL·CORS)          | 배포, 프론트, 백엔드, 인프라, 개발방법론 |
+| [0032](./learnings/0032-cicd-github-actions-aws.md)          | CI/CD·GitHub Actions로 AWS 배포              | 배포, aws, 개발방법론, 도구, 백엔드 |
+| [0033](./learnings/0033-aws-ops-security-troubleshooting.md) | AWS 운영·보안·트러블슈팅                     | 배포, aws, 인프라, 백엔드, 개발방법론 |
 
 ### 에러 픽스
 

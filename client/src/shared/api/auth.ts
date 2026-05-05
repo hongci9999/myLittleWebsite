@@ -1,4 +1,6 @@
-const API_BASE = '/api/auth'
+﻿import { apiUrl } from '@/shared/api/base'
+
+const API_BASE = apiUrl('/api/auth')
 
 export interface LoginResponse {
   access_token: string
@@ -78,3 +80,4 @@ export async function verifyToken(accessToken: string): Promise<boolean> {
   })
   return res.ok
 }
+

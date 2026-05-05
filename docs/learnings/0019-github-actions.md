@@ -28,7 +28,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '0 12 */5 * *'  # 5일마다 12:00 UTC
+    - cron: '0 12 * * *'  # 매일 12:00 UTC
   workflow_dispatch: # 수동 실행 (Actions 탭에서 Run workflow)
 ```
 
@@ -36,9 +36,8 @@ on:
 
 | 필드 | 분 | 시 | 일 | 월 | 요일 |
 |------|-----|-----|-----|-----|------|
-| 예시 | 0 | 12 | */5 | * | * |
+| 예시 | 0 | 12 | * | * | * |
 
-- `*/5`: 5 간격 (1, 6, 11, 16, 21, 26일)
 - `0 12 * * *`: 매일 12:00 UTC
 - [crontab.guru](https://crontab.guru/)로 검증 가능
 
@@ -109,7 +108,7 @@ steps:
 **Supabase Keep-Alive** (`.github/workflows/supabase-keepalive.yml`):
 
 - **목적**: 7일 비활성 시 자동 정지되는 Supabase 무료 프로젝트 유지
-- **방식**: 5일마다 `keepalive` 테이블 REST API 조회 → DB 활동 발생
+- **방식**: 매일 `keepalive` 테이블 REST API 조회 → DB 활동 발생
 - **필요 Secrets**: `SUPABASE_URL`, `SUPABASE_ANON_KEY`
 - **설계**: `docs/plans/2026-03-13-supabase-keepalive-github-actions.md`
 

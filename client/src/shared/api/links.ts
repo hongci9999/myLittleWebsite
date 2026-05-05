@@ -1,4 +1,4 @@
-import {
+﻿import {
   aiProviderBodyField,
   aiProviderRequestHeaders,
 } from '@/shared/lib/ai-provider-preference'
@@ -6,8 +6,9 @@ import {
   fetchWithResourceCache,
   getCachedResource,
 } from '@/shared/lib/resource-cache'
+import { apiUrl } from '@/shared/api/base'
 
-const API_BASE = '/api/links'
+const API_BASE = apiUrl('/api/links')
 const FEATURED_LINKS_CACHE_KEY = 'links:featured'
 const FEATURED_LINKS_CACHE_TTL_MS = 1000 * 60 * 5
 

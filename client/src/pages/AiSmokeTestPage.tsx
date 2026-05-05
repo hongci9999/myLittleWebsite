@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { apiUrl } from '@/shared/api/base'
 
 type FetchBlock = {
   name: string
@@ -53,9 +54,9 @@ export default function AiSmokeTestPage() {
     setBlocks(null)
     try {
       const [health, meta, local] = await Promise.all([
-        fetchJsonBlock('백엔드 API', '/api/health'),
-        fetchJsonBlock('공개 메타 (/api/meta)', '/api/meta'),
-        fetchJsonBlock('로컬 Ollama 스모크', '/api/ai-smoke/local'),
+        fetchJsonBlock('백엔드 API', apiUrl('/api/health')),
+        fetchJsonBlock('공개 메타 (/api/meta)', apiUrl('/api/meta')),
+        fetchJsonBlock('로컬 Ollama 스모크', apiUrl('/api/ai-smoke/local')),
       ])
       setBlocks([health, meta, local])
     } finally {

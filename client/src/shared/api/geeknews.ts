@@ -1,8 +1,10 @@
-import {
+﻿import {
   fetchWithResourceCache,
   getCachedResource,
 } from '@/shared/lib/resource-cache'
-const API_BASE = '/api/geeknews'
+import { apiUrl } from '@/shared/api/base'
+
+const API_BASE = apiUrl('/api/geeknews')
 
 export type GeekNewsItem = {
   title: string

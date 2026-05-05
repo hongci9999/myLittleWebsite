@@ -1,9 +1,10 @@
-import type {
+﻿import type {
   FileStructureSection,
   FileStructureSectionSummary,
 } from '@/shared/config/file-structure'
+import { apiUrl } from '@/shared/api/base'
 
-const API_BASE = '/api/learning'
+const API_BASE = apiUrl('/api/learning')
 
 /** 섹션 목록 조회 */
 export async function fetchLearningSections(): Promise<

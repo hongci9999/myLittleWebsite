@@ -1,7 +1,8 @@
-import {
+﻿import {
   aiProviderBodyField,
   aiProviderRequestHeaders,
 } from '@/shared/lib/ai-provider-preference'
+import { apiUrl } from '@/shared/api/base'
 
 export type SourceKind =
   | 'mcp'
@@ -26,7 +27,7 @@ export interface AiToolScrap {
   updatedAt: string
 }
 
-const API_BASE = '/api/ai-scraps'
+const API_BASE = apiUrl('/api/ai-scraps')
 
 function authHeaders(token: string): HeadersInit {
   return {

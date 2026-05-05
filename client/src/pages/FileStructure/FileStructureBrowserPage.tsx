@@ -10,6 +10,7 @@ import {
   type FileStructureSection,
 } from '@/shared/config/file-structure'
 import { Button } from '@/components/ui/button'
+import { apiUrl } from '@/shared/api/base'
 
 const ROOT_DOCS_NODE_ID = '__root-docs'
 
@@ -136,7 +137,7 @@ function DocViewer({
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const url = `${basePath}/${doc.filePath}`
+    const url = apiUrl(`${basePath}/${doc.filePath}`)
     fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)

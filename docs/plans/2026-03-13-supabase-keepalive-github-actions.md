@@ -36,7 +36,7 @@ INSERT INTO keepalive (id) VALUES (1) ON CONFLICT (id) DO UPDATE SET pinged_at =
 ### 2. GitHub Actions 워크플로
 
 - **파일**: `.github/workflows/supabase-keepalive.yml`
-- **트리거**: cron `0 12 */5 * *` (매월 1, 6, 11, 16, 21, 26일 12:00 UTC)
+- **트리거**: cron `0 12 * * *` (매일 12:00 UTC, KST 21:00)
 - **동작**: `SUPABASE_URL`, `SUPABASE_ANON_KEY` Secrets로 REST API 호출
 - **엔드포인트**: `GET {SUPABASE_URL}/rest/v1/keepalive?select=id&limit=1`
 
@@ -51,6 +51,6 @@ INSERT INTO keepalive (id) VALUES (1) ON CONFLICT (id) DO UPDATE SET pinged_at =
 
 ## 결과
 
-- 5일마다 DB 쿼리 발생 → 7일 비활성 타이머 초기화
+- 매일 DB 쿼리 발생 → 7일 비활성 타이머 초기화
 - 무료 티어 유지하면서 자동 정지 방지
 - 학습: `docs/learnings/0019-github-actions.md`

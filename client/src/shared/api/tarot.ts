@@ -1,7 +1,8 @@
-import {
+﻿import {
   aiProviderBodyField,
   aiProviderRequestHeaders,
 } from '@/shared/lib/ai-provider-preference'
+import { apiUrl } from '@/shared/api/base'
 
 export type TarotOrientation = 'upright' | 'reversed'
 export type TarotSlot = 'past' | 'present' | 'advice'
@@ -36,7 +37,7 @@ export async function fetchTarotReading(cards: {
   majorId: number
   orientation: TarotOrientation
 }[]): Promise<TarotReadingResponse> {
-  const res = await fetch('/api/tarot/reading', {
+  const res = await fetch(apiUrl('/api/tarot/reading'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

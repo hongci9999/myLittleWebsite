@@ -1,7 +1,8 @@
-import {
+﻿import {
   aiProviderBodyField,
   aiProviderRequestHeaders,
 } from '@/shared/lib/ai-provider-preference'
+import { apiUrl } from '@/shared/api/base'
 
 export type ColumnSourceKind = 'blog' | 'article' | 'readme' | 'youtube' | 'x' | 'other'
 
@@ -25,7 +26,7 @@ export interface ColumnScrap {
   updatedAt: string
 }
 
-const API_BASE = '/api/column-scraps'
+const API_BASE = apiUrl('/api/column-scraps')
 
 export const COLUMN_SOURCE_OPTIONS: { value: ColumnSourceKind; label: string }[] = [
   { value: 'blog', label: '블로그' },

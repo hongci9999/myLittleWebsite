@@ -1,5 +1,6 @@
 import './env.js'
 import express from 'express'
+import cors from 'cors'
 import learningRoutes from './routes/learning.js'
 import authRoutes from './routes/auth.js'
 import linksRoutes from './routes/links.js'
@@ -15,7 +16,27 @@ const PORT = Number(process.env.PORT) || 3001
 /** 로컬: `127.0.0.1`(기본). AWS·컨테이너 등 외부 접속 시 `LISTEN_HOST=0.0.0.0` */
 const LISTEN_HOST = process.env.LISTEN_HOST ?? '127.0.0.1'
 
+function parseAllowedOrigins(raw: string | undefined): string[] {
+  return (raw ?? '')
+    .split(',')
+    .map((v) => v.trim())
+    .filter(Boolean)
+}
+
+const allowedOrigins = parseAllowedOrigins(process.env.CORS_ALLOWED_ORIGINS)
+
 app.use(express.json())
+app.use(
+  cors({
+    origin(origin, cb) {
+      // 서버-서버/헬스체크/같은 출처 요청(Origin 없음)은 그대로 허용
+      if (!origin) return cb(null, true)
+      if (allowedOrigins.length === 0) return cb(null, true)
+      if (allowedOrigins.includes(origin)) return cb(null, true)
+      return cb(new Error(`CORS blocked origin: ${origin}`))
+    },
+  })
+)
 
 app.get('/health', (_, res) => {
   res.json({ status: 'ok' })

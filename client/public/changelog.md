@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **문서** — `docs/journal/2026-05.md` (`## 2026-05-16`): S3·CloudFront(OAC)·Origin path 실수 정리; `docs/plans/2026-05-04-aws-first-deploy-walkthrough.md` §3에 Origin path vs Default root object 주의 추가
+
 ### Added
 
 - **첫 AWS 배포 실습 가이드** — `docs/plans/2026-05-04-aws-first-deploy-walkthrough.md` (로컬 빌드·LISTEN_HOST·S3·CloudFront·**Elastic Beanstalk**(zip·환경 속성·헬스·CORS)·GitHub 연동 안내); [0025 허브](docs/learnings/0025-aws-deployment-series-hub.md)에서 링크

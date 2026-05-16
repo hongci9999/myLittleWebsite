@@ -117,6 +117,8 @@ npm run preview
 4. 배포 도메인(예: `dxxxx.cloudfront.net`)으로 접속 확인.
 5. SPA면 2.4와 동일하게 에러 응답 설정.
 
+**주의(2026-05-16 트러블슈팅 반영):** 오리진의 **Origin path** 는 버킷 안 **폴더 prefix**(예: `production/`에만 객체를 올렸을 때)일 때만 쓴다. `client/dist` 내용을 버킷 **루트**에 올렸다면 **비운다**. 여기에 `/index.html` 을 넣으면 뷰어가 요청한 경로 앞에 붙어 `/assets/...` 가 깨진다. **`index.html` 은 배포 설정의 Default root object 로만 지정**한다.
+
 ---
 
 ## 4. API 서버 (Express) — Elastic Beanstalk

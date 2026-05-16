@@ -14,7 +14,11 @@
 # Repository secret:
 #   AWS_ROLE_ARN                OIDC로 assume 할 IAM 역할 ARN
 #
-# IAM 역할 신뢰 정책 예: repo:OWNER/REPO:ref:refs/heads/main 또는 environment:production
+# IAM 역할 신뢰 정책(Trust): 브랜치 기준 예 — StringLike
+#   repo:OWNER/REPO:ref:refs/heads/main
+# 아래 deploy job 에 environment 미지정 → JWT sub 에 environment 접미사 없음.
+# 환경(Environments)·승인 게이트까지 쓰려면 IAM은
+# repo:OWNER/REPO:environment:NAME 과 일치해야 함.
 
 name: Deploy to AWS
 
@@ -37,8 +41,6 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # OIDC 신뢰 정책을 environment로 좁힐 때 사용 (없으면 주석 처리 가능)
-    environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v4

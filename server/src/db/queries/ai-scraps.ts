@@ -103,11 +103,10 @@ export async function generateUniqueSlug(base: string): Promise<string> {
   return slug
 }
 
-/** 목록 (공개). q·kind·tag는 서버에서 메모리 필터 — 스크랩 수가 적을 때 적합 */
+/** 목록 (공개). q·kind는 서버에서 메모리 필터 — 스크랩 수가 적을 때 적합 */
 export async function listAiToolScraps(filters?: {
   q?: string
   kind?: string
-  tag?: string
 }): Promise<AiToolScrap[]> {
   const client = supabase.client
   if (!client) throw new Error('Supabase not configured')
@@ -122,10 +121,6 @@ export async function listAiToolScraps(filters?: {
 
   if (filters?.kind && isSourceKind(filters.kind)) {
     rows = rows.filter((r) => r.sourceKind === filters.kind)
-  }
-  if (filters?.tag?.trim()) {
-    const t = filters.tag.trim().toLowerCase()
-    rows = rows.filter((r) => r.tags.some((x) => x.toLowerCase() === t))
   }
   if (filters?.q?.trim()) {
     const q = filters.q.trim().toLowerCase()

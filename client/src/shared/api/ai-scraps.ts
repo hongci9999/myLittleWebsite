@@ -40,12 +40,10 @@ function authHeaders(token: string): HeadersInit {
 export async function fetchAiScraps(params?: {
   q?: string
   kind?: SourceKind | ''
-  tag?: string
 }): Promise<AiToolScrap[]> {
   const sp = new URLSearchParams()
   if (params?.q?.trim()) sp.set('q', params.q.trim())
   if (params?.kind) sp.set('kind', params.kind)
-  if (params?.tag?.trim()) sp.set('tag', params.tag.trim())
   const qs = sp.toString()
   const res = await fetch(`${API_BASE}${qs ? `?${qs}` : ''}`)
   if (res.status === 503) {

@@ -28,7 +28,6 @@ export default function AiDevToolsPage() {
   const [q, setQ] = useState('')
   const [debouncedQ, setDebouncedQ] = useState('')
   const [kind, setKind] = useState<SourceKind | ''>('')
-  const [tag, setTag] = useState('')
 
   useEffect(() => {
     const t = window.setTimeout(() => setDebouncedQ(q), 300)
@@ -42,7 +41,6 @@ export default function AiDevToolsPage() {
       const data = await fetchAiScraps({
         q: debouncedQ || undefined,
         kind,
-        tag: tag || undefined,
       })
       setItems(data)
     } catch (e) {
@@ -53,7 +51,7 @@ export default function AiDevToolsPage() {
     } finally {
       setLoading(false)
     }
-  }, [debouncedQ, kind, tag])
+  }, [debouncedQ, kind])
 
   useEffect(() => {
     load()
@@ -64,10 +62,6 @@ export default function AiDevToolsPage() {
       load()
     })
   }, [load])
-
-  const allTags = Array.from(
-    new Set(items.flatMap((s) => s.tags))
-  ).sort((a, b) => a.localeCompare(b, 'ko'))
 
   const filterControl =
     'h-9 rounded-lg border border-border bg-background px-2.5 text-sm text-foreground outline-none ring-primary/40 focus-visible:ring-2'
@@ -101,23 +95,6 @@ export default function AiDevToolsPage() {
                 </option>
               ))}
             </select>
-            <label className="sr-only" htmlFor="scrap-tag-filter">
-              태그
-            </label>
-            <input
-              id="scrap-tag-filter"
-              list="scrap-tag-suggestions"
-              value={tag}
-              onChange={(e) => setTag(e.target.value)}
-              placeholder="태그"
-              aria-label="태그로 필터"
-              className={cn(filterControl, 'w-full min-w-[5rem] sm:w-28')}
-            />
-            <datalist id="scrap-tag-suggestions">
-              {allTags.map((t) => (
-                <option key={t} value={t} />
-              ))}
-            </datalist>
             {token ? (
               <Button
                 type="button"

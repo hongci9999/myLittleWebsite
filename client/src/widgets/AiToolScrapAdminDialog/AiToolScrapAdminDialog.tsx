@@ -372,7 +372,7 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
 
                 <label className="block">
                   <span className="text-xs font-medium text-muted-foreground">
-                    태그 (쉼표로 여러 개 — 목록에서 태그 필터와 맞는 항목만 표시)
+                    태그 (쉼표로 여러 개 — 카드 표시 및 통합 검색에 포함)
                   </span>
                   <input
                     value={form.tagsStr}

@@ -45,16 +45,14 @@ function normalizeTags(raw: unknown): string[] {
   return []
 }
 
-/** GET /api/ai-scraps?q=&kind=&tag= */
+/** GET /api/ai-scraps?q=&kind= */
 router.get('/', async (req, res) => {
   try {
     const q = req.query.q ? String(req.query.q) : undefined
     const kind = req.query.kind ? String(req.query.kind) : undefined
-    const tag = req.query.tag ? String(req.query.tag) : undefined
     const items = await listAiToolScraps({
       q,
       kind: kind && isSourceKind(kind) ? kind : undefined,
-      tag,
     })
     res.json(items)
   } catch (err) {

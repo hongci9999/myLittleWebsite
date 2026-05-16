@@ -6,6 +6,7 @@ import {
   type ColumnScrap,
 } from '@/shared/api/column-scraps'
 import { parseYoutubeVideoId, youtubeNocookieEmbedSrc } from '@/shared/lib/youtube'
+import { ExtraLinkWithEmbed } from '@/shared/ui/ExtraLinkWithEmbed'
 import { MarkdownWithMath } from '@/shared/ui/MarkdownWithMath'
 import { Button } from '@/components/ui/button'
 import { ColumnScrapAdminDialog, subscribeColumnScrapsChanged } from '@/widgets/ColumnScrapAdminDialog'
@@ -143,17 +144,10 @@ export default function ColumnScrapDetailPage() {
             <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
               추가 링크
             </h2>
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-3 space-y-4">
               {s.extraLinks.map((l, i) => (
                 <li key={`${l.url}-${i}`}>
-                  <a
-                    href={l.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm font-medium text-primary underline-offset-4 hover:underline"
-                  >
-                    {l.label}
-                  </a>
+                  <ExtraLinkWithEmbed label={l.label} url={l.url} />
                 </li>
               ))}
             </ul>

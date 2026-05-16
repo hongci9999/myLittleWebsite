@@ -1,6 +1,13 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
+/*
+ * 기본 dark: variant는 OS prefers-color-scheme만 본다.
+ * 이 프로젝트는 data-theme(blue-orange | amber-cyan | dark-slate)로만 색을 바꾸므로,
+ * dark:는 dark-slate 테마일 때만 켜지도록 맞춘다. (밝은 테마 + OS 다크에서 prose 글자만 밝아지는 현상 방지)
+ */
+@custom-variant dark (&:where([data-theme='dark-slate'], [data-theme='dark-slate'] *));
+
 @layer base {
   :root,
   [data-theme='blue-orange'] {

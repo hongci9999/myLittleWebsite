@@ -29,7 +29,7 @@ else
   npm install --prefix "$STAGING" --omit=dev --no-package-lock
 fi
 
-# OUT 이 상대 경로면 (cd "$STAGING" && zip) 안에 zip 이 생기므로 루트 기준으로 생성
-zip -qr "$OUT" -C "$STAGING" .
+# OUT 은 위에서 절대 경로로 정규화 — staging 안에서 zip 해도 루트에 생성됨 (Ubuntu zip 은 -C 미지원)
+(cd "$STAGING" && zip -qr "$OUT" .)
 
 echo "Created EB bundle: $OUT"

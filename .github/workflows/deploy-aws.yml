@@ -76,6 +76,9 @@ jobs:
           VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
         run: |
           npm ci
+          # npm ci 가 Windows 에서 만들어진 lock 일 때 Rollup 의 Linux 바이너리 optional 생략 문제 보정(npm/cli#4828 부근).
+          R=$(node --print "require('./node_modules/rollup/package.json').version")
+          npm install "@rollup/rollup-linux-x64-gnu@${R}" --no-save
           npm run build -w client
           aws s3 sync client/dist/ "s3://${S3_BUCKET}/" --delete
           aws s3 cp client/dist/index.html "s3://${S3_BUCKET}/index.html" \

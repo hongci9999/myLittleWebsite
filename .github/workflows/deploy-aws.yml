@@ -1,0 +1,131 @@
+# main 병합(또는 수동 실행) 시 AWS에 프론트(S3)·API(Elastic Beanstalk) 배포
+# 선행 설정: docs/learnings/0032-cicd-github-actions-aws.md
+#
+# Repository variables (Settings → Secrets and variables → Actions → Variables):
+#   AWS_REGION                  예: ap-northeast-2
+#   S3_BUCKET_FRONTEND          프론트 dist 동기화 대상 (비우면 프론트 배포 생략)
+#   CLOUDFRONT_DISTRIBUTION_ID  (선택) 캐시 무효화
+#   VITE_API_BASE_URL           (선택) 클라이언트 빌드 시 API 베이스 (예: https://xxx.elasticbeanstalk.com)
+#   EB_APPLICATION_NAME         API 배포 시 필수
+#   EB_ENVIRONMENT_NAME         API 배포 시 필수
+#   EB_S3_BUCKET                EB 애플리케이션 버전 zip 업로드 버킷 (콘솔 EB → 앱 → 버전에서 확인)
+#   EB_HEALTH_CHECK_URL         (선택) 배포 후 curl 검증 URL (예: https://xxx.elasticbeanstalk.com/api/health)
+#
+# Repository secret:
+#   AWS_ROLE_ARN                OIDC로 assume 할 IAM 역할 ARN
+#
+# IAM 역할 신뢰 정책 예: repo:OWNER/REPO:ref:refs/heads/main 또는 environment:production
+
+name: Deploy to AWS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy-aws-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION || 'ap-northeast-2' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # OIDC 신뢰 정책을 environment로 좁힐 때 사용 (없으면 주석 처리 가능)
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Ensure deploy targets are configured
+        run: |
+          if [ -z "${{ vars.S3_BUCKET_FRONTEND }}" ] && [ -z "${{ vars.EB_ENVIRONMENT_NAME }}" ]; then
+            echo "::error::Set repository variable S3_BUCKET_FRONTEND and/or EB_* (see workflow header comments)."
+            exit 1
+          fi
+          if [ -z "${{ secrets.AWS_ROLE_ARN }}" ]; then
+            echo "::error::Set repository secret AWS_ROLE_ARN (IAM role for OIDC)."
+            exit 1
+          fi
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Build and deploy frontend (S3)
+        if: vars.S3_BUCKET_FRONTEND != ''
+        env:
+          S3_BUCKET: ${{ vars.S3_BUCKET_FRONTEND }}
+          CF_DIST_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+        run: |
+          npm ci
+          npm run build -w client
+          aws s3 sync client/dist/ "s3://${S3_BUCKET}/" --delete
+          aws s3 cp client/dist/index.html "s3://${S3_BUCKET}/index.html" \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --content-type "text/html"
+          if [ -n "${CF_DIST_ID}" ]; then
+            aws cloudfront create-invalidation \
+              --distribution-id "${CF_DIST_ID}" \
+              --paths "/*"
+          fi
+
+      - name: Package API for Elastic Beanstalk
+        if: >-
+          vars.EB_ENVIRONMENT_NAME != '' &&
+          vars.EB_APPLICATION_NAME != '' &&
+          vars.EB_S3_BUCKET != ''
+        run: bash scripts/package-eb-bundle.sh api-eb-bundle.zip
+
+      - name: Deploy API to Elastic Beanstalk
+        if: >-
+          vars.EB_ENVIRONMENT_NAME != '' &&
+          vars.EB_APPLICATION_NAME != '' &&
+          vars.EB_S3_BUCKET != ''
+        env:
+          EB_APP: ${{ vars.EB_APPLICATION_NAME }}
+          EB_ENV: ${{ vars.EB_ENVIRONMENT_NAME }}
+          EB_BUCKET: ${{ vars.EB_S3_BUCKET }}
+        run: |
+          VERSION_LABEL="gh-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}"
+          S3_KEY="deploy/${VERSION_LABEL}.zip"
+          aws s3 cp api-eb-bundle.zip "s3://${EB_BUCKET}/${S3_KEY}"
+          aws elasticbeanstalk create-application-version \
+            --application-name "${EB_APP}" \
+            --version-label "${VERSION_LABEL}" \
+            --source-bundle "S3Bucket=${EB_BUCKET},S3Key=${S3_KEY}" \
+            --process
+          aws elasticbeanstalk update-environment \
+            --environment-name "${EB_ENV}" \
+            --version-label "${VERSION_LABEL}"
+          aws elasticbeanstalk wait environment-updated \
+            --environment-names "${EB_ENV}"
+
+      - name: Verify API health (optional)
+        if: >-
+          vars.EB_ENVIRONMENT_NAME != '' &&
+          vars.EB_HEALTH_CHECK_URL != ''
+        run: |
+          for i in 1 2 3 4 5; do
+            if curl -fsS "${{ vars.EB_HEALTH_CHECK_URL }}"; then
+              exit 0
+            fi
+            sleep 15
+          done
+          echo "Health check failed: ${{ vars.EB_HEALTH_CHECK_URL }}"
+          exit 1

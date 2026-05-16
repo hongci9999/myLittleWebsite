@@ -107,7 +107,8 @@ jobs:
           EB_ENV: ${{ vars.EB_ENVIRONMENT_NAME }}
           EB_BUCKET: ${{ vars.EB_S3_BUCKET }}
         run: |
-          VERSION_LABEL="gh-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}"
+          # RUN_ID + RUN_ATTEMPT: 실행·재실행마다 고유 라벨 (기존 gh-<sha>-<run_number>는 재시도 시 충돌)
+          VERSION_LABEL="gh-${GITHUB_SHA::7}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           S3_KEY="deploy/${VERSION_LABEL}.zip"
           aws s3 cp api-eb-bundle.zip "s3://${EB_BUCKET}/${S3_KEY}"
           aws elasticbeanstalk create-application-version \

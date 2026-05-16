@@ -5,9 +5,11 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SERVER="$ROOT/server"
 STAGING="$ROOT/.eb-bundle-staging"
-OUT="${1:-$ROOT/api-eb-bundle.zip}"
+OUT="${1:-api-eb-bundle.zip}"
+[[ "$OUT" != /* ]] && OUT="$ROOT/$OUT"
 
-rm -rf "$STAGING" "$OUT"
+rm -rf "$STAGING"
+rm -f "$OUT"
 mkdir -p "$STAGING"
 
 cd "$ROOT"
@@ -27,6 +29,7 @@ else
   npm install --prefix "$STAGING" --omit=dev --no-package-lock
 fi
 
-(cd "$STAGING" && zip -qr "$OUT" .)
+# OUT 이 상대 경로면 (cd "$STAGING" && zip) 안에 zip 이 생기므로 루트 기준으로 생성
+zip -qr "$OUT" -C "$STAGING" .
 
 echo "Created EB bundle: $OUT"

@@ -25,7 +25,9 @@ function getGeminiCached(): AiTextProvider {
 /**
  * 요청별 텍스트 제공자. `X-AI-Provider: api` → Gemini, 그 외·누락 → Ollama(로컬).
  */
-export function getAiTextProvider(preference: AiRequestPreference): AiTextProvider {
+export function getAiTextProvider(
+  preference: AiRequestPreference
+): AiTextProvider {
   if (preference === 'api') return getGeminiCached()
   return getOllamaCached()
 }
@@ -46,7 +48,12 @@ export function parseAiRequestPreference(
     if (h === 'local') return 'local'
   }
 
-  if (body && typeof body === 'object' && body !== null && !Array.isArray(body)) {
+  if (
+    body &&
+    typeof body === 'object' &&
+    body !== null &&
+    !Array.isArray(body)
+  ) {
     const p = (body as { aiProvider?: unknown }).aiProvider
     if (typeof p === 'string') {
       const q = p.trim().toLowerCase()
@@ -67,7 +74,10 @@ export type AiProviderPublicInfo = {
 /** 헤더 전광판(클라이언트 AiStatusTicker)에 나가는 로컬 모드 한 줄 문구 */
 function buildLocalPublicInfo(): AiProviderPublicInfo {
   const model = process.env.OLLAMA_MODEL ?? DEFAULT_OLLAMA_MODEL
-  const host = (process.env.OLLAMA_HOST ?? 'http://localhost:11434').replace(/^https?:\/\//, '')
+  const host = (process.env.OLLAMA_HOST ?? 'http://localhost:11434').replace(
+    /^https?:\/\//,
+    ''
+  )
   return {
     mode: 'local',
     label: `Ollama · ${model} @ ${host}`,
@@ -76,9 +86,7 @@ function buildLocalPublicInfo(): AiProviderPublicInfo {
 
 /** 헤더 전광판에 나가는 API(Gemini) 모드 한 줄 문구 */
 function buildApiPublicInfo(): AiProviderPublicInfo {
-  const model =
-    process.env.GEMINI_MODEL?.trim() ||
-    'gemini-3.1-flash-lite-preview'
+  const model = process.env.GEMINI_MODEL?.trim() || 'gemini-3.1-flash-lite'
   const key = process.env.GEMINI_API_KEY ?? process.env.GOOGLE_AI_API_KEY
   return {
     mode: 'api',

@@ -24,9 +24,7 @@ export function createGeminiTextProvider(
     process.env.GEMINI_API_KEY ??
     process.env.GOOGLE_AI_API_KEY
   const model =
-    options?.model ??
-    process.env.GEMINI_MODEL ??
-    'gemini-3.1-flash-lite-preview'
+    options?.model ?? process.env.GEMINI_MODEL ?? 'gemini-3.1-flash-lite'
 
   return {
     async complete(prompt: string): Promise<string> {

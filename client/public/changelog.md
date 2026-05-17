@@ -7,9 +7,12 @@
 ### Changed
 
 - **문서** — `docs/journal/2026-05.md` (`## 2026-05-16`): S3·CloudFront(OAC)·Origin path 실수 정리; `docs/plans/2026-05-04-aws-first-deploy-walkthrough.md` §3에 Origin path vs Default root object 주의 추가
+- **문서** — 첫 AWS 프로덕션 배포 성공 회고·운영 URL·트러블슈팅 정리 ([0034](docs/learnings/0034-aws-first-production-deploy-success.md), [0018](docs/decisions/0018-aws-production-split-hosting.md), [error-fixes/0003](docs/error-fixes/0003-aws-eb-cloudfront-cors-deploy.md)); walkthrough §7·체크리스트 갱신
 
 ### Added
 
+- **프로젝트 페이지 (`/project`)** — `shared/config/projects.ts`·`ProjectCard` 위젯: GitHub·라이브 데모 링크, 스크린샷(단일·3열 갤러리), 태그·상태; 항목 **myLittleWebsite**(프로덕션 캡처), **hum-my**(졸업 프로젝트·3단 UI 캡처)
+- **GitHub Actions AWS 배포** — `.github/workflows/deploy-aws.yml` (`main` / `workflow_dispatch`): 프론트 S3 sync·CloudFront invalidation, EB zip·`create-application-version`·`update-environment`; `scripts/package-eb-bundle.sh`
 - **첫 AWS 배포 실습 가이드** — `docs/plans/2026-05-04-aws-first-deploy-walkthrough.md` (로컬 빌드·LISTEN_HOST·S3·CloudFront·**Elastic Beanstalk**(zip·환경 속성·헬스·CORS)·GitHub 연동 안내); [0025 허브](docs/learnings/0025-aws-deployment-series-hub.md)에서 링크
 - **AWS 배포 학습 시리즈 (`docs/learnings/0025`–`0033`)**
   - 허브·목차(0025), 배포 공통 개념(0026), 네트워크·HTTPS(0027), AWS 계정·IAM·과금(0028)

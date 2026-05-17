@@ -199,18 +199,46 @@ IAM 사용자에게 EB·S3 버킷·CloudWatch 등 접근이 필요할 수 있다
 
 ---
 
-## 6. 다음에 할 일 (CI/CD)
+## 6. CI/CD (GitHub Actions)
 
-수동 배포가 한 번 성공하면 [0032](../learnings/0032-cicd-github-actions-aws.md)대로 GitHub Actions + OIDC를 검토한다. 선행: [0019](../learnings/0019-github-actions.md).
+수동 배포가 한 번 성공하면 [0032](../learnings/0032-cicd-github-actions-aws.md)대로 GitHub Actions + OIDC를 연다.
+
+- 워크플로: [`.github/workflows/deploy-aws.yml`](../../.github/workflows/deploy-aws.yml)
+- EB 패키징: [`scripts/package-eb-bundle.sh`](../../scripts/package-eb-bundle.sh)
+- Variables·Secret 목록: 워크플로 상단 주석, [0034 § GitHub Variables](../learnings/0034-aws-first-production-deploy-success.md)
+
+IAM 역할에 EB S3 버킷·`elasticbeanstalk:*`·`awseb-*` CloudFormation 권한이 필요하다. `update-environment`만 실패하면 EB는 **Degraded**(`Expected version n/a`)가 될 수 있다 → [error-fixes/0003](../error-fixes/0003-aws-eb-cloudfront-cors-deploy.md).
+
+---
+
+## 7. 프로덕션 배포 완료 기록 (2026-05-16)
+
+**상태: 첫 end-to-end 성공** — 상세 회고는 [0034](../learnings/0034-aws-first-production-deploy-success.md), 구조 결정은 [0018](../decisions/0018-aws-production-split-hosting.md).
+
+| 구분 | URL·리소스 |
+|------|------------|
+| 프론트 | https://d4a3hmxzy83r1.cloudfront.net |
+| API | https://mylittlewebsite.p-e.kr |
+| API 헬스 | https://mylittlewebsite.p-e.kr/api/health |
+| EB | `MLWserver` / `MLWserver-env` |
+| S3 | `mylittlewebsite-dev-661596276927-ap-northeast-2-an` |
+| CloudFront | `EAV5ODYEOW4VD` |
+
+**필수 설정 요약**
+
+- `VITE_API_BASE_URL=https://mylittlewebsite.p-e.kr` (HTTPS, Actions 빌드)
+- `CORS_ALLOWED_ORIGINS=https://d4a3hmxzy83r1.cloudfront.net`
+- `LISTEN_HOST=0.0.0.0`, ALB 헬스 `/api/health`, ACM + HTTPS **443**
 
 ---
 
 ## 점검 체크리스트
 
-- [ ] `npm run build` 성공
-- [ ] `LISTEN_HOST=0.0.0.0` 일 때 `/api/health` 응답 확인
-- [ ] S3(또는 CloudFront)에서 `index.html` 로딩
-- [ ] EB 환경 **Green**, `/api/health` 또는 `/health` 응답, **`LISTEN_HOST=0.0.0.0`** 환경 속성 확인
+- [x] `npm run build` 성공
+- [x] `LISTEN_HOST=0.0.0.0` 일 때 `/api/health` 응답 확인
+- [x] S3(또는 CloudFront)에서 `index.html` 로딩
+- [x] EB 환경 **Green**, `/api/health` 응답, **`LISTEN_HOST=0.0.0.0`** 환경 속성 확인
+- [x] HTTPS API + CloudFront 메인에서 CORS·Mixed Content 없이 위젯 데이터 로드
 - [ ] 실험 리소스 **태그**·**삭제/중지** 습관([0033](../learnings/0033-aws-ops-security-troubleshooting.md))
 
 ---
@@ -219,3 +247,4 @@ IAM 사용자에게 EB·S3 버킷·CloudWatch 등 접근이 필요할 수 있다
 
 - 서버 바인딩: `server/src/index.ts`의 `LISTEN_HOST`(기본 `127.0.0.1`).
 - API 헬스: `GET /api/health`, `GET /health`.
+- 트러블슈팅 모음: [error-fixes/0003](../error-fixes/0003-aws-eb-cloudfront-cors-deploy.md).

@@ -75,6 +75,7 @@
 - [0015 서버 AI 텍스트 제공자 추상화·프롬프트 모듈화](./decisions/0015-ai-text-provider-abstraction.md)
 - [0016 Gemini·유튜브 자막·공개 /api/meta](./decisions/0016-gemini-youtube-transcript-and-public-meta.md)
 - [0017 타로 위젯 해석 스키마·제공자 전략](./decisions/0017-tarot-reading-schema-and-provider-strategy.md)
+- [0018 프로덕션 호스팅 분리 (CloudFront + EB + API 도메인)](./decisions/0018-aws-production-split-hosting.md)
 
 ### 학습 내용
 
@@ -114,6 +115,7 @@
 | [0031](./learnings/0031-frontend-backend-integration-cors.md) | 프론트·API 연결 (베이스 URL·CORS)          | 배포, 프론트, 백엔드, 인프라, 개발방법론 |
 | [0032](./learnings/0032-cicd-github-actions-aws.md)          | CI/CD·GitHub Actions로 AWS 배포              | 배포, aws, 개발방법론, 도구, 백엔드 |
 | [0033](./learnings/0033-aws-ops-security-troubleshooting.md) | AWS 운영·보안·트러블슈팅                     | 배포, aws, 인프라, 백엔드, 개발방법론 |
+| [0034](./learnings/0034-aws-first-production-deploy-success.md) | 첫 AWS 프로덕션 배포 성공 회고 (2026-05) | 배포, aws, 인프라, 프론트, 백엔드, 개발방법론 |
 
 ### 에러 픽스
 
@@ -121,5 +123,6 @@
 | ----------------------------------------------------- | ------------------------------- |
 | [0001](./error-fixes/0001-learning-folder-session.md) | 학습 폴더·config 관련 오류 모음 |
 | [0002](./error-fixes/0002-main-widget-reload-cache.md) | 메인 위젯 페이지 이동 후 재로딩 문제 |
+| [0003](./error-fixes/0003-aws-eb-cloudfront-cors-deploy.md) | EB Degraded·Mixed Content·CORS (AWS 배포) |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

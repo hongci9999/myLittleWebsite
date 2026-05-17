@@ -56,6 +56,11 @@
 - [ ] 배포 실패 시 **롤백 전략**(이전 S3 버전, 이전 태스크 정의 등)을 한 줄이라도 문서화
 - [ ] `workflow_dispatch`로 수동 배포 가능하게 해 두면 초기 디버깅에 유리([0019](./0019-github-actions.md))
 
+### 6. 이 레포에 적용된 워크플로 (2026-05)
+
+- 파일: [`.github/workflows/deploy-aws.yml`](../../.github/workflows/deploy-aws.yml) — `main` push·수동 실행, OIDC, 프론트 S3 sync + CloudFront invalidation, EB zip 업로드·버전·환경 업데이트.
+- Variables·실패 패턴: [0034 첫 프로덕션 배포 회고](./0034-aws-first-production-deploy-success.md), [error-fixes/0003](../error-fixes/0003-aws-eb-cloudfront-cors-deploy.md).
+
 ---
 
 ## 참고
@@ -64,4 +69,5 @@
 - 이전: [0031 프론트·API 연결](./0031-frontend-backend-integration-cors.md)
 - 다음: [0033 운영·트러블슈팅](./0033-aws-ops-security-troubleshooting.md)
 - 허브: [0025](./0025-aws-deployment-series-hub.md)
+- 실전 회고: [0034](./0034-aws-first-production-deploy-success.md)
 - [GitHub OIDC with AWS](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services) (공식)

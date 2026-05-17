@@ -58,12 +58,13 @@
 | **0031** | [프론트·API 연결](./0031-frontend-backend-integration-cors.md) | 베이스 URL, CORS, 도메인 통합 개념 |
 | **0032** | [CI/CD](./0032-cicd-github-actions-aws.md) | Actions, OIDC, 배포 파이프라인 개념 |
 | **0033** | [운영·보안·트러블슈팅](./0033-aws-ops-security-troubleshooting.md) | 로그, 자주 나는 오류, 정리 |
+| **0034** | [첫 프로덕션 배포 성공 회고](./0034-aws-first-production-deploy-success.md) | 실제 URL·Variables·막힌 지점 정리 (2026-05) |
 
 ---
 
 ## 실습 가이드 (단계별)
 
-- [첫 AWS 배포 실습 walkthrough](../plans/2026-05-04-aws-first-deploy-walkthrough.md) — 로컬 빌드 확인 → S3 → (선택) CloudFront → API(**Elastic Beanstalk** 포함)·CORS 안내
+- [첫 AWS 배포 실습 walkthrough](../plans/2026-05-04-aws-first-deploy-walkthrough.md) — 로컬 빌드 확인 → S3 → (선택) CloudFront → API(**Elastic Beanstalk** 포함)·CORS 안내. **완료 기록**: walkthrough §7, [0034](./0034-aws-first-production-deploy-success.md)
 
 ## 관련 기존 문서
 

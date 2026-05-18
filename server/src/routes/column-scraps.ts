@@ -132,6 +132,10 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
       })
       return
     }
+    if (msg.includes('YouTube 영상을 Gemini로')) {
+      res.status(502).json({ error: msg })
+      return
+    }
     if (msg.includes('Ollama') || msg.includes('fetch')) {
       res.status(503).json({
         error: 'Ollama를 실행 중인지 확인하세요. (ollama run gemma4)',

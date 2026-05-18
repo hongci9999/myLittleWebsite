@@ -1,15 +1,20 @@
-import { isColumnSourceKind } from '../../db/queries/column-scraps.js'
-import { fetchWebsiteContent } from '../fetch-website.js'
-import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
+import { isColumnSourceKind, type ColumnSourceKind } from '../../db/queries/column-scraps.js'
+import { fetchWebsiteContent, type WebsiteContent } from '../fetch-website.js'
+import { assertYoutubeTranscriptForAi, parseYoutubeVideoId } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { ColumnScrapPrompts } from './prompts/column-scrap.prompts.js'
 import { getAiTextProvider, type AiRequestPreference } from './providers/registry.js'
+import type { AiTextProvider } from './providers/types.js'
 import type { ColumnScrapAiFillResult } from './types.js'
 import {
   inferColumnSourceKindFromUrl,
   isXOrTwitterHost,
   xStatusHandleFromUrl,
 } from './url-hints.js'
+import {
+  aiSupportsYoutubeUrlInput,
+  shouldUseGeminiYoutubeColumnPath,
+} from './youtube-ai-path.js'
 
 function sanitizeXField(s: string, fallback: string): string {
   const t = (s || fallback).replace(/something went wrong/gi, '').trim()
@@ -27,6 +32,149 @@ function parseTagsJson(tags: unknown, max: number, fallback: string[]): string[]
   }
   if (out.length === 0) return [...fallback]
   return out
+}
+
+function defaultTitleFromUrl(trimmed: string): string {
+  try {
+    return new URL(trimmed).hostname.replace(/^www\./, '')
+  } catch {
+    return '스크랩'
+  }
+}
+
+async function buildColumnScrapFromSiteAnalysis(params: {
+  trimmed: string
+  kindHint: ColumnSourceKind
+  content: WebsiteContent | null
+  siteAnalysis: string
+  coverImageUrl: string | null
+  ai: AiTextProvider
+}): Promise<ColumnScrapAiFillResult> {
+  const { trimmed, kindHint, content, siteAnalysis, coverImageUrl, ai } = params
+
+  const pageTitleLine = content?.title
+    ? `페이지 제목(HTML): ${content.title}`
+    : '페이지 제목을 가져오지 못했습니다.'
+  const urlKindLine = `URL 패턴 기준 추정 형식(참고): ${kindHint}. 더 맞으면 sourceKind에 반영하세요.`
+
+  const contextBlock = siteAnalysis
+    ? `[심층 분석 노트 — 반드시 bodyMd의 "상세 정리"에 반영할 재료]\n${siteAnalysis}\n\n`
+    : `[페이지 본문 없음 또는 fetch 실패 — URL·제목만으로 추론]\nURL: ${trimmed}\n\n`
+
+  const metadataPrompt = ColumnScrapPrompts.metadataJson({
+    contextBlock,
+    pageTitleLine,
+    urlKindLine,
+  })
+  const raw = await ai.complete(metadataPrompt)
+  const jsonStr = stripMarkdownCodeFence(raw)
+
+  let rawResponse = siteAnalysis
+    ? `[페이지 분석]\n${siteAnalysis}\n\n[필드 생성]\n${raw}`
+    : raw
+
+  let parsed: {
+    title?: string
+    summary?: string
+    bodyMd?: string
+    sourceKind?: string
+    tags?: unknown
+  }
+  try {
+    parsed = JSON.parse(jsonStr) as typeof parsed
+  } catch {
+    const fallbackTitle = content?.title?.trim() || defaultTitleFromUrl(trimmed)
+    return {
+      title: fallbackTitle,
+      summary: '',
+      bodyMd: raw.slice(0, 600),
+      sourceKind: kindHint,
+      coverImageUrl,
+      tags: [],
+      rawResponse,
+    }
+  }
+
+  let sourceKind = kindHint
+  if (parsed.sourceKind && isColumnSourceKind(parsed.sourceKind)) {
+    sourceKind = parsed.sourceKind
+  }
+
+  const tags = parseTagsJson(parsed.tags, 5, [])
+
+  const resolvedTitle =
+    parsed.title?.trim() ||
+    content?.title?.trim() ||
+    defaultTitleFromUrl(trimmed)
+
+  let bodyMd = parsed.bodyMd?.trim() ?? ''
+  const summaryLine = parsed.summary?.trim() ?? ''
+  const summaryForExpand = summaryLine || resolvedTitle.slice(0, 120)
+
+  if (siteAnalysis.length >= 400 && bodyMd.length < 550) {
+    try {
+      const expanded = await ai.complete(
+        ColumnScrapPrompts.expandBodyMarkdown({
+          url: trimmed,
+          title: resolvedTitle,
+          summaryLine: summaryForExpand,
+          siteAnalysis,
+        }),
+      )
+      const t = expanded.trim()
+      if (t.length > bodyMd.length) {
+        bodyMd = t
+        rawResponse = `${rawResponse}\n\n[본문 확장 재생성]\n${t}`
+      }
+    } catch {
+      /* 기존 bodyMd 유지 */
+    }
+  }
+
+  return {
+    title: resolvedTitle,
+    summary: parsed.summary?.trim() ?? '',
+    bodyMd,
+    sourceKind,
+    coverImageUrl,
+    tags,
+    rawResponse,
+  }
+}
+
+async function suggestColumnScrapViaGeminiYoutube(
+  trimmed: string,
+  kindHint: ColumnSourceKind,
+  ai: AiTextProvider & {
+    completeWithYoutubeUrl: (watchUrl: string, prompt: string) => Promise<string>
+  }
+): Promise<ColumnScrapAiFillResult> {
+  const ytId = parseYoutubeVideoId(trimmed)!
+  const content = await fetchWebsiteContent(trimmed)
+  const coverImageUrl =
+    content?.ogImageUrl ?? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`
+
+  let siteAnalysis = ''
+  try {
+    siteAnalysis = await ai.completeWithYoutubeUrl(
+      trimmed,
+      ColumnScrapPrompts.deepAnalysisNoteYoutube(trimmed)
+    )
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err)
+    throw new Error(
+      `YouTube 영상을 Gemini로 분석하지 못했습니다. 공개 영상인지, API 키·모델(GEMINI_YOUTUBE_MODEL)을 확인하세요. (${detail})`
+    )
+  }
+
+  return buildColumnScrapFromSiteAnalysis({
+    trimmed,
+    kindHint: kindHint === 'other' ? 'youtube' : kindHint,
+    content,
+    siteAnalysis,
+    coverImageUrl,
+    ai,
+  })
 }
 
 /**
@@ -90,6 +238,13 @@ export async function suggestColumnScrapFromUrl(
     }
   }
 
+  if (
+    shouldUseGeminiYoutubeColumnPath(preference, trimmed, ai) &&
+    aiSupportsYoutubeUrlInput(ai)
+  ) {
+    return suggestColumnScrapViaGeminiYoutube(trimmed, kindHint, ai)
+  }
+
   const content = await fetchWebsiteContent(trimmed)
   assertYoutubeTranscriptForAi(trimmed, content)
   const coverImageUrl = content?.ogImageUrl ?? null
@@ -103,106 +258,12 @@ export async function suggestColumnScrapFromUrl(
     }
   }
 
-  const pageTitleLine = content?.title
-    ? `페이지 제목(HTML): ${content.title}`
-    : '페이지 제목을 가져오지 못했습니다.'
-  const urlKindLine = `URL 패턴 기준 추정 형식(참고): ${kindHint}. 더 맞으면 sourceKind에 반영하세요.`
-
-  const contextBlock = siteAnalysis
-    ? `[심층 분석 노트 — 반드시 bodyMd의 "상세 정리"에 반영할 재료]\n${siteAnalysis}\n\n`
-    : `[페이지 본문 없음 또는 fetch 실패 — URL·제목만으로 추론]\nURL: ${trimmed}\n\n`
-
-  const metadataPrompt = ColumnScrapPrompts.metadataJson({
-    contextBlock,
-    pageTitleLine,
-    urlKindLine,
-  })
-  const raw = await ai.complete(metadataPrompt)
-  const jsonStr = stripMarkdownCodeFence(raw)
-
-  let rawResponse = siteAnalysis
-    ? `[페이지 분석]\n${siteAnalysis}\n\n[필드 생성]\n${raw}`
-    : raw
-
-  let parsed: {
-    title?: string
-    summary?: string
-    bodyMd?: string
-    sourceKind?: string
-    tags?: unknown
-  }
-  try {
-    parsed = JSON.parse(jsonStr) as typeof parsed
-  } catch {
-    const fallbackTitle =
-      content?.title?.trim() ||
-      (() => {
-        try {
-          return new URL(trimmed).hostname.replace(/^www\./, '')
-        } catch {
-          return '스크랩'
-        }
-      })()
-    return {
-      title: fallbackTitle,
-      summary: '',
-      bodyMd: raw.slice(0, 600),
-      sourceKind: kindHint,
-      coverImageUrl,
-      tags: [],
-      rawResponse,
-    }
-  }
-
-  let sourceKind = kindHint
-  if (parsed.sourceKind && isColumnSourceKind(parsed.sourceKind)) {
-    sourceKind = parsed.sourceKind
-  }
-
-  const tags = parseTagsJson(parsed.tags, 5, [])
-
-  const resolvedTitle =
-    parsed.title?.trim() ||
-    content?.title?.trim() ||
-    (() => {
-      try {
-        return new URL(trimmed).hostname.replace(/^www\./, '')
-      } catch {
-        return '스크랩'
-      }
-    })()
-
-  let bodyMd = parsed.bodyMd?.trim() ?? ''
-  const summaryLine = parsed.summary?.trim() ?? ''
-  const summaryForExpand = summaryLine || resolvedTitle.slice(0, 120)
-
-  if (siteAnalysis.length >= 400 && bodyMd.length < 550) {
-    try {
-      const expanded = await ai.complete(
-        ColumnScrapPrompts.expandBodyMarkdown({
-          url: trimmed,
-          title: resolvedTitle,
-          summaryLine: summaryForExpand,
-          siteAnalysis,
-        }),
-      )
-      const t = expanded.trim()
-      if (t.length > bodyMd.length) {
-        bodyMd = t
-        rawResponse = `${rawResponse}\n\n[본문 확장 재생성]\n${t}`
-      }
-    } catch {
-      /* 기존 bodyMd 유지 */
-    }
-  }
-
-  return {
-    title: resolvedTitle,
-    summary: parsed.summary?.trim() ?? '',
-    bodyMd,
-    sourceKind,
+  return buildColumnScrapFromSiteAnalysis({
+    trimmed,
+    kindHint,
+    content,
+    siteAnalysis,
     coverImageUrl,
-    tags,
-    rawResponse,
-  }
+    ai,
+  })
 }

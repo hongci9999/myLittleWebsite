@@ -4,4 +4,6 @@
  */
 export interface AiTextProvider {
   complete(prompt: string): Promise<string>
+  /** Gemini 등: 공개 YouTube watch URL을 멀티모달 입력으로 처리 */
+  completeWithYoutubeUrl?(watchUrl: string, prompt: string): Promise<string>
 }

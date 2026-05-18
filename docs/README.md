@@ -116,6 +116,7 @@
 | [0032](./learnings/0032-cicd-github-actions-aws.md)          | CI/CD·GitHub Actions로 AWS 배포              | 배포, aws, 개발방법론, 도구, 백엔드 |
 | [0033](./learnings/0033-aws-ops-security-troubleshooting.md) | AWS 운영·보안·트러블슈팅                     | 배포, aws, 인프라, 백엔드, 개발방법론 |
 | [0034](./learnings/0034-aws-first-production-deploy-success.md) | 첫 AWS 프로덕션 배포 성공 회고 (2026-05) | 배포, aws, 인프라, 프론트, 백엔드, 개발방법론 |
+| [0035](./learnings/0035-vite-src-asset-import-meta-url.md) | Vite src 내부 이미지·import.meta.url | 프론트, 도구, 배포, 개발방법론 |
 
 ### 에러 픽스
 
@@ -124,5 +125,6 @@
 | [0001](./error-fixes/0001-learning-folder-session.md) | 학습 폴더·config 관련 오류 모음 |
 | [0002](./error-fixes/0002-main-widget-reload-cache.md) | 메인 위젯 페이지 이동 후 재로딩 문제 |
 | [0003](./error-fixes/0003-aws-eb-cloudfront-cors-deploy.md) | EB Degraded·Mixed Content·CORS (AWS 배포) |
+| [0004](./error-fixes/0004-tarot-deploy-image-paths.md) | 타로 위젯 배포 시 카드 이미지 미표시 |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

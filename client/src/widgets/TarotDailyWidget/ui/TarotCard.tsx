@@ -8,7 +8,7 @@ type TarotCardProps = {
   onClick: () => void
 }
 
-const BACK_IMAGE_PATH = '/src/widgets/TarotDailyWidget/assets/cards/back.png'
+const BACK_IMAGE_PATH = new URL('../assets/cards/back.png', import.meta.url).href
 
 const SLOT_LABEL: Record<TarotDrawCard['slot'], string> = {
   past: '과거',

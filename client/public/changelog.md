@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- **타로 위젯 배포 시 카드 이미지 미표시** — `/src/...` 개발 전용 경로를 `import.meta.url` 기반 에셋 URL로 변경(`TarotCard.tsx`, `tarot-major.ts`). 프로덕션 빌드에 PNG가 `dist/assets/`로 포함됨. 문서: [error-fixes/0004](error-fixes/0004-tarot-deploy-image-paths.md), [learnings/0035](learnings/0035-vite-src-asset-import-meta-url.md)
+
 ### Changed
 
 - **문서** — `docs/journal/2026-05.md` (`## 2026-05-16`): S3·CloudFront(OAC)·Origin path 실수 정리; `docs/plans/2026-05-04-aws-first-deploy-walkthrough.md` §3에 Origin path vs Default root object 주의 추가

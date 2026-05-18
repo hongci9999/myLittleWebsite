@@ -27,3 +27,4 @@
 | [0001](./0001-learning-folder-session.md) | 학습 폴더·config 관련 오류 모음 | 2026-02-23 |
 | [0002](./0002-main-widget-reload-cache.md) | 메인 위젯 페이지 이동 후 재로딩 문제 | 2026-04-06 |
 | [0003](./0003-aws-eb-cloudfront-cors-deploy.md) | EB Degraded·Mixed Content·CORS (AWS 배포) | 2026-05-16 |
+| [0004](./0004-tarot-deploy-image-paths.md) | 타로 위젯 배포 환경에서 카드 이미지 미표시 | 2026-05-19 |

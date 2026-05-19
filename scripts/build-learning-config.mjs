@@ -40,11 +40,28 @@ const SECTION_SPECS = [
     sectionLabel: '정보처리기사 실기',
     basePath: '/learnings/정보처리기사_실기',
     nodeMeta: {
-      '00_안내': { name: '안내', description: '실기 폴더 구조 안내' },
+      '01_과목별_핵심정리': {
+        name: '과목별 핵심정리',
+        description: '프로그래밍·DB·인프라·SW공학·용어·SQL 요약',
+      },
       SQL_프로그래밍: { name: 'SQL 프로그래밍', description: '실기 SQL·DDL/DML/DCL·연습' },
-      Templates: { name: '템플릿', description: 'Obsidian·노트용 SQL 템플릿' },
     },
     headerTitle: '정보처리기사 실기',
+  },
+  {
+    inputDir: 'SQLD',
+    outputFile: 'learning-sqld.ts',
+    exportName: 'sqldSection',
+    sectionId: 'sqld',
+    sectionLabel: 'SQLD',
+    basePath: '/learnings/SQLD',
+    nodeMeta: {
+      '01_데이터_모델링의_이해': {
+        name: '데이터 모델링의 이해',
+        description: 'ERD, 정규화, 식별자 등 (1과목)',
+      },
+    },
+    headerTitle: 'SQLD',
   },
 ]
 

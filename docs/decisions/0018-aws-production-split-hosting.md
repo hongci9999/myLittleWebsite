@@ -28,5 +28,5 @@
 ## 결과/참고
 
 - 회고·체크리스트: [learnings/0034](../learnings/0034-aws-first-production-deploy-success.md)
-- 트러블슈팅: [error-fixes/0003](../error-fixes/0003-aws-eb-cloudfront-cors-deploy.md)
+- 트러블슈팅: [error-fixes/0003](../error-fixes/0003-aws-eb-cloudfront-cors-deploy.md), 학습 기록 UI·md fetch: [error-fixes/0005](../error-fixes/0005-learning-production-split-hosting.md)
 - walkthrough 점검표 갱신: [plans/2026-05-04-aws-first-deploy-walkthrough.md](../plans/2026-05-04-aws-first-deploy-walkthrough.md) §7

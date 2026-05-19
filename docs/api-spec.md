@@ -358,52 +358,72 @@ AI 제목·설명·파비콘 추천. 텍스트 제공자는 `X-AI-Provider: loca
 
 ## 5. 학습 API (`/api/learning`)
 
+학습 기록 UI는 이 API로 섹션·트리 메타를 가져오고, **마크다운 본문**은 대부분 CloudFront 정적 경로 `/learnings/<폴더>/...` 로 fetch한다(`learningMarkdownUrl`). 프로덕션에서 API·정적 호스트가 분리된 동작: [error-fixes/0005](./error-fixes/0005-learning-production-split-hosting.md).
+
+등록 섹션(`sectionId`) 예: `info-engineer`, `info-engineer-practical`, `sqld`, `big-data-analyst`, `project-learning` — 정의: `server/src/config/learning-sections.ts`.
+
 ### GET /api/learning/sections
 
-섹션 목록 조회.
+섹션 목록 조회. DB(`learning_sections`)가 있으면 DB 우선, 없으면 config 목록.
 
 **응답 (200 OK)**
 
 ```json
 [
   {
-    "sectionId": "uuid",
-    "sectionLabel": "섹션명",
-    "basePath": "/learn/섹션경로",
+    "sectionId": "info-engineer",
+    "sectionLabel": "정보처리기사 필기",
+    "basePath": "/learnings/정보처리기사_필기",
     "nodes": []
   }
 ]
 ```
 
+클라이언트는 응답을 `mergeLearningSectionSummaries`로 **config 등록 순서**에 맞춘 뒤 표시한다.
+
 ---
 
 ### GET /api/learning/sections/:sectionId
 
-섹션 상세 + 노드·문서 조회.
+섹션 상세 + 노드·문서 트리. DB에 노드가 있으면 DB, 없으면 서버 디스크 스캔(`LEARNINGS_ROOT`). 스캔 결과도 노드가 없으면 **404**.
 
 **Path Parameters**
 
 | 파라미터 | 설명 |
 |----------|------|
-| sectionId | 섹션 UUID |
+| sectionId | 섹션 id (예: `sqld`, `info-engineer`) |
 
 **응답 (200 OK)**
 
 ```json
 {
-  "sectionId": "uuid",
-  "sectionLabel": "섹션명",
-  "basePath": "/learn/섹션경로",
+  "sectionId": "sqld",
+  "sectionLabel": "SQLD",
+  "basePath": "/learnings/SQLD",
   "nodes": [
     {
-      "nodeId": "uuid",
-      "label": "노드명",
-      "path": "상대경로",
-      "documents": []
+      "id": "01_데이터_모델링의_이해",
+      "name": "데이터 모델링의 이해",
+      "description": "ERD, 정규화, 식별자 등 (1과목)",
+      "docs": [
+        {
+          "slug": "01_모델링_개념과_단계",
+          "title": "01_모델링_개념과_단계",
+          "filePath": "01_데이터_모델링의_이해/01_모델링_개념과_단계.md"
+        }
+      ]
     }
   ]
 }
 ```
+
+**클라이언트 폴백** — `nodes`가 비거나 404이면 빌드에 포함된 `file-structure-sections/learning-*.ts` config 트리를 사용한다.
+
+---
+
+### GET /api/learning/raw/:sectionId/*
+
+`project-learning` 등 API 서버 디스크에서 md 원문을 내려준다. `basePath`가 `/api/learning/raw/...` 인 섹션 전용.
 
 **에러**
 

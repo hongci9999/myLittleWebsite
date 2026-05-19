@@ -10,14 +10,14 @@ import {
   type FileStructureSection,
 } from '@/shared/config/file-structure'
 import { Button } from '@/components/ui/button'
-import { apiUrl } from '@/shared/api/base'
+import { learningMarkdownUrl } from '@/shared/api/base'
 
 const ROOT_DOCS_NODE_ID = '__root-docs'
 
 interface Props {
   parentPath: string
   sectionId: string
-  /** API에서 로드한 섹션. 있으면 config 대신 사용 */
+  /** API에서 로드한 섹션(노드 있을 때만). null/undefined면 config 폴백 */
   sectionOverride?: FileStructureSection | null
 }
 
@@ -29,7 +29,9 @@ export default function FileStructureBrowserPage({
   const { '*': splat } = useParams<{ '*': string }>()
   const pathParts = splat ? splat.split('/') : []
 
-  const result = sectionOverride
+  const useApiSection =
+    sectionOverride != null && (sectionOverride.nodes?.length ?? 0) > 0
+  const result = useApiSection
     ? resolveFileStructurePathFromSection(sectionOverride, pathParts)
     : resolveFileStructurePath(parentPath, sectionId, pathParts)
 
@@ -137,7 +139,7 @@ function DocViewer({
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const url = apiUrl(`${basePath}/${doc.filePath}`)
+    const url = learningMarkdownUrl(basePath, doc.filePath)
     fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)

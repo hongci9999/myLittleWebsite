@@ -20,7 +20,8 @@
 
 1. 폴더 생성: `client/public/learnings/{folderName}/`
 2. 서버 config: `server/src/config/learning-sections.ts`에 추가
-3. 클라이언트 스텁(브레드크럼용): `learning-parent.ts`의 `STUB_SECTIONS`에 추가
+3. `npm run build:learning-config` → `file-structure-sections/learning-*.ts` 생성
+4. `file-structure-sections/index.ts` import, `learning-parent.ts`의 `sections`에 등록 (또는 `STUB_SECTIONS`는 nodes 없는 브레드크럼용만)
 
 ## 이유 (다른 선택지를 배제한 이유)
 
@@ -34,4 +35,6 @@
 
 - `server/src/config/learning-sections.ts` - 섹션 정의
 - `server/src/services/learning-scan.ts` - 스캔 로직
-- `scripts/build-learning-config.mjs` - config 생성(선택, DB/스캔 사용 시 불필요)
+- `scripts/build-learning-config.mjs` - 클라이언트 config 생성 (`npm run build:learning-config`)
+- **프로덕션(CloudFront + EB 분리)**: EB 번들에 learnings 없음 → 목록·트리는 **클라이언트 config** + API 메타, md 본문은 CloudFront `/learnings/`. [error-fixes/0005](../error-fixes/0005-learning-production-split-hosting.md)
+- 섹션 목록 표시 순서: `learning-parent` config 기준 (`mergeLearningSectionSummaries`)

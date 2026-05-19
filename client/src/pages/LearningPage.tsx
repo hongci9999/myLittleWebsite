@@ -11,7 +11,7 @@ export default function LearningPage() {
   useEffect(() => {
     fetchLearningSections()
       .then(setSections)
-      .catch(() => setSections([]))
+      .catch(() => setSections(null))
   }, [])
 
   return (

@@ -4,4 +4,5 @@
  */
 import './learning-info-engineer'
 import './learning-info-engineer-practical'
+import './learning-sqld'
 import './learning-parent'

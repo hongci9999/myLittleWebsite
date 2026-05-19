@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import FileStructureBrowserPage from './FileStructure/FileStructureBrowserPage'
-import { fetchLearningSection } from '@/shared/api/learning'
+import {
+  fetchLearningSection,
+  shouldUseLearningConfigOnly,
+} from '@/shared/api/learning'
 import type { FileStructureSection } from '@/shared/config/file-structure'
 
 export default function LearningBrowserPage() {
@@ -12,9 +15,22 @@ export default function LearningBrowserPage() {
 
   useEffect(() => {
     if (!sectionId) return
+    if (shouldUseLearningConfigOnly(sectionId)) {
+      setSection(null)
+      return
+    }
+    let cancelled = false
+    setSection(undefined)
     fetchLearningSection(sectionId)
-      .then((data) => setSection(data ?? null))
-      .catch(() => setSection(null))
+      .then((data) => {
+        if (!cancelled) setSection(data ?? null)
+      })
+      .catch(() => {
+        if (!cancelled) setSection(null)
+      })
+    return () => {
+      cancelled = true
+    }
   }, [sectionId])
 
   if (!sectionId) {

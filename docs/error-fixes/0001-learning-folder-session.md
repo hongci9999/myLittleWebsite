@@ -76,18 +76,16 @@ Error: listen EADDRINUSE: address already in use :::3001
 
 ### 수정 방법
 
-`LearningBrowserPage.tsx`에서 API 응답에 노드가 없으면 config로 폴백:
+API 응답에 노드가 없으면 config로 폴백 (2026-05-19 프로덕션 이슈에서 확정):
 
-```ts
-.then((data) => {
-  const hasNodes = data?.nodes?.length > 0
-  setSection(hasNodes ? data : null)  // null → config 사용
-})
-```
+- `client/src/shared/api/learning.ts` — `fetchLearningSection`: `nodes.length === 0` → `null`
+- `client/src/pages/FileStructure/FileStructureBrowserPage.tsx` — `sectionOverride`는 노드가 있을 때만 API 트리 사용
+
+프로덕션(CloudFront+EB 분리)에서 같은 증상·md URL·목록 순서 깜빡임: [0005](./0005-learning-production-split-hosting.md).
 
 ### 결과/참고
 
-- DB 미설정·시드 미실행 시에도 config 기반으로 목록 표시
+- DB 미설정·시드 미실행·EB에 learnings 폴더 없음 → config 기반 목록·트리
 - API 성공 + 노드 있음 → API 데이터 사용
 - API 실패 또는 노드 없음 → config 사용
 

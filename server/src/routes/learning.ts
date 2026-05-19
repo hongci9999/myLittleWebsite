@@ -47,6 +47,10 @@ router.get('/sections/:sectionId', async (req, res) => {
   if (!scanned) {
     return res.status(404).json({ error: 'Section not found' })
   }
+  // EB 등 API 서버에 learnings 폴더가 없으면 nodes가 비어 있을 수 있음 → 클라이언트 config 폴백
+  if ((scanned.nodes?.length ?? 0) === 0) {
+    return res.status(404).json({ error: 'Section has no content on server' })
+  }
   res.json(scanned)
 })
 

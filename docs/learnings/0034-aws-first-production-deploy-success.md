@@ -94,8 +94,7 @@
 
 ## 다음에 하면 좋은 것
 
-- 프론트도 `mylittlewebsite.p-e.kr` 로 쓰려면 CloudFront **커스텀 도메인** + ACM **us-east-1** 인증서
-- EB **api.** 서브도메인 분리(루트 CNAME 제약 회피)
+- **API `api.` + 프론트 루트 도메인 이전** — 단계별 체크리스트: [plans/2026-05-19-api-subdomain-migration.md](../plans/2026-05-19-api-subdomain-migration.md)
 - Actions 실패 시 Slack/이메일 알림, 스테이징 환경 분리
 - 무료 도메인 **갱신 주기** 캘린더 등록 (내도메인.한국)
 

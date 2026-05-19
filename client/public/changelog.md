@@ -4,8 +4,13 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **정보처리기사 실기 학습 폴더** — `00_안내`·`Templates` 제거, `10_체계형_학습자료` → `01_과목별_핵심정리`(과목별 이론·키워드 노트). `SQL_프로그래밍`은 실습·문제 폴더로 유지. `npm run build:learning-config` 반영.
+
 ### Fixed
 
+- **학습 기록 프로덕션(CloudFront+EB)** — API가 빈 `nodes`를 줄 때 config 폴백 미적용으로 「준비 중」만 보이던 문제 수정; `/learnings/*` md는 `learningMarkdownUrl`로 정적(CloudFront) fetch; 섹션 목록 SQLD·빅데이터 순서 깜빡임은 `mergeLearningSectionSummaries`로 config 순서 고정; 과목 **부가 설명** 깜빡임은 config 트리가 있으면 상세 API 미호출(`shouldUseLearningConfigOnly`). [error-fixes/0005](error-fixes/0005-learning-production-split-hosting.md)
 - **타로 위젯 배포 시 카드 이미지 미표시** — `/src/...` 개발 전용 경로를 `import.meta.url` 기반 에셋 URL로 변경(`TarotCard.tsx`, `tarot-major.ts`). 프로덕션 빌드에 PNG가 `dist/assets/`로 포함됨. 문서: [error-fixes/0004](error-fixes/0004-tarot-deploy-image-paths.md), [learnings/0035](learnings/0035-vite-src-asset-import-meta-url.md)
 
 ### Changed
@@ -15,6 +20,11 @@
 
 ### Added
 
+- **API 서브도메인 이전 가이드** — [plans/2026-05-19-api-subdomain-migration.md](docs/plans/2026-05-19-api-subdomain-migration.md): `api.mylittlewebsite.p-e.kr` + 루트 CloudFront 커스텀 도메인, ACM(서울/us-east-1)·DNS·EB·GitHub Variables·CORS·체크리스트
+
+### Added
+
+- **SQLD 학습 기록 섹션** — `client/public/learnings/SQLD/`, `learning-sqld.ts`(빌드 스크립트), `LEARNING_SECTIONS`·`/learning/sqld/*` 라우팅; 1과목 데이터 모델링 노트 14편
 - **프로젝트 페이지 (`/project`)** — `shared/config/projects.ts`·`ProjectCard` 위젯: GitHub·라이브 데모 링크, 스크린샷(단일·3열 갤러리), 태그·상태; 항목 **myLittleWebsite**(프로덕션 캡처), **hum-my**(졸업 프로젝트·3단 UI 캡처)
 - **GitHub Actions AWS 배포** — `.github/workflows/deploy-aws.yml` (`main` / `workflow_dispatch`): 프론트 S3 sync·CloudFront invalidation, EB zip·`create-application-version`·`update-environment`; `scripts/package-eb-bundle.sh`
 - **첫 AWS 배포 실습 가이드** — `docs/plans/2026-05-04-aws-first-deploy-walkthrough.md` (로컬 빌드·LISTEN_HOST·S3·CloudFront·**Elastic Beanstalk**(zip·환경 속성·헬스·CORS)·GitHub 연동 안내); [0025 허브](docs/learnings/0025-aws-deployment-series-hub.md)에서 링크

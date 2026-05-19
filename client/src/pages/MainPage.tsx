@@ -3,6 +3,7 @@
  * 콘텐츠 영역 = 위젯 그리드 (추천 링크 등)
  */
 import type { ComponentType } from 'react'
+import DomainExpiryNotice from '@/widgets/DomainExpiryNotice'
 import FavoriteLinksWidget from '@/widgets/FavoriteLinksWidget'
 import GeekNewsWidget from '@/widgets/GeekNewsWidget'
 import TarotDailyWidget from '@/widgets/TarotDailyWidget'
@@ -21,6 +22,7 @@ const WIDGET_COMPONENTS: Record<MainWidgetId, ComponentType> = {
 export default function MainPage() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 md:py-10">
+      <DomainExpiryNotice />
       <WidgetGrid>
         {MAIN_WIDGET_LAYOUT.filter((item) => item.enabled).map(
           ({ id, gridClassName }) => {

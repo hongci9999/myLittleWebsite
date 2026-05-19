@@ -9,6 +9,7 @@ import columnScrapsRoutes from './routes/column-scraps.js'
 import aiSmokeRoutes from './routes/ai-smoke.js'
 import geekNewsRoutes from './routes/geeknews.js'
 import tarotRoutes from './routes/tarot.js'
+import siteDomainRoutes from './routes/site-domain.js'
 import { getAiProviderOptionsMeta } from './services/ai/index.js'
 
 const app = express()
@@ -61,6 +62,7 @@ app.use('/api/ai-scraps', aiScrapsRoutes)
 app.use('/api/column-scraps', columnScrapsRoutes)
 app.use('/api/learning', learningRoutes)
 app.use('/api/tarot', tarotRoutes)
+app.use('/api/site-domain', siteDomainRoutes)
 
 app.listen(PORT, LISTEN_HOST, () => {
   console.log(`Server listening on http://${LISTEN_HOST}:${PORT}`)

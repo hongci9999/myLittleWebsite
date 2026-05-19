@@ -43,6 +43,8 @@
 | 날짜                                                                  | 제목                                         |
 | --------------------------------------------------------------------- | -------------------------------------------- |
 | [2026-05-04](./plans/2026-05-04-aws-first-deploy-walkthrough.md)     | 첫 AWS 배포 실습 가이드 (단계별)            |
+| [2026-05-19](./plans/2026-05-19-api-subdomain-migration.md)         | API `api.` 서브도메인 이전 + 프론트 커스텀 도메인 |
+| [2026-05-19](./plans/2026-05-19-site-domain-settings.sql)           | 메인 도메인 만료 알림 DB(`site_domain_settings`) |
 | [2026-04-06](./plans/2026-04-06-geeknews-rss-widget-implementation.md) | 메인 GeekNews RSS 위젯 구현 계획            |
 | [2026-04-08](./plans/2026-04-08-tarot-daily-widget-design.md) | 타로 오늘의 운세 위젯 디자인 |
 | [2026-04-08](./plans/2026-04-08-tarot-daily-widget-implementation.md) | 타로 오늘의 운세 위젯 구현 계획 |
@@ -76,6 +78,7 @@
 - [0016 Gemini·유튜브 자막·공개 /api/meta](./decisions/0016-gemini-youtube-transcript-and-public-meta.md)
 - [0017 타로 위젯 해석 스키마·제공자 전략](./decisions/0017-tarot-reading-schema-and-provider-strategy.md)
 - [0018 프로덕션 호스팅 분리 (CloudFront + EB + API 도메인)](./decisions/0018-aws-production-split-hosting.md)
+- [0019 메인 도메인 만료 알림·DB 갱신](./decisions/0019-site-domain-expiry-notice.md)
 
 ### 학습 내용
 

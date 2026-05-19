@@ -65,6 +65,7 @@
 ## 실습 가이드 (단계별)
 
 - [첫 AWS 배포 실습 walkthrough](../plans/2026-05-04-aws-first-deploy-walkthrough.md) — 로컬 빌드 확인 → S3 → (선택) CloudFront → API(**Elastic Beanstalk** 포함)·CORS 안내. **완료 기록**: walkthrough §7, [0034](./0034-aws-first-production-deploy-success.md)
+- [API `api.` 서브도메인 + 프론트 커스텀 도메인](../plans/2026-05-19-api-subdomain-migration.md) — 프로덕션 URL 정리(실행 체크리스트)
 
 ## 관련 기존 문서
 

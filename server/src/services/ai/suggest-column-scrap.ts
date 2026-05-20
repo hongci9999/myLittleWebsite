@@ -1,9 +1,18 @@
-import { isColumnSourceKind, type ColumnSourceKind } from '../../db/queries/column-scraps.js'
+import {
+  isColumnSourceKind,
+  type ColumnSourceKind,
+} from '../../db/queries/column-scraps.js'
 import { fetchWebsiteContent, type WebsiteContent } from '../fetch-website.js'
-import { assertYoutubeTranscriptForAi, parseYoutubeVideoId } from '../youtube-transcript-text.js'
+import {
+  assertYoutubeTranscriptForAi,
+  parseYoutubeVideoId,
+} from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { ColumnScrapPrompts } from './prompts/column-scrap.prompts.js'
-import { getAiTextProvider, type AiRequestPreference } from './providers/registry.js'
+import {
+  getAiTextProvider,
+  type AiRequestPreference,
+} from './providers/registry.js'
 import type { AiTextProvider } from './providers/types.js'
 import type { ColumnScrapAiFillResult } from './types.js'
 import {
@@ -11,17 +20,18 @@ import {
   isXOrTwitterHost,
   xStatusHandleFromUrl,
 } from './url-hints.js'
-import {
-  aiSupportsYoutubeUrlInput,
-  shouldUseGeminiYoutubeColumnPath,
-} from './youtube-ai-path.js'
+import { isColumnScrapGeminiYoutubeRequest } from './youtube-ai-path.js'
 
 function sanitizeXField(s: string, fallback: string): string {
   const t = (s || fallback).replace(/something went wrong/gi, '').trim()
   return t || fallback
 }
 
-function parseTagsJson(tags: unknown, max: number, fallback: string[]): string[] {
+function parseTagsJson(
+  tags: unknown,
+  max: number,
+  fallback: string[]
+): string[] {
   const out: string[] = []
   if (Array.isArray(tags)) {
     for (const t of tags) {
@@ -119,7 +129,7 @@ async function buildColumnScrapFromSiteAnalysis(params: {
           title: resolvedTitle,
           summaryLine: summaryForExpand,
           siteAnalysis,
-        }),
+        })
       )
       const t = expanded.trim()
       if (t.length > bodyMd.length) {
@@ -144,19 +154,25 @@ async function buildColumnScrapFromSiteAnalysis(params: {
 
 async function suggestColumnScrapViaGeminiYoutube(
   trimmed: string,
-  kindHint: ColumnSourceKind,
-  ai: AiTextProvider & {
-    completeWithYoutubeUrl: (watchUrl: string, prompt: string) => Promise<string>
-  }
+  kindHint: ColumnSourceKind
 ): Promise<ColumnScrapAiFillResult> {
   const ytId = parseYoutubeVideoId(trimmed)!
+  const ai = getAiTextProvider('api')
+  const completeWithYoutube = ai.completeWithYoutubeUrl
+  if (typeof completeWithYoutube !== 'function') {
+    throw new Error(
+      '서버 빌드에 Gemini YouTube 분석(completeWithYoutubeUrl)이 없습니다. API(Elastic Beanstalk)를 최신 main으로 재배포하세요.'
+    )
+  }
+
   const content = await fetchWebsiteContent(trimmed)
   const coverImageUrl =
     content?.ogImageUrl ?? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`
 
   let siteAnalysis = ''
   try {
-    siteAnalysis = await ai.completeWithYoutubeUrl(
+    siteAnalysis = await completeWithYoutube.call(
+      ai,
       trimmed,
       ColumnScrapPrompts.deepAnalysisNoteYoutube(trimmed)
     )
@@ -195,8 +211,14 @@ export async function suggestColumnScrapFromUrl(
 
   if (skipHtml) {
     const handle = xStatusHandleFromUrl(trimmed)
-    const handleLine = handle ? `계정 @${handle} 로 추정됩니다.` : '계정명은 URL에서 추정하지 못했습니다.'
-    const xPrompt = ColumnScrapPrompts.xPostJson(trimmed, handleLine, handle ?? 'user')
+    const handleLine = handle
+      ? `계정 @${handle} 로 추정됩니다.`
+      : '계정명은 URL에서 추정하지 못했습니다.'
+    const xPrompt = ColumnScrapPrompts.xPostJson(
+      trimmed,
+      handleLine,
+      handle ?? 'user'
+    )
     const raw = await ai.complete(xPrompt)
     const jsonStr = stripMarkdownCodeFence(raw)
 
@@ -238,11 +260,8 @@ export async function suggestColumnScrapFromUrl(
     }
   }
 
-  if (
-    shouldUseGeminiYoutubeColumnPath(preference, trimmed, ai) &&
-    aiSupportsYoutubeUrlInput(ai)
-  ) {
-    return suggestColumnScrapViaGeminiYoutube(trimmed, kindHint, ai)
+  if (isColumnScrapGeminiYoutubeRequest(preference, trimmed)) {
+    return suggestColumnScrapViaGeminiYoutube(trimmed, kindHint)
   }
 
   const content = await fetchWebsiteContent(trimmed)
@@ -252,7 +271,9 @@ export async function suggestColumnScrapFromUrl(
 
   if (content && content.fullText.trim().length > 40) {
     try {
-      siteAnalysis = await ai.complete(ColumnScrapPrompts.deepAnalysisNote(trimmed, content.fullText))
+      siteAnalysis = await ai.complete(
+        ColumnScrapPrompts.deepAnalysisNote(trimmed, content.fullText)
+      )
     } catch {
       siteAnalysis = ''
     }

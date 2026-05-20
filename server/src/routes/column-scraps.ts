@@ -34,7 +34,10 @@ function normalizeTags(raw: unknown): string[] {
 function parseTagsAndQuery(q: unknown): string[] {
   if (!q) return []
   if (Array.isArray(q)) {
-    return q.flatMap((x) => String(x).split(/[,，]/)).map((t) => t.trim()).filter(Boolean)
+    return q
+      .flatMap((x) => String(x).split(/[,，]/))
+      .map((t) => t.trim())
+      .filter(Boolean)
   }
   return String(q)
     .split(/[,，]/)
@@ -69,10 +72,12 @@ router.get('/', async (req, res) => {
     })
     res.json(items)
   } catch (err) {
-    const msg = err instanceof Error ? err.message : 'Failed to list column scraps'
+    const msg =
+      err instanceof Error ? err.message : 'Failed to list column scraps'
     if (msg === 'Supabase not configured') {
       res.status(503).json({
-        error: 'Database not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY in server/.env',
+        error:
+          'Database not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY in server/.env',
       })
       return
     }
@@ -123,12 +128,31 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'AI fill failed'
     if (msg === YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE) {
-      res.status(400).json({ error: msg })
+      const pref = parseAiRequestPreference(req.headers, req.body)
+      console.error('[column-scraps] ai-fill transcript required', {
+        resolvedPreference: pref,
+        headerAiProvider: req.headers['x-ai-provider'],
+        bodyAiProvider: (req.body as { aiProvider?: string })?.aiProvider,
+        url: (req.body as { url?: string })?.url?.slice(0, 120),
+      })
+      res.status(400).json({
+        error: msg,
+        resolvedPreference: pref,
+        hint:
+          pref === 'api'
+            ? 'API 모드인데 자막 경로로 처리됐습니다. GET /api/meta 의 features.columnScrapGeminiYoutube 가 true 인지, EB가 최신 버전인지 확인하세요.'
+            : '헤더·본문의 aiProvider가 서버에 api로 전달되지 않았을 수 있습니다. 요청 Payload에 "aiProvider":"api" 가 있는지 확인하세요.',
+      })
+      return
+    }
+    if (msg.includes('Gemini YouTube 분석(completeWithYoutubeUrl)')) {
+      res.status(503).json({ error: msg })
       return
     }
     if (msg.includes('GEMINI_API_KEY') || msg.includes('GOOGLE_AI_API_KEY')) {
       res.status(503).json({
-        error: 'API 모드에는 서버에 GEMINI_API_KEY(또는 GOOGLE_AI_API_KEY)가 필요합니다.',
+        error:
+          'API 모드에는 서버에 GEMINI_API_KEY(또는 GOOGLE_AI_API_KEY)가 필요합니다.',
       })
       return
     }
@@ -224,9 +248,11 @@ router.patch('/:id', requireAuth, async (req, res) => {
     }
     if (body.summary !== undefined) patch.summary = body.summary
     if (body.bodyMd !== undefined) patch.bodyMd = body.bodyMd
-    if (body.coverImageUrl !== undefined) patch.coverImageUrl = body.coverImageUrl
+    if (body.coverImageUrl !== undefined)
+      patch.coverImageUrl = body.coverImageUrl
     if (body.tags !== undefined) patch.tags = normalizeTags(body.tags)
-    if (body.extraLinks !== undefined) patch.extraLinks = normalizeExtraLinks(body.extraLinks)
+    if (body.extraLinks !== undefined)
+      patch.extraLinks = normalizeExtraLinks(body.extraLinks)
     if (body.slug !== undefined) patch.slug = body.slug
 
     const item = await updateColumnScrap(authToken, id, patch)

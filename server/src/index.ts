@@ -10,7 +10,10 @@ import aiSmokeRoutes from './routes/ai-smoke.js'
 import geekNewsRoutes from './routes/geeknews.js'
 import tarotRoutes from './routes/tarot.js'
 import siteDomainRoutes from './routes/site-domain.js'
-import { getAiProviderOptionsMeta } from './services/ai/index.js'
+import {
+  createGeminiTextProvider,
+  getAiProviderOptionsMeta,
+} from './services/ai/index.js'
 
 const app = express()
 const PORT = Number(process.env.PORT) || 3001
@@ -36,6 +39,7 @@ app.use(
       if (allowedOrigins.includes(origin)) return cb(null, true)
       return cb(new Error(`CORS blocked origin: ${origin}`))
     },
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-AI-Provider'],
   })
 )
 
@@ -50,7 +54,14 @@ app.get('/api/health', (_, res) => {
 
 /** 공개 설정 요약. `ai` → 헤더 전광판(AiStatusTicker) 표시 문자열의 출처 */
 app.get('/api/meta', (_, res) => {
-  res.json({ ai: getAiProviderOptionsMeta() })
+  const gemini = createGeminiTextProvider()
+  res.json({
+    ai: getAiProviderOptionsMeta(),
+    features: {
+      columnScrapGeminiYoutube:
+        typeof gemini.completeWithYoutubeUrl === 'function',
+    },
+  })
 })
 
 app.use('/api/ai-smoke', aiSmokeRoutes)

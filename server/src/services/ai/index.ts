@@ -18,9 +18,16 @@ export {
   type AiProviderPublicInfo,
 } from './providers/registry.js'
 
-export type { AiSuggestResult, AiToolScrapAiFillResult, ColumnScrapAiFillResult } from './types.js'
+export type {
+  AiSuggestResult,
+  AiToolScrapAiFillResult,
+  ColumnScrapAiFillResult,
+} from './types.js'
 
 export { suggestLinkMeta } from './suggest-link-meta.js'
 export { suggestColumnScrapFromUrl } from './suggest-column-scrap.js'
 export { suggestAiToolScrapFromUrl } from './suggest-ai-tool-scrap.js'
-export { suggestTarotReading, normalizeTarotCards } from './suggest-tarot-reading.js'
+export {
+  suggestTarotReading,
+  normalizeTarotCards,
+} from './suggest-tarot-reading.js'

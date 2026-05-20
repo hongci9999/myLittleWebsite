@@ -24,3 +24,14 @@ export function shouldUseGeminiYoutubeColumnPath(
     aiSupportsYoutubeUrlInput(ai)
   )
 }
+
+/**
+ * 칼럼 스크랩 라우팅용 — `api` + watch URL이면 Gemini YouTube 경로.
+ * (구 EB 빌드에서 `aiSupportsYoutubeUrlInput`만 false인 경우에도 API 의도를 존중)
+ */
+export function isColumnScrapGeminiYoutubeRequest(
+  preference: AiRequestPreference,
+  url: string
+): boolean {
+  return preference === 'api' && isYoutubeWatchUrl(url)
+}

@@ -24,8 +24,8 @@ build/
 .DS_Store
 Thumbs.db
 
-# Commit message (Windows 한글용)
-.git-commit-msg.txt
+# Commit message (Windows 한글용, -F 임시 파일)
+.git-commit-msg*.txt
 
 # Logs
 *.log

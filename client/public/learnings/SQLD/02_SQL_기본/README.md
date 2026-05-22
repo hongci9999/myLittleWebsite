@@ -29,4 +29,10 @@
 | 02 | [02_관계대수_연산자](./02_관계대수_연산자.md) | σ·π·∪·∩·−·×·⋈, SQL 대응 |
 | 03 | [03_SELECT_문_구조와_실행순서](./03_SELECT_문_구조와_실행순서.md) | 절 구성, FWGHSO 실행 순서 |
 | 04 | [04_SELECT_기본_문법](./04_SELECT_기본_문법.md) | *, DISTINCT, WHERE, AS |
-| 05 | [05_SQL_함수_문자함수](./05_SQL_함수_문자함수.md) | 단일행·집계·NVL/COALESCE·변환 |
+| 05 | [05_SQL_함수_문자함수](./05_SQL_함수_문자함수.md) | 집계·NULL·CASE/DECODE·변환 |
+| 06 | [06_WHERE_절과_비교연산자](./06_WHERE_절과_비교연산자.md) | 비교·IN/BETWEEN·우선순위·LIKE·IS NULL |
+| 07 | [07_GROUP_BY와_HAVING](./07_GROUP_BY와_HAVING.md) | GROUP BY, HAVING, WHERE 혼합 |
+| 08 | [08_ORDER_BY절](./08_ORDER_BY절.md) | ASC/DESC, GROUP BY 연동, NULL 정렬 |
+| 09 | [09_조인_개요](./09_조인_개요.md) | EQUI·NON EQUI·표준조인 |
+| 10 | [10_INNER_JOIN](./10_INNER_JOIN.md) | INNER JOIN, USING·ON |
+| 11 | [11_NATURAL_JOIN과_CROSS_JOIN](./11_NATURAL_JOIN과_CROSS_JOIN.md) | NATURAL·CROSS·OUTER JOIN |

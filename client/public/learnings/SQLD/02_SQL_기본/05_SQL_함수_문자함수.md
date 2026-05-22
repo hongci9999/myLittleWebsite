@@ -1,6 +1,6 @@
 날짜: 2026-05-19
-태그: [SQLD, SQL, 함수, NULL, NVL, COALESCE, 집계함수, 2과목]
-주제: 단일행·집계 함수 — 문자·숫자·날짜·변환·COUNT/SUM/AVG 등
+태그: [SQLD, SQL, 함수, NULL, NVL, COALESCE, CASE, DECODE, 집계함수, 2과목]
+주제: 단일행·집계·NULL·CASE/DECODE·변환 함수
 중요도: 상
 ---
 
@@ -8,7 +8,7 @@
 
 ## 핵심 요약
 
-**단일행 함수**는 행마다 1→1, **집계함수**는 N→1. **NULL 처리**: **NVL**(NULL→대체값), **NULLIF**(같으면 NULL), **COALESCE**(첫 번째 non-NULL). **집계**는 NULL 기본 제외, **`COUNT(*)`만 포함**. **WHERE**에 집계 불가 → **HAVING**.
+**단일행 함수**는 행마다 1→1. **CASE**는 조건별 값 분기(단순·검색 CASE), **DECODE**는 Oracle 전용 분기. **NULL**: NVL·NULLIF·COALESCE. **집계**: COUNT·SUM·AVG — NULL 기본 제외, `COUNT(*)`만 포함.
 
 ## 왜 중요한가
 
@@ -36,7 +36,7 @@
 | **단일행 함수** (Scalar) | **1 → 1** (행마다) | `UPPER(이름)`, `SUBSTR(이름,1,2)` |
 | **다중행 함수** (집계) | **N → 1** | `COUNT(*)`, `SUM(학점)`, `AVG(나이)` |
 
-> 집계함수 상세는 **§6**, GROUP BY는 다음 문서.
+> 집계함수 상세는 **§6**, GROUP BY: [07_GROUP_BY와_HAVING](./07_GROUP_BY와_HAVING.md)
 
 ### Oracle 참고 — `DUAL`
 
@@ -348,7 +348,106 @@ SELECT 사번,
 
 ---
 
-## 8. SELECT에서 사용 예
+## 8. CASE 문 · DECODE 함수
+
+조건에 따라 **값을 분기**한다. (단일행 함수·SELECT 표현식)
+
+### \<과목\> 예제 데이터
+
+| 과목코드 |
+|----------|
+| 201 |
+| 202 |
+| 203 |
+| 204 |
+| 205 |
+
+**매핑 규칙:** 201→수학, 202→과학, 203→컴퓨터, 그 외→교양
+
+| 과목코드 | 과목명 |
+|----------|--------|
+| 201 | 수학 |
+| 202 | 과학 |
+| 203 | 컴퓨터 |
+| 204 | 교양 |
+| 205 | 교양 |
+
+---
+
+### (1) CASE 문
+
+#### 검색 CASE (Searched CASE) — `WHEN 조건`
+
+```sql
+SELECT 과목코드,
+       CASE
+         WHEN 과목코드 = '201' THEN '수학'
+         WHEN 과목코드 = '202' THEN '과학'
+         WHEN 과목코드 = '203' THEN '컴퓨터'
+         ELSE '교양'
+       END AS 과목명
+  FROM 과목;
+```
+
+| 특징 | 내용 |
+|------|------|
+| 형태 | `CASE` … **`WHEN` 조건식** `THEN` … |
+| 용도 | **비교·범위** 등 **임의 조건** (예: `나이 > 20`) |
+
+#### 단순 CASE (Simple CASE) — `CASE 열`
+
+```sql
+SELECT 과목코드,
+       CASE 과목코드
+         WHEN '201' THEN '수학'
+         WHEN '202' THEN '과학'
+         WHEN '203' THEN '컴퓨터'
+         ELSE '교양'
+       END AS 과목명
+  FROM 과목;
+```
+
+| 특징 | 내용 |
+|------|------|
+| 형태 | `CASE` **비교 대상** … `WHEN` **값** `THEN` … |
+| 용도 | **한 열 = 특정 값** 매핑 (위 예와 동일 결과) |
+
+| 구분 | 검색 CASE | 단순 CASE |
+|------|-----------|-----------|
+| WHEN | **조건식** (`=`, `>`, …) | **상수/값** (앞 `CASE` 열과 **등가** 비교) |
+| ELSE | 매칭 없을 때 **기본값** | 동일 |
+
+---
+
+### (2) DECODE 함수 (Oracle 전용)
+
+```sql
+SELECT 과목코드,
+       DECODE(과목코드,
+              '201', '수학',
+              '202', '과학',
+              '203', '컴퓨터',
+              '교양') AS 과목명
+  FROM 과목;
+```
+
+| 항목 | 내용 |
+|------|------|
+| **문법** | `DECODE(컬럼, 값1, 반환1, 값2, 반환2, …, [기본값])` |
+| **동작** | 컬럼이 **값1**이면 **반환1**, **값2**이면 **반환2** … **어느 것도 아니면 마지막** 인자(기본값) |
+| **범위** | **Oracle 전용** — 표준은 **CASE** 사용 |
+
+### CASE vs DECODE
+
+| 구분 | CASE | DECODE |
+|------|------|--------|
+| 표준 | **SQL 표준** (대부분 DBMS) | **Oracle** |
+| 조건 | 복잡한 **WHEN 조건** 가능 | **등가 비교** 위주 |
+| ELSE | **ELSE** 절 | **마지막 인자** = 기본값 |
+
+---
+
+## 9. SELECT에서 사용 예
 
 ```sql
 -- 단일행 함수
@@ -358,30 +457,33 @@ SELECT UPPER(이름) AS 이름_대문자,
 
 -- 집계함수 (전체 1행 결과)
 SELECT COUNT(*) AS cnt, AVG(나이) AS 평균나이 FROM 학생;
+
+-- CASE 분기
+SELECT 과목코드,
+       CASE 과목코드 WHEN '201' THEN '수학' ELSE '교양' END AS 과목명
+  FROM 과목;
 ```
 
 ---
 
-## 9. 시험 포인트 / 함정
+## 10. 시험 포인트 / 함정
 
 | 구분 | 내용 |
 |------|------|
-| 단일행 | **행마다** 1개 결과 |
-| 집계 | COUNT·SUM·AVG·MIN·MAX — **N→1** |
-| NVL | NULL → **대체값** (`NVL(성과급,0)` → 0) |
-| NULLIF | **같으면 NULL** (`NULLIF(성과급,100)` → 101번 NULL) |
-| COALESCE | **왼쪽부터** 첫 non-NULL (전화→이메일→지역) |
-| 집계 NULL | SUM·AVG·COUNT(열) → **NULL 제외** |
-| COUNT(*) | **NULL 포함** |
-| WHERE | 집계 함수 **불가** → **HAVING** |
-| 함정 | NVL과 NULLIF **역할 혼동** |
-| 함정 | COALESCE **순서** — 앞 열이 우선 |
-| 함정 | `COUNT(급여)` = 5 → **4** |
-| 함정 | WHERE에 `AVG(급여)>1000` |
+| CASE 검색 | `WHEN` **조건식** (`과목코드='201'`) |
+| CASE 단순 | `CASE 열` + `WHEN` **값** |
+| ELSE | 204·205 → **교양** |
+| DECODE | `DECODE(열, v1, r1, v2, r2, …, 기본)` — **Oracle 전용** |
+| CASE vs DECODE | 표준 **CASE**, Oracle **DECODE** |
+| NVL·COALESCE | NULL 처리 (§7) |
+| 집계 | COUNT(*) NULL **포함** |
+| 함정 | DECODE를 **모든 DBMS**에서 된다고 가정 |
+| 함정 | 단순 CASE에 `WHEN 나이>20` — **검색 CASE** 사용 |
+| 함정 | NVL / NULLIF / COALESCE 역할 혼동 |
 
 ---
 
-## 10. 연결 노트
+## 11. 연결 노트
 
 - 이전: [04_SELECT_기본_문법](./04_SELECT_기본_문법.md)
-- 다음: (추가 예정) GROUP BY·HAVING
+- 다음: [06_WHERE_절과_비교연산자](./06_WHERE_절과_비교연산자.md)

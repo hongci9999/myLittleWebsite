@@ -36,3 +36,5 @@
 | 09 | [09_조인_개요](./09_조인_개요.md) | EQUI·NON EQUI·표준조인 |
 | 10 | [10_INNER_JOIN](./10_INNER_JOIN.md) | INNER JOIN, USING·ON |
 | 11 | [11_NATURAL_JOIN과_CROSS_JOIN](./11_NATURAL_JOIN과_CROSS_JOIN.md) | NATURAL·CROSS·OUTER JOIN |
+
+→ **SQL 활용**: [../02_SQL_활용/](../02_SQL_활용/) (서브쿼리 등)

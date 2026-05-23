@@ -261,4 +261,4 @@ FULL:   LEFT ∪ RIGHT (중복 매칭 1행)
 
 - 이전: [10_INNER_JOIN](./10_INNER_JOIN.md)
 - INNER vs OUTER: §4 표
-- 다음: (추가 예정) 다중 조인·서브쿼리 등
+- 다음: [01_서브쿼리](../02_SQL_활용/01_서브쿼리.md)

@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **About 자기서술** — `about.md` 전면 개정(foundation 3원칙, 방문자 시나리오, 왜/ADR, 라우트·midnight 동기화, Mermaid 안내 수정). **AWS 프로덕션 배포** 절(URL·S3/CF/EB·CI/CD·CORS·도메인·문서 링크). `/about` 목차·heading 앵커·로딩 스켈레톤. 계획: `docs/plans/2026-05-25-about-page-self-documentation-design.md`. ADR `0008`·`0009` 다크 테마 id `midnight` 반영.
+
 ### Added
 
 - **메인 도메인 만료 알림** — `/main` `DomainExpiryNotice`: 내도메인.한국 `mylittlewebsite.p-e.kr`, 등록~만료(기본 2026-05-16~08-16) **경과 비율** 그라데이션 바, **만료 30일 전** 하단 쐐기 마커. 관리자 **「오늘 연장 반영」** → `POST /api/site-domain/renew`. DB `site_domain_settings`([SQL](docs/plans/2026-05-19-site-domain-settings.sql)), [ADR 0019](docs/decisions/0019-site-domain-expiry-notice.md), [api-spec §9](docs/api-spec.md).

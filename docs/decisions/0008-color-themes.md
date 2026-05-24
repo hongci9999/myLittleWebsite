@@ -5,7 +5,7 @@
 
 ## 배경
 
-디자인 플레이그라운드 선택 결과(0007)에서 blue-orange, amber-cyan, dark-slate를 확정했다. 메인·서브·다크 세 가지 테마를 지원한다.
+디자인 플레이그라운드 선택 결과(0007)에서 blue-orange, amber-cyan을 확정했고, 다크 테마는 이후 **midnight**로 변경했다(2026-05). 메인·서브·다크 세 가지 테마를 지원한다.
 
 ## 결정
 
@@ -13,7 +13,7 @@
 |------|-----|------|
 | 메인 | blue-orange | 기본 라이트 테마 |
 | 서브 | amber-cyan | 대안 라이트 테마 |
-| 다크 | dark-slate | 다크 테마 |
+| 다크 | midnight | 다크 테마 (구 dark-slate) |
 
 - `data-theme` 속성으로 html에 적용
 - localStorage(`mylittlewebsite-theme`)에 사용자 선택 저장
@@ -21,7 +21,7 @@
 
 ## 결과/참고
 
-- `client/src/index.css`: [data-theme='blue-orange'], [data-theme='amber-cyan'], [data-theme='dark-slate']
+- `client/src/index.css`: [data-theme='blue-orange'], [data-theme='amber-cyan'], [data-theme='midnight']
 - `client/src/shared/context/ThemeContext.tsx`: ThemeProvider, useTheme
 - `client/src/shared/config/themes.ts`: THEME_OPTIONS
 - `client/index.html`: 초기 로드 시 localStorage 기반 data-theme 설정 (플래시 방지)

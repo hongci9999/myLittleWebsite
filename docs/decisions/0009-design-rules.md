@@ -19,7 +19,7 @@
 | --------- | ----------- |
 | 메인 테마 | blue-orange |
 | 서브 테마 | amber-cyan  |
-| 다크 테마 | dark-slate  |
+| 다크 테마 | midnight    |
 
 - CSS 변수(`--primary`, `--background` 등) 사용. 하드코딩 지양
 - 새 색 추가 시 `index.css` 테마 블록에 정의

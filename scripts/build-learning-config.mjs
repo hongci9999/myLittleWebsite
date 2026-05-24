@@ -60,6 +60,18 @@ const SECTION_SPECS = [
         name: '데이터 모델링의 이해',
         description: 'ERD, 정규화, 식별자 등 (1과목)',
       },
+      '02_SQL_기본': {
+        name: 'SQL 기본',
+        description: 'SELECT, JOIN, 함수 등 (2과목)',
+      },
+      '03_SQL_활용': {
+        name: 'SQL 활용',
+        description: '서브쿼리, 윈도우, PIVOT 등 (2과목)',
+      },
+      '04_SQL_관리_구문': {
+        name: 'SQL 관리 구문',
+        description: 'DML, DDL, DCL, TCL (3과목)',
+      },
     },
     headerTitle: 'SQLD',
   },

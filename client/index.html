@@ -4,7 +4,8 @@
     <script>
       ;(function () {
         var t = localStorage.getItem('mylittlewebsite-theme')
-        if (t === 'amber-cyan' || t === 'dark-slate') {
+        if (t === 'dark-slate') t = 'midnight'
+        if (t === 'amber-cyan' || t === 'midnight') {
           document.documentElement.setAttribute('data-theme', t)
         }
       })()

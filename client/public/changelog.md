@@ -4,6 +4,10 @@
 
 ## [Unreleased]
 
+### Added
+
+- **메인 도메인 만료 알림** — `/main` `DomainExpiryNotice`: 내도메인.한국 `mylittlewebsite.p-e.kr`, 등록~만료(기본 2026-05-16~08-16) **경과 비율** 그라데이션 바, **만료 30일 전** 하단 쐐기 마커. 관리자 **「오늘 연장 반영」** → `POST /api/site-domain/renew`. DB `site_domain_settings`([SQL](docs/plans/2026-05-19-site-domain-settings.sql)), [ADR 0019](docs/decisions/0019-site-domain-expiry-notice.md), [api-spec §9](docs/api-spec.md).
+
 ### Changed
 
 - **정보처리기사 실기 학습 폴더** — `00_안내`·`Templates` 제거, `10_체계형_학습자료` → `01_과목별_핵심정리`(과목별 이론·키워드 노트). `SQL_프로그래밍`은 실습·문제 폴더로 유지. `npm run build:learning-config` 반영.

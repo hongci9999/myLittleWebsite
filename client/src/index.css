@@ -3,10 +3,10 @@
 
 /*
  * 기본 dark: variant는 OS prefers-color-scheme만 본다.
- * 이 프로젝트는 data-theme(blue-orange | amber-cyan | dark-slate)로만 색을 바꾸므로,
- * dark:는 dark-slate 테마일 때만 켜지도록 맞춘다. (밝은 테마 + OS 다크에서 prose 글자만 밝아지는 현상 방지)
+ * 이 프로젝트는 data-theme(blue-orange | amber-cyan | midnight)로만 색을 바꾸므로,
+ * dark:는 midnight 테마일 때만 켜지도록 맞춘다. (밝은 테마 + OS 다크에서 prose 글자만 밝아지는 현상 방지)
  */
-@custom-variant dark (&:where([data-theme='dark-slate'], [data-theme='dark-slate'] *));
+@custom-variant dark (&:where([data-theme='midnight'], [data-theme='midnight'] *));
 
 @layer base {
   :root,
@@ -61,29 +61,29 @@
     --ring: oklch(0.65 0.18 75);
   }
 
-  [data-theme='dark-slate'] {
+  [data-theme='midnight'] {
     --radius: 0.75rem;
-    /* 다크: dark-slate */
-    --background: oklch(0.11 0.01 260);
+    /* 다크: midnight (디자인 플레이그라운드) */
+    --background: oklch(0.14 0.02 265);
     --foreground: oklch(0.95 0 0);
-    --card: oklch(0.14 0.01 260);
+    --card: oklch(0.18 0.02 265);
     --card-foreground: oklch(0.95 0 0);
-    --popover: oklch(0.14 0.01 260);
+    --popover: oklch(0.18 0.02 265);
     --popover-foreground: oklch(0.95 0 0);
-    --primary: oklch(0.65 0.12 260);
-    --primary-foreground: oklch(0.1 0 0);
-    /* secondary: 호버·강조용. 텍스트로도 쓰이므로 어두운 배경에서 읽기 쉬운 밝기(0.6) */
-    --secondary: oklch(0.6 0.1 260);
-    --secondary-foreground: oklch(0.1 0 0);
-    --muted: oklch(0.22 0.01 260);
+    --primary: oklch(0.65 0.2 265);
+    --primary-foreground: oklch(0.12 0 0);
+    /* secondary: 호버·강조용. 텍스트로도 쓰이므로 어두운 배경에서 읽기 쉬운 밝기 */
+    --secondary: oklch(0.6 0.12 265);
+    --secondary-foreground: oklch(0.12 0 0);
+    --muted: oklch(0.25 0.02 265);
     --muted-foreground: oklch(0.7 0 0);
-    --accent: oklch(0.28 0.03 260);
+    --accent: oklch(0.3 0.05 265);
     --accent-foreground: oklch(0.95 0 0);
     --destructive: oklch(0.577 0.245 27.325);
     --destructive-foreground: oklch(0.985 0 0);
-    --border: oklch(0.28 0.01 260);
-    --input: oklch(0.28 0.01 260);
-    --ring: oklch(0.65 0.12 260);
+    --border: oklch(0.3 0.02 265);
+    --input: oklch(0.3 0.02 265);
+    --ring: oklch(0.65 0.2 265);
   }
 
   button:not(:disabled),

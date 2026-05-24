@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from 'react'
 
-export type ThemeId = 'blue-orange' | 'amber-cyan' | 'dark-slate'
+export type ThemeId = 'blue-orange' | 'amber-cyan' | 'midnight'
 
 const THEME_STORAGE_KEY = 'mylittlewebsite-theme'
 
@@ -18,10 +18,11 @@ const ThemeContext = createContext<{
 function getStoredTheme(): ThemeId {
   if (typeof window === 'undefined') return 'blue-orange'
   const stored = localStorage.getItem(THEME_STORAGE_KEY)
+  if (stored === 'dark-slate') return 'midnight'
   if (
     stored === 'blue-orange' ||
     stored === 'amber-cyan' ||
-    stored === 'dark-slate'
+    stored === 'midnight'
   ) {
     return stored
   }

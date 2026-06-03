@@ -3,7 +3,7 @@ import { ProjectCard } from '@/widgets/ProjectCard'
 
 export default function ProjectPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-16">
+    <div className="mx-auto max-w-6xl px-6 py-16 sm:px-8">
       <header>
         <h1 className="text-3xl font-bold tracking-tight md:text-4xl">프로젝트</h1>
         <p className="mt-4 text-muted-foreground">
@@ -14,9 +14,9 @@ export default function ProjectPage() {
       {PROJECT_ITEMS.length === 0 ? (
         <p className="mt-10 text-muted-foreground">등록된 프로젝트가 없습니다.</p>
       ) : (
-        <ul className="mt-10 space-y-12">
+        <ul className="mt-10 grid list-none gap-8 p-0 sm:grid-cols-2 sm:gap-10">
           {PROJECT_ITEMS.map((project) => (
-            <li key={project.id}>
+            <li key={project.id} className="min-w-0">
               <ProjectCard project={project} />
             </li>
           ))}

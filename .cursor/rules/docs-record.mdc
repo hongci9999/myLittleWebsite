@@ -33,7 +33,7 @@ docs/
 
 ### CHANGELOG.md
 - **When**: Release or meaningful commit batches
-- **Format**: [Keep a Changelog](https://keepachangelog.com/) (Added, Changed, Fixed, etc.)
+- **Format**: 월별 `## YYYY년 M월` 섹션 + [Keep a Changelog](https://keepachangelog.com/) 카테고리(Added, Changed, Fixed 등). `[Unreleased]`·버전 번호 대신 월로 묶는다.
 - **Content**: What changed and why (summary)
 
 ### decisions/ (의사결정 기록)

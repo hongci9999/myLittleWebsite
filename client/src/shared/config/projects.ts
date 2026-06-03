@@ -22,8 +22,25 @@ export type ProjectItem = {
   status: ProjectStatus
 }
 
-/** `/project` 목록 — 항목 추가 시 스크린샷은 `client/public/projects/` 에 둔다 */
+/**
+ * `/project` 목록 — 화면 **위→아래 = 포트폴리오 등록 최신순**.
+ * HICC가 맨 처음 등록한 프로젝트이므로 배열 맨 아래.
+ * 스크린샷: `client/public/projects/`
+ */
 export const PROJECT_ITEMS: ProjectItem[] = [
+  {
+    id: 'chzzk-subscribe-gradation',
+    title: '치지직 구독채널 그라데이션',
+    summary:
+      '치지직(chzzk.naver.com)에서 내가 구독 중인 채널 이름에 그라데이션을 표시하는 Chrome 확장. 설치·브라우저 시작 시 Chzzk 구독 API로 목록을 가져와 로컬 저장 후, 팔로잉·라이브 카드 등 채널명이 보이는 곳에 일괄 적용한다.',
+    meta: '개인 사이드 · Chrome Extension (Manifest V3)',
+    repoUrl: 'https://github.com/hongci9999/chzzk-subscribe-gradation',
+    screenshotSrc: '/projects/chzzk-subscribe-gradation/live.png',
+    screenshotAlt:
+      '치지직 팔로잉 채널·라이브 카드에서 구독 채널명 그라데이션 적용',
+    tags: ['Chrome Extension', 'JavaScript', 'CSS', 'Chzzk'],
+    status: 'archived',
+  },
   {
     id: 'my-little-website',
     title: 'myLittleWebsite',
@@ -63,6 +80,35 @@ export const PROJECT_ITEMS: ProjectItem[] = [
       },
     ],
     tags: ['React', 'TypeScript', 'Python', 'Django', 'AI', 'Vite'],
+    status: 'archived',
+  },
+  {
+    id: 'hicc-expo-project',
+    title: 'HICC 동아리 박람회',
+    summary:
+      '홍익대 중앙 프로그래밍 동아리 HICC 박람회용 웹 앱. 강의 종료 위치·선호 음식을 고르면 홍대 맛집을 추천하고, 네이버 지도로 식당을 확인한 뒤 등록하면 같은 식당을 고른 식사 메이트와 매칭된다.',
+    meta: 'HICC 동아리 · 박람회 데모 · React + Vite',
+    repoUrl: 'https://github.com/hongci9999/hicc-expo-project',
+    screenshotSrc: '/projects/hicc-expo/home.png',
+    screenshotAlt: 'HICC 박람회 앱 — 홍대 맛집 추천·식사 메이트 소개',
+    screenshots: [
+      {
+        src: '/projects/hicc-expo/home.png',
+        alt: '홍대 맛집 추천과 식사 메이트 안내 화면',
+        caption: '시작',
+      },
+      {
+        src: '/projects/hicc-expo/map.png',
+        alt: '추천 식당 네이버 지도 및 등록 화면',
+        caption: '지도',
+      },
+      {
+        src: '/projects/hicc-expo/match.png',
+        alt: '같은 식당을 고른 메이트 매칭 결과',
+        caption: '매칭',
+      },
+    ],
+    tags: ['React', 'Vite', 'JavaScript'],
     status: 'archived',
   },
 ]

@@ -1,12 +1,23 @@
-# Changelog
+# 패치노트
 
-[Keep a Changelog](https://keepachangelog.com/) 형식.
+월별 변경 내역. 항목 분류(Added / Changed / Fixed 등)는 [Keep a Changelog](https://keepachangelog.com/) 관례를 따릅니다.
 
-## [Unreleased]
+## 2026년 6월
+
+### Added
+
+- **프로젝트 페이지 (`/project`)** — 2열 그리드, 포트폴리오 등록 최신순(맨 아래가 최초 등록). **HICC 동아리 박람회**([hicc-expo-project](https://github.com/hongci9999/hicc-expo-project)), **치지직 구독채널 그라데이션**([chzzk-subscribe-gradation](https://github.com/hongci9999/chzzk-subscribe-gradation)) 카드·스크린샷(`client/public/projects/`).
+
+### Changed
+
+- **패치노트 (`/patch-notes`)** — `CHANGELOG` 월별 `## YYYY년 M월` 구조, 카테고리 뱃지·월 제목 스타일, 본문 가독성(`doc-reader`). `[Unreleased]`·버전 목차 제거.
+- **About** — 패치노트 안내에 월별 정리 명시.
 
 ### Fixed
 
 - **목록 페이지 뒤로가기·링크 UX** — 칼럼·AI 도구·링크 모음: 상세(또는 다른 화면)에서 뒤로가기 시 검색·필터·스크롤이 초기화되던 문제 수정. 카드를 `<Link>`로 교체해 휠 클릭(새 탭) 지원. 필터·검색은 URL 쿼리, 스크롤은 `sessionStorage` 복원(`useListPageScrollRestore`). [ADR 0020](docs/decisions/0020-list-page-navigation-state.md)
+
+## 2026년 5월
 
 ### Changed
 
@@ -45,6 +56,11 @@
   - Vite 정적 배포 S3·CloudFront(0029), Express API 호스팅 선택지(0030), 프론트·API 연결·CORS(0031)
   - GitHub Actions·OIDC 개요(0032), 운영·보안·트러블슈팅(0033)
   - `docs/README.md` 학습 표에 시리즈 안내 및 행 추가
+
+## 2026년 4월
+
+### Added
+
 - **메인 타로 운세 위젯(메이저 아르카나 3장)**
   - `TarotDailyWidget` 추가: 초기 흐림 뒷면 3장 + `운세보기` 시작 버튼
   - 카드별 독립 연출: 클릭 시 회전→정/역 방향 확정→앞면 공개
@@ -92,6 +108,10 @@
 - **메인 위젯 섹션 리디자인 계획 문서**
   - `docs/plans/2026-04-01-main-widget-section-refinement-design.md` 추가
   - 구조 강조(벤토 리듬·위계·상태 일관성) 방향으로 개선 범위/검증 기준 정리
+
+## 2026년 3월
+
+### Added
 
 - **칼럼 스크랩 (`column_scraps`)**
   - DB: `source_kind`에 `x`(X/트위터), `extra_links` JSONB(라벨+URL 배열). 신규: `docs/plans/2026-03-24-column-scraps-migration.sql`, 기존 DB: `2026-03-24-column-scraps-add-x-kind.sql`, `2026-03-24-column-scraps-extra-links.sql`
@@ -279,6 +299,10 @@
 - **FileListItem** - 왼쪽 패딩(pl-12), 높이(py-6), 폰트(text-lg), 부가설명 제목 하단 배치
 - **학습자료 페이지** - 카드 그리드 → 파일 구조형 풀폭 리스트로 전환
 
+## 2026년 2월
+
+### Added
+
 - **디자인 플레이그라운드** (`/design-playground`) - 폰트·색상·컴포넌트 스타일 실시간 비교·결정 도구
   - 폰트: 본문 7종, 코드 8종
   - 색상 테마: 복수 선택 가능, 20+ 테마 (light, dark, warm, cool, forest, navy 등)
@@ -286,7 +310,6 @@
   - 컴포넌트 미리보기: Button, Card, 선택지(단일/다중/토글), 메뉴, 코드블록, 입력칸, 타이포그래피(굵기·줄간격·제목/본문 크기), 탭, 배지, 토글, 페이지네이션, 프로그레스, 토스트, 드롭다운
   - 선택 결과 마크다운 복사 (AI 전달용)
 - **About 페이지** - 사이트 소개, 디자인 플레이그라운드 링크 추가
-
 - **랜딩 페이지** - 스크롤 기반 표어 애니메이션 ("끊임없이 배워나가는..."), 홈 버튼으로 메인 이동
 - **메인 허브** - About/Portfolio/Blog 카드 그리드, config 기반 확장 가능
 - **플레이스홀더 페이지** - About, Portfolio, Blog (준비 중)

@@ -9,11 +9,22 @@ import { parseYoutubeVideoId, youtubeNocookieEmbedSrc } from '@/shared/lib/youtu
 import { MermaidDiagram } from '@/shared/ui/MermaidDiagram'
 import { slugifyMarkdownHeading } from '@/shared/lib/markdown-headings'
 
+const CHANGELOG_CATEGORY_STYLES: Record<string, string> = {
+  added: 'bg-primary/10 text-primary',
+  changed: 'bg-secondary/15 text-secondary',
+  fixed: 'bg-accent/50 text-accent-foreground',
+  removed: 'bg-muted text-muted-foreground',
+  deprecated: 'bg-muted/80 text-muted-foreground',
+  security: 'bg-destructive/10 text-destructive',
+}
+
 interface Props {
   children: string
   className?: string
   /** true면 h2/h3에 id를 부여해 목차·앵커 링크에 사용 */
   headingIds?: boolean
+  /** 패치노트용: 월(h2)·카테고리(h3) 뱃지 스타일 */
+  changelogHeadings?: boolean
 }
 
 function MarkdownAnchor(
@@ -76,11 +87,67 @@ function MarkdownHeading({
   )
 }
 
+function ChangelogMonthHeading({
+  children,
+  className,
+  node: _node,
+  ...rest
+}: {
+  children?: ReactNode
+  className?: string
+  node?: unknown
+}) {
+  const text = String(children ?? '')
+  const id = slugifyMarkdownHeading(text) || undefined
+  return (
+    <h2
+      id={id}
+      className={cn('changelog-month not-prose', className)}
+      {...rest}
+    >
+      {children}
+    </h2>
+  )
+}
+
+function ChangelogCategoryHeading({
+  children,
+  className,
+  node: _node,
+  ...rest
+}: {
+  children?: ReactNode
+  className?: string
+  node?: unknown
+}) {
+  const text = String(children ?? '').trim()
+  const key = text.toLowerCase()
+  const id = slugifyMarkdownHeading(text) || undefined
+  const categoryStyle = CHANGELOG_CATEGORY_STYLES[key]
+
+  return (
+    <h3
+      id={id}
+      className={cn(
+        'changelog-category not-prose',
+        categoryStyle,
+        className
+      )}
+      {...rest}
+    >
+      {children}
+    </h3>
+  )
+}
+
 export function MarkdownWithMath({
   children,
   className,
   headingIds = false,
+  changelogHeadings = false,
 }: Props) {
+  const useHeadingIds = headingIds || changelogHeadings
+
   return (
     <div className={className}>
       <ReactMarkdown
@@ -88,12 +155,17 @@ export function MarkdownWithMath({
         rehypePlugins={[rehypeKatex]}
         components={{
           a: MarkdownAnchor,
-          ...(headingIds
+          ...(changelogHeadings
             ? {
-                h2: (props) => <MarkdownHeading as="h2" {...props} />,
-                h3: (props) => <MarkdownHeading as="h3" {...props} />,
+                h2: (props) => <ChangelogMonthHeading {...props} />,
+                h3: (props) => <ChangelogCategoryHeading {...props} />,
               }
-            : {}),
+            : useHeadingIds
+              ? {
+                  h2: (props) => <MarkdownHeading as="h2" {...props} />,
+                  h3: (props) => <MarkdownHeading as="h3" {...props} />,
+                }
+              : {}),
           code: ({ className, children, ...props }) => {
             const match = /language-(\w+)/.exec(className ?? '')
             const lang = match?.[1]?.toLowerCase()

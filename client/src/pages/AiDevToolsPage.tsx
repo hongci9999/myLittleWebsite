@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useListPageScrollRestore } from '@/shared/hooks/useListPageScrollRestore'
+import { patchSearchParams } from '@/shared/lib/list-page-url'
 import {
   deleteAiScrap,
   fetchAiScraps,
@@ -19,15 +21,15 @@ import { cn } from '@/lib/utils'
 import { OverflowMenu } from '@/shared/ui/OverflowMenu'
 
 export default function AiDevToolsPage() {
-  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { token } = useAuth()
   const { openScrapAdmin } = useScrapAdminDialog()
   const [items, setItems] = useState<AiToolScrap[]>([])
   const [loading, setLoading] = useState(true)
   const [dbOff, setDbOff] = useState(false)
-  const [q, setQ] = useState('')
-  const [debouncedQ, setDebouncedQ] = useState('')
-  const [kind, setKind] = useState<SourceKind | ''>('')
+  const q = searchParams.get('q') ?? ''
+  const [debouncedQ, setDebouncedQ] = useState(q)
+  const kind = (searchParams.get('kind') ?? '') as SourceKind | ''
 
   useEffect(() => {
     const t = window.setTimeout(() => setDebouncedQ(q), 300)
@@ -62,6 +64,22 @@ export default function AiDevToolsPage() {
       load()
     })
   }, [load])
+
+  useListPageScrollRestore('ai-dev-tools', !loading)
+
+  const setQ = (value: string) => {
+    setSearchParams(
+      (prev) => patchSearchParams(prev, { q: value.trim() || null }),
+      { replace: true }
+    )
+  }
+
+  const setKind = (value: SourceKind | '') => {
+    setSearchParams(
+      (prev) => patchSearchParams(prev, { kind: value || null }),
+      { replace: true }
+    )
+  }
 
   const filterControl =
     'h-9 rounded-lg border border-border bg-background px-2.5 text-sm text-foreground outline-none ring-primary/40 focus-visible:ring-2'
@@ -144,18 +162,10 @@ export default function AiDevToolsPage() {
                     'hover:border-primary/35 hover:shadow-md'
                   )}
                 >
-                  <div
-                    className="min-w-0 flex-1 cursor-pointer px-4 py-4"
-                    role="link"
-                    tabIndex={0}
+                  <Link
+                    to={`/ai-dev-tools/${encodeURIComponent(s.slug)}`}
+                    className="min-w-0 flex-1 px-4 py-4 text-inherit no-underline"
                     aria-label={`${s.title} 상세로 이동`}
-                    onClick={() => navigate(`/ai-dev-tools/${encodeURIComponent(s.slug)}`)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault()
-                        navigate(`/ai-dev-tools/${encodeURIComponent(s.slug)}`)
-                      }
-                    }}
                   >
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
                       <span className="text-xs font-semibold uppercase tracking-wide text-primary/90">
@@ -186,7 +196,7 @@ export default function AiDevToolsPage() {
                         ))}
                       </div>
                     ) : null}
-                  </div>
+                  </Link>
                   {token ? (
                     <div className="flex shrink-0 items-start border-l border-border/50 px-2 py-3">
                       <OverflowMenu

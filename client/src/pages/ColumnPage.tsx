@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useListPageScrollRestore } from '@/shared/hooks/useListPageScrollRestore'
+import { patchSearchParams } from '@/shared/lib/list-page-url'
 import {
   deleteColumnScrap,
   fetchColumnScraps,
@@ -28,14 +30,14 @@ const kindAccent: Record<ColumnSourceKind, string> = {
 }
 
 export default function ColumnPage() {
-  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { token } = useAuth()
   const [rawItems, setRawItems] = useState<ColumnScrap[]>([])
   const [loading, setLoading] = useState(true)
   const [dbOff, setDbOff] = useState(false)
-  const [q, setQ] = useState('')
-  const [debouncedQ, setDebouncedQ] = useState('')
-  const [kind, setKind] = useState<ColumnSourceKind | ''>('')
+  const q = searchParams.get('q') ?? ''
+  const [debouncedQ, setDebouncedQ] = useState(q)
+  const kind = (searchParams.get('kind') ?? '') as ColumnSourceKind | ''
   const [adminOpen, setAdminOpen] = useState(false)
   const [adminSlug, setAdminSlug] = useState<string | null>(null)
 
@@ -72,6 +74,22 @@ export default function ColumnPage() {
       void load()
     })
   }, [load])
+
+  useListPageScrollRestore('column', !loading)
+
+  const setQ = (value: string) => {
+    setSearchParams(
+      (prev) => patchSearchParams(prev, { q: value.trim() || null }),
+      { replace: true }
+    )
+  }
+
+  const setKind = (value: ColumnSourceKind | '') => {
+    setSearchParams(
+      (prev) => patchSearchParams(prev, { kind: value || null }),
+      { replace: true }
+    )
+  }
 
   const filterControl =
     'h-9 rounded-lg border border-border bg-background px-2.5 text-sm text-foreground outline-none ring-primary/40 focus-visible:ring-2'
@@ -110,7 +128,9 @@ export default function ColumnPage() {
               <select
                 id="column-kind"
                 value={kind}
-                onChange={(e) => setKind(e.target.value as ColumnSourceKind | '')}
+                onChange={(e) =>
+                  setKind(e.target.value as ColumnSourceKind | '')
+                }
                 className={cn(filterControl, 'min-w-[6rem] sm:max-w-[9rem]')}
               >
                 <option value="">전체 형식</option>
@@ -155,22 +175,17 @@ export default function ColumnPage() {
           ) : (
             <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {rawItems.map((item) => (
-                <div
+                <Link
                   key={item.id}
-                  className="group relative flex min-h-0 min-w-0 cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
-                  role="link"
-                  tabIndex={0}
+                  to={`/column/${encodeURIComponent(item.slug)}`}
+                  className="group relative flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border/60 bg-card text-inherit no-underline shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
                   aria-label={`${item.title} 상세로 이동`}
-                  onClick={() => navigate(`/column/${encodeURIComponent(item.slug)}`)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      navigate(`/column/${encodeURIComponent(item.slug)}`)
-                    }
-                  }}
                 >
                   {token ? (
-                    <div className="absolute right-2 top-2 z-20">
+                    <div
+                      className="absolute right-2 top-2 z-20"
+                      onClick={(e) => e.preventDefault()}
+                    >
                       <OverflowMenu
                         items={[
                           {
@@ -250,7 +265,7 @@ export default function ColumnPage() {
                       ) : null}
                     </div>
                   </article>
-                </div>
+                </Link>
               ))}
             </div>
           )}

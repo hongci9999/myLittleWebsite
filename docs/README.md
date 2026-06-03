@@ -79,6 +79,7 @@
 - [0017 타로 위젯 해석 스키마·제공자 전략](./decisions/0017-tarot-reading-schema-and-provider-strategy.md)
 - [0018 프로덕션 호스팅 분리 (CloudFront + EB + API 도메인)](./decisions/0018-aws-production-split-hosting.md)
 - [0019 메인 도메인 만료 알림·DB 갱신](./decisions/0019-site-domain-expiry-notice.md)
+- [0020 목록 페이지 뒤로가기·링크 네비게이션 상태](./decisions/0020-list-page-navigation-state.md)
 
 ### 학습 내용
 

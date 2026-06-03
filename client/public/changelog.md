@@ -4,9 +4,13 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- **목록 페이지 뒤로가기·링크 UX** — 칼럼·AI 도구·링크 모음: 상세(또는 다른 화면)에서 뒤로가기 시 검색·필터·스크롤이 초기화되던 문제 수정. 카드를 `<Link>`로 교체해 휠 클릭(새 탭) 지원. 필터·검색은 URL 쿼리, 스크롤은 `sessionStorage` 복원(`useListPageScrollRestore`). [ADR 0020](docs/decisions/0020-list-page-navigation-state.md)
+
 ### Changed
 
-- **About 자기서술** — `about.md` 전면 개정(foundation 3원칙, 방문자 시나리오, 왜/ADR, 라우트·midnight 동기화, Mermaid 안내 수정). `/about` 목차·heading 앵커·로딩 스켈레톤. 계획: `docs/plans/2026-05-25-about-page-self-documentation-design.md`. ADR `0008`·`0009` 다크 테마 id `midnight` 반영.
+- **About 자기서술** — `about.md` 전면 개정(foundation 3원칙, 방문자 시나리오, 왜/ADR, 라우트·midnight 동기화, Mermaid 안내 수정). **AWS 프로덕션 배포** 절(URL·S3/CF/EB·CI/CD·CORS·도메인·문서 링크). `/about` 목차·heading 앵커·로딩 스켈레톤. 계획: `docs/plans/2026-05-25-about-page-self-documentation-design.md`. ADR `0008`·`0009` 다크 테마 id `midnight` 반영.
 
 ### Added
 

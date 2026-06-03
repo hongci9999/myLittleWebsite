@@ -1,5 +1,11 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useListPageScrollRestore } from '@/shared/hooks/useListPageScrollRestore'
+import {
+  dimensionFiltersToParams,
+  patchSearchParams,
+  readDimensionFilters,
+} from '@/shared/lib/list-page-url'
 import { useAuth } from '@/shared/context/AuthContext'
 import {
   fetchLinks,
@@ -63,15 +69,25 @@ const StarIcon = ({ filled }: { filled: boolean }) => (
 
 type SortKey = 'title' | 'createdAt' | 'sortOrder'
 
+const SORT_KEYS: SortKey[] = ['title', 'createdAt', 'sortOrder']
+const LINKS_URL_RESERVED = new Set(['q', 'sort'])
+
+function parseSortKey(raw: string | null): SortKey {
+  if (raw && SORT_KEYS.includes(raw as SortKey)) return raw as SortKey
+  return 'createdAt'
+}
+
 export default function LinksPage() {
   const { token } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [links, setLinks] = useState<LinkWithValues[]>([])
   const [dimensions, setDimensions] = useState<DimensionWithValues[]>([])
-  const [search, setSearch] = useState('')
-  const [selectedByDimension, setSelectedByDimension] = useState<
-    Record<string, Set<string>>
-  >({})
-  const [sortBy, setSortBy] = useState<SortKey>('createdAt')
+  const search = searchParams.get('q') ?? ''
+  const selectedByDimension = useMemo(
+    () => readDimensionFilters(searchParams, LINKS_URL_RESERVED),
+    [searchParams]
+  )
+  const sortBy = parseSortKey(searchParams.get('sort'))
   const [loading, setLoading] = useState(true)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   /** 별 버튼 비활성 표시용 (API 대기 중) */
@@ -169,21 +185,54 @@ export default function LinksPage() {
     [token]
   )
 
+  const setSearch = (value: string) => {
+    setSearchParams(
+      (prev) => patchSearchParams(prev, { q: value.trim() || null }),
+      { replace: true }
+    )
+  }
+
+  const setSortBy = (value: SortKey) => {
+    setSearchParams(
+      (prev) =>
+        patchSearchParams(prev, {
+          sort: value === 'createdAt' ? null : value,
+        }),
+      { replace: true }
+    )
+  }
+
   const toggleValue = (dimensionSlug: string, valueId: string) => {
-    setSelectedByDimension((prev) => {
-      const dimSet = new Set(prev[dimensionSlug] ?? [])
-      if (dimSet.has(valueId)) dimSet.delete(valueId)
-      else dimSet.add(valueId)
-      const next = { ...prev }
-      if (dimSet.size > 0) next[dimensionSlug] = dimSet
-      else delete next[dimensionSlug]
-      return next
-    })
+    const prev = readDimensionFilters(searchParams, LINKS_URL_RESERVED)
+    const dimSet = new Set(prev[dimensionSlug] ?? [])
+    if (dimSet.has(valueId)) dimSet.delete(valueId)
+    else dimSet.add(valueId)
+    const nextSelected = { ...prev }
+    if (dimSet.size > 0) nextSelected[dimensionSlug] = dimSet
+    else delete nextSelected[dimensionSlug]
+
+    setSearchParams(
+      (prevParams) => {
+        const next = new URLSearchParams(prevParams)
+        prevParams.forEach((_, key) => {
+          if (!LINKS_URL_RESERVED.has(key)) next.delete(key)
+        })
+        return patchSearchParams(next, dimensionFiltersToParams(nextSelected))
+      },
+      { replace: true }
+    )
   }
 
   const clearFilters = () => {
-    setSelectedByDimension({})
-    setSearch('')
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams()
+        const sort = prev.get('sort')
+        if (sort && sort !== 'createdAt') next.set('sort', sort)
+        return next
+      },
+      { replace: true }
+    )
   }
 
   const hasActiveFilters =
@@ -221,6 +270,8 @@ export default function LinksPage() {
     () => buildValueIdToMeta(dimensions),
     [dimensions]
   )
+
+  useListPageScrollRestore('links', !loading)
 
   return (
     <div className="flex min-h-full flex-col">

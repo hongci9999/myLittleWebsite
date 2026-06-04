@@ -123,16 +123,29 @@ export default function ProjectCard({ project }: Props) {
           {project.summary}
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <a
-            href={project.repoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm font-medium text-foreground no-underline transition-colors hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            <GithubIcon />
-            GitHub
-            <ExternalLinkIcon />
-          </a>
+          {project.repoUrl ? (
+            <a
+              href={project.repoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm font-medium text-foreground no-underline transition-colors hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <GithubIcon />
+              GitHub
+              <ExternalLinkIcon />
+            </a>
+          ) : null}
+          {project.postUrl ? (
+            <a
+              href={project.postUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm font-medium text-foreground no-underline transition-colors hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              구축 후기
+              <ExternalLinkIcon />
+            </a>
+          ) : null}
           {project.demoUrl ? (
             <a
               href={project.demoUrl}

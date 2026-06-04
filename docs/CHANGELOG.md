@@ -6,6 +6,7 @@
 
 ### Added
 
+- **프로젝트 페이지 — LLM Wiki** — Karpathy LLM Wiki 패턴 기반 Obsidian·Claude Code·Graphify 개인 지식 베이스 카드 추가. [LinkedIn 구축 후기](https://www.linkedin.com/posts/ingee-hong99_llmwiki-graphify-obsidian-share-7468332115928133632-h891/) 링크(`postUrl`), 스크린샷 `client/public/projects/llm-wiki/`.
 - **프로젝트 페이지 (`/project`)** — 2열 그리드, 포트폴리오 등록 최신순(맨 아래가 최초 등록). **HICC 동아리 박람회**([hicc-expo-project](https://github.com/hongci9999/hicc-expo-project)), **치지직 구독채널 그라데이션**([chzzk-subscribe-gradation](https://github.com/hongci9999/chzzk-subscribe-gradation)) 카드·스크린샷(`client/public/projects/`).
 
 ### Changed

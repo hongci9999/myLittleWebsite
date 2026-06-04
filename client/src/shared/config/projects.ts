@@ -12,8 +12,10 @@ export type ProjectItem = {
   summary: string
   /** 카드 본문 아래에 표시할 역할·기간 등 (선택) */
   meta?: string
-  repoUrl: string
+  repoUrl?: string
   demoUrl?: string
+  /** LinkedIn 등 구축 후기·소개 글 (선택) */
+  postUrl?: string
   screenshotSrc: string
   screenshotAlt: string
   /** 있으면 카드 상단에 갤러리로 표시 (없으면 screenshotSrc 단일 이미지) */
@@ -28,6 +30,31 @@ export type ProjectItem = {
  * 스크린샷: `client/public/projects/`
  */
 export const PROJECT_ITEMS: ProjectItem[] = [
+  {
+    id: 'llm-wiki',
+    title: 'LLM Wiki',
+    summary:
+      'Andrej Karpathy의 LLM Wiki 패턴을 Obsidian·Claude Code로 구현한 개인 지식 베이스. URL 클리핑 후 /ingest로 raw→wiki 자동 분류·크로스링크, Graphify로 지식 그래프 탐색(직접 탐색 대비 토큰 약 60% 절감 경험). RAG 매번 검색 대신 한 번 컴파일된 wiki를 누적하는 Second Brain 실험.',
+    meta: '개인 사이드 · Obsidian Vault · Claude Code · Graphify',
+    postUrl:
+      'https://www.linkedin.com/posts/ingee-hong99_llmwiki-graphify-obsidian-share-7468332115928133632-h891/',
+    screenshotSrc: '/projects/llm-wiki/obsidian.png',
+    screenshotAlt: 'LLM Wiki Obsidian — wiki/projects/llm-wiki 노트와 그래프 뷰',
+    screenshots: [
+      {
+        src: '/projects/llm-wiki/obsidian.png',
+        alt: 'Obsidian에서 raw·wiki 3층 구조와 llm-wiki 프로젝트 노트',
+        caption: 'Obsidian',
+      },
+      {
+        src: '/projects/llm-wiki/graphify.png',
+        alt: 'Graphify 지식 그래프 — Wiki Index 허브와 9개 커뮤니티',
+        caption: 'Graphify',
+      },
+    ],
+    tags: ['Obsidian', 'Claude Code', 'Graphify', 'Knowledge Management', 'AI'],
+    status: 'active',
+  },
   {
     id: 'chzzk-subscribe-gradation',
     title: '치지직 구독채널 그라데이션',

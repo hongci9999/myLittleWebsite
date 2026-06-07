@@ -6,6 +6,8 @@
 
 ### Added
 
+- **칼럼 스크랩 — Obsidian 유튜브 클립 붙여넣기** — Web Clipper `raw/youtube` 노트(frontmatter·JSON 템플릿·트랜스크립트)를 textarea에 붙여넣거나 파일로 가져와 AI 요약. `POST /api/column-scraps/ai-fill`에 `youtubeClip` 필드, `parse-obsidian-youtube-clip.ts`. 비표준 JSON(`noteNameFormat` 따옴표 깨짐)도 regex 폴백 파싱. [ADR 0022](decisions/0022-obsidian-youtube-clip-column-scrap.md), [learnings 0037](learnings/0037-obsidian-youtube-clip-column-scrap.md).
+
 - **프로젝트 페이지 — LLM Wiki** — Karpathy LLM Wiki 패턴 기반 Obsidian·Claude Code·Graphify 개인 지식 베이스 카드 추가. [LinkedIn 구축 후기](https://www.linkedin.com/posts/ingee-hong99_llmwiki-graphify-obsidian-share-7468332115928133632-h891/) 링크(`postUrl`), LinkedIn URL일 때 구축 후기 버튼에 아이콘 표시. 스크린샷 `client/public/projects/llm-wiki/`.
 - **프로젝트 페이지 (`/project`)** — 2열 그리드, 포트폴리오 등록 최신순(맨 아래가 최초 등록). **HICC 동아리 박람회**([hicc-expo-project](https://github.com/hongci9999/hicc-expo-project)), **치지직 구독채널 그라데이션**([chzzk-subscribe-gradation](https://github.com/hongci9999/chzzk-subscribe-gradation)) 카드·스크린샷(`client/public/projects/`).
 
@@ -16,6 +18,8 @@
 - **About** — 패치노트 안내에 월별 정리 명시.
 
 ### Fixed
+
+- **배포 환경 유튜브 URL만으로 칼럼 AI 요약 실패** — 로컬에서는 YouTube URL→서버 자막 fetch→AI가 됐으나 EB 등 배포에서는 YouTube가 서버 IP에 자막을 잘 주지 않아 「자막 없음」 400이 잦았음. Obsidian 클립 붙여넣기로 **클라이언트(Clipper)가 받은 자막**을 서버에 넘기는 경로 추가. URL-only는 fetch 성공 환경에서 계속 사용.
 
 - **목록 페이지 뒤로가기·링크 UX** — 칼럼·AI 도구·링크 모음: 상세(또는 다른 화면)에서 뒤로가기 시 검색·필터·스크롤이 초기화되던 문제 수정. 카드를 `<Link>`로 교체해 휠 클릭(새 탭) 지원. 필터·검색은 URL 쿼리, 스크롤은 `sessionStorage` 복원(`useListPageScrollRestore`). [ADR 0020](docs/decisions/0020-list-page-navigation-state.md)
 

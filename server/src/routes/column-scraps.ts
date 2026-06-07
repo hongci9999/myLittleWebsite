@@ -11,6 +11,7 @@ import {
 } from '../db/queries/column-scraps.js'
 import { parseAiRequestPreference } from '../services/ai/index.js'
 import { suggestColumnScrapFromUrl } from '../services/ollama.js'
+import { OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR } from '../services/parse-obsidian-youtube-clip.js'
 import { YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE } from '../services/youtube-transcript-text.js'
 
 const router = Router()
@@ -109,13 +110,17 @@ router.get('/by-slug/:slug', async (req, res) => {
 /** POST /api/column-scraps/ai-fill — 로컬 Ollama로 URL 기준 폼 필드 제안 (인증 필요) */
 router.post('/ai-fill', requireAuth, async (req, res) => {
   try {
-    const url = (req.body as { url?: string })?.url?.trim()
-    if (!url) {
-      res.status(400).json({ error: 'url is required' })
+    const body = req.body as { url?: string; youtubeClip?: string }
+    const youtubeClip = body.youtubeClip?.trim()
+    let url = body.url?.trim()
+    if (!url && !youtubeClip) {
+      res.status(400).json({ error: 'url or youtubeClip is required' })
       return
     }
     const pref = parseAiRequestPreference(req.headers, req.body)
-    const result = await suggestColumnScrapFromUrl(url, pref)
+    const result = await suggestColumnScrapFromUrl(url ?? '', pref, {
+      youtubeClip,
+    })
     res.json({
       title: result.title,
       summary: result.summary,
@@ -127,6 +132,10 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
     })
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'AI fill failed'
+    if (msg === OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR) {
+      res.status(400).json({ error: msg })
+      return
+    }
     if (msg === YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE) {
       const pref = parseAiRequestPreference(req.headers, req.body)
       console.error('[column-scraps] ai-fill transcript required', {
@@ -138,8 +147,7 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
       res.status(400).json({
         error: msg,
         resolvedPreference: pref,
-        hint:
-          '자막이 켜진 공개 영상인지 확인하세요. 한국어·영어 자막이 없으면 AI 제안을 사용할 수 없습니다.',
+        hint: '자막이 켜진 공개 영상인지 확인하세요. 한국어·영어 자막이 없으면 AI 제안을 사용할 수 없습니다.',
       })
       return
     }

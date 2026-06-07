@@ -1,4 +1,4 @@
-﻿import {
+import {
   aiProviderBodyField,
   aiProviderRequestHeaders,
 } from '@/shared/lib/ai-provider-preference'
@@ -189,12 +189,17 @@ export interface ColumnScrapAiFill {
 
 export async function suggestColumnScrapAiFill(
   token: string,
-  url: string
+  url: string,
+  options?: { youtubeClip?: string }
 ): Promise<ColumnScrapAiFill> {
   const res = await fetch(`${API_BASE}/ai-fill`, {
     method: 'POST',
     headers: authHeaders(token),
-    body: JSON.stringify({ url, ...aiProviderBodyField() }),
+    body: JSON.stringify({
+      url: url.trim() || undefined,
+      youtubeClip: options?.youtubeClip?.trim() || undefined,
+      ...aiProviderBodyField(),
+    }),
   })
   const errJson = await res.json().catch(() => ({}))
   if (!res.ok) {

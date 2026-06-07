@@ -28,3 +28,4 @@
 - 코드: `youtube-content.ts`, `fetch-website.ts`, `suggest-column-scrap.ts`, `column-scrap.prompts.ts`
 - 학습: [learnings 0036](../learnings/0036-youtube-content-bundle-transcript.md)
 - 이전: [0016](0016-gemini-youtube-transcript-and-public-meta.md) 자막 필수 원칙은 유지. API 모드의 영상 직접 입력 분기만 폐기.
+- **2026-06-07 보완**: 배포에서 URL 자막 fetch 실패 대비 Obsidian 클립 붙여넣기 — [0022](0022-obsidian-youtube-clip-column-scrap.md)

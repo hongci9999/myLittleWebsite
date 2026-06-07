@@ -35,7 +35,7 @@
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 관련 API     | [api-spec §7](api-spec.md)                                                                                                                                                                      |
 | 의사결정     | [decisions 0014](decisions/0014-column-scraps-and-scrap-ux.md)                                                                                                                                  |
-| 학습         | [learnings 0020](learnings/0020-column-scrap-markdown-youtube.md), [0036 유튜브 자막·메타](learnings/0036-youtube-content-bundle-transcript.md)                                                  |
+| 학습         | [0020](learnings/0020-column-scrap-markdown-youtube.md), [0036 유튜브 자막·메타](learnings/0036-youtube-content-bundle-transcript.md), [0037 Obsidian 클립 붙여넣기](learnings/0037-obsidian-youtube-clip-column-scrap.md) |
 | 마이그레이션 | [column-scraps-migration](plans/2026-03-24-column-scraps-migration.sql), [x kind](plans/2026-03-24-column-scraps-add-x-kind.sql), [extra_links](plans/2026-03-24-column-scraps-extra-links.sql) |
 
 ### 최근 계획
@@ -81,6 +81,7 @@
 - [0019 메인 도메인 만료 알림·DB 갱신](./decisions/0019-site-domain-expiry-notice.md)
 - [0020 목록 페이지 뒤로가기·링크 네비게이션 상태](./decisions/0020-list-page-navigation-state.md)
 - [0021 유튜브 AI 요약 — 자막·메타데이터 통합 경로](./decisions/0021-youtube-transcript-unified-ai-path.md)
+- [0022 칼럼 스크랩 Obsidian 유튜브 클립 붙여넣기](./decisions/0022-obsidian-youtube-clip-column-scrap.md)
 
 ### 학습 내용
 
@@ -123,6 +124,7 @@
 | [0034](./learnings/0034-aws-first-production-deploy-success.md) | 첫 AWS 프로덕션 배포 성공 회고 (2026-05) | 배포, aws, 인프라, 프론트, 백엔드, 개발방법론 |
 | [0035](./learnings/0035-vite-src-asset-import-meta-url.md) | Vite src 내부 이미지·import.meta.url | 프론트, 도구, 배포, 개발방법론 |
 | [0036](./learnings/0036-youtube-content-bundle-transcript.md) | YouTube 메타·자막 통합 추출 | ai, 백엔드, 도구 |
+| [0037](./learnings/0037-obsidian-youtube-clip-column-scrap.md) | Obsidian 유튜브 클립·배포 AI 요약 | ai, 백엔드, 프론트, 도구 |
 
 ### 에러 픽스
 

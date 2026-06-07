@@ -3,6 +3,12 @@ import {
   type ColumnSourceKind,
 } from '../../db/queries/column-scraps.js'
 import { fetchWebsiteContent, type WebsiteContent } from '../fetch-website.js'
+import {
+  obsidianClipToFullText,
+  OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR,
+  parseObsidianYoutubeClip,
+  type ObsidianYoutubeClip,
+} from '../parse-obsidian-youtube-clip.js'
 import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { ColumnScrapPrompts } from './prompts/column-scrap.prompts.js'
@@ -149,15 +155,48 @@ async function buildColumnScrapFromSiteAnalysis(params: {
   }
 }
 
+function websiteContentFromObsidianClip(
+  pageUrl: string,
+  clip: ObsidianYoutubeClip
+): WebsiteContent {
+  return {
+    url: pageUrl,
+    title: clip.title,
+    metaDescription: clip.description.slice(0, 500),
+    bodyText: clip.transcript,
+    fullText: obsidianClipToFullText(clip),
+    faviconUrl: 'https://www.youtube.com/favicon.ico',
+    ogImageUrl: clip.thumbnailUrl,
+    youtubeMissingTranscript: false,
+  }
+}
+
+export type SuggestColumnScrapOptions = {
+  /** Obsidian Web Clipper raw/youtube 노트 전문 */
+  youtubeClip?: string
+}
+
 /**
- * 칼럼 스크랩 폼용: URL만으로 제목·요약·마크다운 메모·형식·표지(og:image)·태그 제안
+ * 칼럼 스크랩 폼용: URL(또는 Obsidian 클립)으로 제목·요약·마크다운 메모·형식·표지·태그 제안
  */
 export async function suggestColumnScrapFromUrl(
   url: string,
-  preference: AiRequestPreference
+  preference: AiRequestPreference,
+  options?: SuggestColumnScrapOptions
 ): Promise<ColumnScrapAiFillResult> {
   const ai = getAiTextProvider(preference)
-  const trimmed = url.trim()
+  const clipRaw = options?.youtubeClip?.trim()
+  let trimmed = url.trim()
+  let obsidianClip: ObsidianYoutubeClip | null = null
+
+  if (clipRaw) {
+    obsidianClip = parseObsidianYoutubeClip(clipRaw)
+    if (!obsidianClip) {
+      throw new Error(OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR)
+    }
+    trimmed = trimmed || obsidianClip.sourceUrl
+  }
+
   if (!trimmed) {
     throw new Error('url is required')
   }
@@ -216,15 +255,26 @@ export async function suggestColumnScrapFromUrl(
     }
   }
 
-  const content = await fetchWebsiteContent(trimmed)
-  assertYoutubeTranscriptForAi(trimmed, content)
-  const coverImageUrl = content?.ogImageUrl ?? null
+  let content: WebsiteContent | null = null
+  let coverImageUrl: string | null = null
+
+  if (obsidianClip) {
+    content = websiteContentFromObsidianClip(trimmed, obsidianClip)
+    coverImageUrl = obsidianClip.thumbnailUrl
+  } else {
+    content = await fetchWebsiteContent(trimmed)
+    assertYoutubeTranscriptForAi(trimmed, content)
+    coverImageUrl = content?.ogImageUrl ?? null
+  }
   let siteAnalysis = ''
 
   if (content && content.fullText.trim().length > 40) {
     try {
       const analysisPrompt = isYoutubeWatchUrl(trimmed)
-        ? ColumnScrapPrompts.deepAnalysisNoteYoutubeTranscript(trimmed, content.fullText)
+        ? ColumnScrapPrompts.deepAnalysisNoteYoutubeTranscript(
+            trimmed,
+            content.fullText
+          )
         : ColumnScrapPrompts.deepAnalysisNote(trimmed, content.fullText)
       siteAnalysis = await ai.complete(analysisPrompt)
     } catch {

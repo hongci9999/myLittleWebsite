@@ -1,4 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import {
+  isObsidianYoutubeClip,
+  prefillFromObsidianYoutubeClip,
+} from '@/shared/lib/obsidian-youtube-clip'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/shared/context/AuthContext'
 import {
@@ -62,10 +66,17 @@ export function ColumnScrapAdminDialog({
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [aiFillLoading, setAiFillLoading] = useState(false)
+  const [youtubeClipText, setYoutubeClipText] = useState<string | null>(null)
+  const [youtubeClipSource, setYoutubeClipSource] = useState<string | null>(null)
+  const [clipPasteDraft, setClipPasteDraft] = useState('')
+  const clipFileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!open) {
       setEditing(null)
+      setYoutubeClipText(null)
+      setYoutubeClipSource(null)
+      setClipPasteDraft('')
       return
     }
     if (!initialSlug) {
@@ -154,13 +165,83 @@ export function ColumnScrapAdminDialog({
     }
   }
 
-  async function handleAiFill() {
-    if (!token || !form.url.trim()) return
-    setAiFillLoading(true)
-    try {
-      const r = await suggestColumnScrapAiFill(token, form.url.trim())
+  function applyObsidianClip(text: string, sourceLabel: string) {
+    const trimmed = text.trim()
+    if (!trimmed) {
+      window.alert('붙여넣을 클립 내용이 비어 있습니다.')
+      return
+    }
+    if (!isObsidianYoutubeClip(trimmed)) {
+      window.alert(
+        'Obsidian YouTube 클립 형식이 아닙니다. frontmatter(`---`)·clipper JSON·트랜스크립트 섹션을 확인해 주세요.'
+      )
+      return
+    }
+    setYoutubeClipText(trimmed)
+    setYoutubeClipSource(sourceLabel)
+    setClipPasteDraft(trimmed)
+    const prefill = prefillFromObsidianYoutubeClip(trimmed)
+    if (prefill) {
       setForm((f) => ({
         ...f,
+        url: prefill.url,
+        title: f.title.trim() ? f.title : prefill.title,
+        sourceKind: 'youtube',
+        coverImageUrl: f.coverImageUrl.trim()
+          ? f.coverImageUrl
+          : (prefill.coverImageUrl ?? ''),
+      }))
+    }
+  }
+
+  function handleApplyClipPaste() {
+    applyObsidianClip(clipPasteDraft, '붙여넣기')
+  }
+
+  function handleClipFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      const text = typeof reader.result === 'string' ? reader.result : ''
+      setClipPasteDraft(text)
+      applyObsidianClip(text, file.name)
+    }
+    reader.readAsText(file, 'UTF-8')
+  }
+
+  function clearObsidianClip() {
+    setYoutubeClipText(null)
+    setYoutubeClipSource(null)
+    setClipPasteDraft('')
+  }
+
+  function resolveYoutubeClipForAi(): string | undefined {
+    if (youtubeClipText?.trim()) return youtubeClipText
+    const draft = clipPasteDraft.trim()
+    if (draft && isObsidianYoutubeClip(draft)) return draft
+    return undefined
+  }
+
+  async function handleAiFill() {
+    const clipForAi = resolveYoutubeClipForAi()
+    if (!token || (!form.url.trim() && !clipForAi)) return
+    setAiFillLoading(true)
+    try {
+      const r = await suggestColumnScrapAiFill(token, form.url.trim(), {
+        youtubeClip: clipForAi,
+      })
+      const clipPrefill = clipForAi
+        ? prefillFromObsidianYoutubeClip(clipForAi)
+        : null
+      if (clipForAi && !youtubeClipText) {
+        setYoutubeClipText(clipForAi)
+        setYoutubeClipSource('붙여넣기')
+      }
+      setForm((f) => ({
+        ...f,
+        url: f.url.trim() || clipPrefill?.url || f.url,
         title: r.title || f.title,
         summary: r.summary || f.summary,
         bodyMd: r.bodyMd || f.bodyMd,
@@ -260,7 +341,11 @@ export function ColumnScrapAdminDialog({
                         type="button"
                         variant="secondary"
                         size="sm"
-                        disabled={!form.url.trim() || aiFillLoading || saving}
+                        disabled={
+                          (!form.url.trim() && !resolveYoutubeClipForAi()) ||
+                          aiFillLoading ||
+                          saving
+                        }
                         onClick={() => void handleAiFill()}
                       >
                         {aiFillLoading ? 'AI 분석 중…' : 'AI 채우기'}
@@ -278,6 +363,73 @@ export function ColumnScrapAdminDialog({
                       placeholder="https://…"
                     />
                   </label>
+                  <div className="block sm:col-span-2">
+                    <span className="text-xs font-medium text-muted-foreground">
+                      YouTube 클립 붙여넣기 (선택)
+                    </span>
+                    <p className="mt-1 text-[11px] text-muted-foreground">
+                      Obsidian Web Clipper raw/youtube 노트 전문을 붙여넣으세요.
+                      「클립 적용」으로 URL·제목을 미리 채우거나, 바로 「AI
+                      채우기」를 눌러도 됩니다.
+                    </p>
+                    <textarea
+                      value={clipPasteDraft}
+                      onChange={(e) => setClipPasteDraft(e.target.value)}
+                      rows={8}
+                      spellCheck={false}
+                      placeholder={`---\nsource: "https://www.youtube.com/watch?v=…"\ntitle: "영상 제목"\ncreator:\n  - "[[채널명]]"\npublished: 2026-06-04\ntags:\n  - "raw/youtube"\n---\n…## 트랜스크립트…`}
+                      className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-xs leading-relaxed"
+                    />
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <input
+                        ref={clipFileInputRef}
+                        type="file"
+                        accept=".md,.txt,text/markdown,text/plain"
+                        className="hidden"
+                        onChange={handleClipFileChange}
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={
+                          !clipPasteDraft.trim() || aiFillLoading || saving
+                        }
+                        onClick={handleApplyClipPaste}
+                      >
+                        클립 적용
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={aiFillLoading || saving}
+                        onClick={() => clipFileInputRef.current?.click()}
+                      >
+                        파일에서 가져오기
+                      </Button>
+                      {youtubeClipText ? (
+                        <button
+                          type="button"
+                          className="text-xs text-muted-foreground underline-offset-2 hover:underline"
+                          onClick={clearObsidianClip}
+                        >
+                          클립 해제
+                        </button>
+                      ) : null}
+                    </div>
+                    {youtubeClipText ? (
+                      <p className="mt-2 text-[11px] text-muted-foreground">
+                        <span className="rounded-md border border-primary/30 bg-primary/5 px-2 py-0.5 text-primary">
+                          클립 적용됨
+                          {youtubeClipSource ? ` · ${youtubeClipSource}` : ''}
+                        </span>
+                        <span className="ml-2">
+                          AI 채우기 시 위 클립의 자막·메타를 사용합니다.
+                        </span>
+                      </p>
+                    ) : null}
+                  </div>
                   <label className="block">
                     <span className="text-xs font-medium text-muted-foreground">
                       형식 *

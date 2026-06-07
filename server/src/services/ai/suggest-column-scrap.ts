@@ -3,10 +3,7 @@ import {
   type ColumnSourceKind,
 } from '../../db/queries/column-scraps.js'
 import { fetchWebsiteContent, type WebsiteContent } from '../fetch-website.js'
-import {
-  assertYoutubeTranscriptForAi,
-  parseYoutubeVideoId,
-} from '../youtube-transcript-text.js'
+import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { ColumnScrapPrompts } from './prompts/column-scrap.prompts.js'
 import {
@@ -20,7 +17,7 @@ import {
   isXOrTwitterHost,
   xStatusHandleFromUrl,
 } from './url-hints.js'
-import { isColumnScrapGeminiYoutubeRequest } from './youtube-ai-path.js'
+import { isYoutubeWatchUrl } from './youtube-ai-path.js'
 
 function sanitizeXField(s: string, fallback: string): string {
   const t = (s || fallback).replace(/something went wrong/gi, '').trim()
@@ -152,47 +149,6 @@ async function buildColumnScrapFromSiteAnalysis(params: {
   }
 }
 
-async function suggestColumnScrapViaGeminiYoutube(
-  trimmed: string,
-  kindHint: ColumnSourceKind
-): Promise<ColumnScrapAiFillResult> {
-  const ytId = parseYoutubeVideoId(trimmed)!
-  const ai = getAiTextProvider('api')
-  const completeWithYoutube = ai.completeWithYoutubeUrl
-  if (typeof completeWithYoutube !== 'function') {
-    throw new Error(
-      '서버 빌드에 Gemini YouTube 분석(completeWithYoutubeUrl)이 없습니다. API(Elastic Beanstalk)를 최신 main으로 재배포하세요.'
-    )
-  }
-
-  const content = await fetchWebsiteContent(trimmed)
-  const coverImageUrl =
-    content?.ogImageUrl ?? `https://i.ytimg.com/vi/${ytId}/hqdefault.jpg`
-
-  let siteAnalysis = ''
-  try {
-    siteAnalysis = await completeWithYoutube.call(
-      ai,
-      trimmed,
-      ColumnScrapPrompts.deepAnalysisNoteYoutube(trimmed)
-    )
-  } catch (err) {
-    const detail = err instanceof Error ? err.message : String(err)
-    throw new Error(
-      `YouTube 영상을 Gemini로 분석하지 못했습니다. 공개 영상인지, API 키·모델(GEMINI_YOUTUBE_MODEL)을 확인하세요. (${detail})`
-    )
-  }
-
-  return buildColumnScrapFromSiteAnalysis({
-    trimmed,
-    kindHint: kindHint === 'other' ? 'youtube' : kindHint,
-    content,
-    siteAnalysis,
-    coverImageUrl,
-    ai,
-  })
-}
-
 /**
  * 칼럼 스크랩 폼용: URL만으로 제목·요약·마크다운 메모·형식·표지(og:image)·태그 제안
  */
@@ -260,10 +216,6 @@ export async function suggestColumnScrapFromUrl(
     }
   }
 
-  if (isColumnScrapGeminiYoutubeRequest(preference, trimmed)) {
-    return suggestColumnScrapViaGeminiYoutube(trimmed, kindHint)
-  }
-
   const content = await fetchWebsiteContent(trimmed)
   assertYoutubeTranscriptForAi(trimmed, content)
   const coverImageUrl = content?.ogImageUrl ?? null
@@ -271,17 +223,21 @@ export async function suggestColumnScrapFromUrl(
 
   if (content && content.fullText.trim().length > 40) {
     try {
-      siteAnalysis = await ai.complete(
-        ColumnScrapPrompts.deepAnalysisNote(trimmed, content.fullText)
-      )
+      const analysisPrompt = isYoutubeWatchUrl(trimmed)
+        ? ColumnScrapPrompts.deepAnalysisNoteYoutubeTranscript(trimmed, content.fullText)
+        : ColumnScrapPrompts.deepAnalysisNote(trimmed, content.fullText)
+      siteAnalysis = await ai.complete(analysisPrompt)
     } catch {
       siteAnalysis = ''
     }
   }
 
+  const resolvedKind =
+    isYoutubeWatchUrl(trimmed) && kindHint === 'other' ? 'youtube' : kindHint
+
   return buildColumnScrapFromSiteAnalysis({
     trimmed,
-    kindHint,
+    kindHint: resolvedKind,
     content,
     siteAnalysis,
     coverImageUrl,

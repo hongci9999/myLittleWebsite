@@ -72,17 +72,28 @@ export function parseYoutubeVideoId(url: string): string | null {
   return null
 }
 
-const MAX_TRANSCRIPT_CHARS = 12_000
+const MAX_TRANSCRIPT_CHARS = 16_000
 
 /**
  * 유튜브 자막이 있으면 평문으로 반환. 없거나 실패 시 null (호출부에서 HTML 폴백).
+ * 1순위: InnerTube + caption track (Obsidian Web Clipper transcript 방식과 동일 계열)
+ * 2순위: youtube-transcript npm 폴백
  */
 export async function tryFetchYoutubeTranscriptPlain(videoUrl: string): Promise<string | null> {
   const id = parseYoutubeVideoId(videoUrl)
   if (!id) return null
+
+  try {
+    const { fetchYoutubeContentBundle } = await import('./youtube-content.js')
+    const bundle = await fetchYoutubeContentBundle(videoUrl)
+    if (bundle?.transcript) return bundle.transcript
+  } catch {
+    /* npm 폴백 */
+  }
+
   try {
     const fetchTranscript = await getFetchTranscript()
-    const chunks = await fetchTranscript(videoUrl.trim(), { fetch })
+    const chunks = await fetchTranscript(id, { fetch, lang: 'ko' })
     let t = chunks.map((c) => c.text).join(' ').replace(/\s+/g, ' ').trim()
     if (!t) return null
     if (t.length > MAX_TRANSCRIPT_CHARS) {
@@ -90,6 +101,17 @@ export async function tryFetchYoutubeTranscriptPlain(videoUrl: string): Promise<
     }
     return t
   } catch {
-    return null
+    try {
+      const fetchTranscript = await getFetchTranscript()
+      const chunks = await fetchTranscript(id, { fetch })
+      let t = chunks.map((c) => c.text).join(' ').replace(/\s+/g, ' ').trim()
+      if (!t) return null
+      if (t.length > MAX_TRANSCRIPT_CHARS) {
+        t = t.slice(0, MAX_TRANSCRIPT_CHARS) + '...'
+      }
+      return t
+    } catch {
+      return null
+    }
   }
 }

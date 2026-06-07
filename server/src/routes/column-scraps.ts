@@ -139,14 +139,8 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
         error: msg,
         resolvedPreference: pref,
         hint:
-          pref === 'api'
-            ? 'API 모드인데 자막 경로로 처리됐습니다. GET /api/meta 의 features.columnScrapGeminiYoutube 가 true 인지, EB가 최신 버전인지 확인하세요.'
-            : '헤더·본문의 aiProvider가 서버에 api로 전달되지 않았을 수 있습니다. 요청 Payload에 "aiProvider":"api" 가 있는지 확인하세요.',
+          '자막이 켜진 공개 영상인지 확인하세요. 한국어·영어 자막이 없으면 AI 제안을 사용할 수 없습니다.',
       })
-      return
-    }
-    if (msg.includes('Gemini YouTube 분석(completeWithYoutubeUrl)')) {
-      res.status(503).json({ error: msg })
       return
     }
     if (msg.includes('GEMINI_API_KEY') || msg.includes('GOOGLE_AI_API_KEY')) {
@@ -154,10 +148,6 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
         error:
           'API 모드에는 서버에 GEMINI_API_KEY(또는 GOOGLE_AI_API_KEY)가 필요합니다.',
       })
-      return
-    }
-    if (msg.includes('YouTube 영상을 Gemini로')) {
-      res.status(502).json({ error: msg })
       return
     }
     if (msg.includes('Ollama') || msg.includes('fetch')) {

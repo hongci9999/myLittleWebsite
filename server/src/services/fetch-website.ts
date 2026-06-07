@@ -4,6 +4,11 @@
  */
 
 import * as cheerio from 'cheerio'
+import {
+  fetchYoutubeContentBundle,
+  youtubeBundleToFullText,
+  type YoutubeContentBundle,
+} from './youtube-content.js'
 import { parseYoutubeVideoId, tryFetchYoutubeTranscriptPlain } from './youtube-transcript-text.js'
 
 export interface WebsiteContent {
@@ -105,7 +110,24 @@ const MAX_BODY_CHARS = 8000
 const USER_AGENT =
   'Mozilla/5.0 (compatible; myLittleWebsite/1.0; +https://github.com)'
 
-/** HTML fetch 실패했지만 자막만으로 AI 입력을 구성할 때 */
+function websiteContentFromYoutubeBundle(
+  pageUrl: string,
+  bundle: YoutubeContentBundle
+): WebsiteContent {
+  const { meta, transcript } = bundle
+  return {
+    url: pageUrl,
+    title: meta.title,
+    metaDescription: meta.description.slice(0, 500),
+    bodyText: transcript,
+    fullText: youtubeBundleToFullText(bundle),
+    faviconUrl: 'https://www.youtube.com/favicon.ico',
+    ogImageUrl: meta.thumbnailUrl,
+    youtubeMissingTranscript: false,
+  }
+}
+
+/** HTML fetch 실패했지만 자막만으로 AI 입력을 구성할 때 (레거시 폴백) */
 function websiteContentFromYoutubeTranscriptOnly(
   pageUrl: string,
   videoId: string,
@@ -130,6 +152,14 @@ function websiteContentFromYoutubeTranscriptOnly(
 export async function fetchWebsiteContent(url: string): Promise<WebsiteContent | null> {
   const trimmed = url.trim()
   const ytId = parseYoutubeVideoId(trimmed)
+
+  if (ytId) {
+    const bundle = await fetchYoutubeContentBundle(trimmed)
+    if (bundle) {
+      return websiteContentFromYoutubeBundle(trimmed, bundle)
+    }
+  }
+
   const ytTranscript = ytId ? await tryFetchYoutubeTranscriptPlain(trimmed) : null
 
   try {

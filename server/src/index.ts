@@ -10,10 +10,7 @@ import aiSmokeRoutes from './routes/ai-smoke.js'
 import geekNewsRoutes from './routes/geeknews.js'
 import tarotRoutes from './routes/tarot.js'
 import siteDomainRoutes from './routes/site-domain.js'
-import {
-  createGeminiTextProvider,
-  getAiProviderOptionsMeta,
-} from './services/ai/index.js'
+import { getAiProviderOptionsMeta } from './services/ai/index.js'
 
 const app = express()
 const PORT = Number(process.env.PORT) || 3001
@@ -54,12 +51,10 @@ app.get('/api/health', (_, res) => {
 
 /** 공개 설정 요약. `ai` → 헤더 전광판(AiStatusTicker) 표시 문자열의 출처 */
 app.get('/api/meta', (_, res) => {
-  const gemini = createGeminiTextProvider()
   res.json({
     ai: getAiProviderOptionsMeta(),
     features: {
-      columnScrapGeminiYoutube:
-        typeof gemini.completeWithYoutubeUrl === 'function',
+      columnScrapYoutubeTranscript: true,
     },
   })
 })

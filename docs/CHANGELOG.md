@@ -6,11 +6,12 @@
 
 ### Added
 
-- **프로젝트 페이지 — LLM Wiki** — Karpathy LLM Wiki 패턴 기반 Obsidian·Claude Code·Graphify 개인 지식 베이스 카드 추가. [LinkedIn 구축 후기](https://www.linkedin.com/posts/ingee-hong99_llmwiki-graphify-obsidian-share-7468332115928133632-h891/) 링크(`postUrl`), 스크린샷 `client/public/projects/llm-wiki/`.
+- **프로젝트 페이지 — LLM Wiki** — Karpathy LLM Wiki 패턴 기반 Obsidian·Claude Code·Graphify 개인 지식 베이스 카드 추가. [LinkedIn 구축 후기](https://www.linkedin.com/posts/ingee-hong99_llmwiki-graphify-obsidian-share-7468332115928133632-h891/) 링크(`postUrl`), LinkedIn URL일 때 구축 후기 버튼에 아이콘 표시. 스크린샷 `client/public/projects/llm-wiki/`.
 - **프로젝트 페이지 (`/project`)** — 2열 그리드, 포트폴리오 등록 최신순(맨 아래가 최초 등록). **HICC 동아리 박람회**([hicc-expo-project](https://github.com/hongci9999/hicc-expo-project)), **치지직 구독채널 그라데이션**([chzzk-subscribe-gradation](https://github.com/hongci9999/chzzk-subscribe-gradation)) 카드·스크린샷(`client/public/projects/`).
 
 ### Changed
 
+- **유튜브 AI 요약 — 자막·메타데이터 통합** — API(Gemini) 모드의 영상 직접 분석(`completeWithYoutubeUrl`)을 제거하고, InnerTube·caption track으로 **제목·채널·설명+자막**을 추출한 뒤 Ollama·Gemini 모두 텍스트 `complete`로 요약한다. `youtube-content.ts` 추가, `GET /api/meta` `features.columnScrapYoutubeTranscript`. [ADR 0021](decisions/0021-youtube-transcript-unified-ai-path.md), [learnings 0036](learnings/0036-youtube-content-bundle-transcript.md).
 - **패치노트 (`/patch-notes`)** — `CHANGELOG` 월별 `## YYYY년 M월` 구조, 카테고리 뱃지·월 제목 스타일, 본문 가독성(`doc-reader`). `[Unreleased]`·버전 목차 제거.
 - **About** — 패치노트 안내에 월별 정리 명시.
 

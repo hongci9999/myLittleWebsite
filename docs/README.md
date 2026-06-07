@@ -24,7 +24,7 @@
 | 연결 점검 | 클라이언트 `/ai-smoke-test`, API 헬스·Ollama 스모크 — [api-spec §9](./api-spec.md)                                                                                                                                                                                                                            |
 | 서버 코드 | `server/src/services/ai/` ([구조 요약](learnings/0021-server-ai-prompt-provider-layout.md)), 라우트 호환 진입점 `services/ollama.ts`                                                                                                                                                                        |
 | Gemini    | 헤더/API에서 **API 모드** 선택 시. `GEMINI_API_KEY`(또는 `GOOGLE_AI_API_KEY`), 선택 `GEMINI_MODEL` — [decisions 0016](decisions/0016-gemini-youtube-transcript-and-public-meta.md)                                                                                                                             |
-| 유튜브    | AI 제안 전 자막 병합·없으면 400 — 동 의사결정, [learnings 0023](learnings/0023-youtube-transcript-cjs-load.md)                                                                                                                                                                                              |
+| 유튜브    | InnerTube·caption track으로 메타+자막 추출 → 모든 AI 제공자에 텍스트 입력. 없으면 400 — [ADR 0021](decisions/0021-youtube-transcript-unified-ai-path.md), [0036](learnings/0036-youtube-content-bundle-transcript.md), npm 폴백 [0023](learnings/0023-youtube-transcript-cjs-load.md) |
 | 관련 문서 | [설계](plans/2026-03-13-links-ai-suggest-design.md), [decisions 0012](decisions/0012-ollama-ai-links.md), [0015 구조·교체](decisions/0015-ai-text-provider-abstraction.md), [learnings 0018](learnings/0018-local-ai-ollama-webllm.md), [0021 레이아웃](learnings/0021-server-ai-prompt-provider-layout.md) |
 
 ### 칼럼 스크랩 AI (`POST /api/column-scraps/ai-fill`)
@@ -35,7 +35,7 @@
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 관련 API     | [api-spec §7](api-spec.md)                                                                                                                                                                      |
 | 의사결정     | [decisions 0014](decisions/0014-column-scraps-and-scrap-ux.md)                                                                                                                                  |
-| 학습         | [learnings 0020](learnings/0020-column-scrap-markdown-youtube.md)                                                                                                                               |
+| 학습         | [learnings 0020](learnings/0020-column-scrap-markdown-youtube.md), [0036 유튜브 자막·메타](learnings/0036-youtube-content-bundle-transcript.md)                                                  |
 | 마이그레이션 | [column-scraps-migration](plans/2026-03-24-column-scraps-migration.sql), [x kind](plans/2026-03-24-column-scraps-add-x-kind.sql), [extra_links](plans/2026-03-24-column-scraps-extra-links.sql) |
 
 ### 최근 계획
@@ -80,6 +80,7 @@
 - [0018 프로덕션 호스팅 분리 (CloudFront + EB + API 도메인)](./decisions/0018-aws-production-split-hosting.md)
 - [0019 메인 도메인 만료 알림·DB 갱신](./decisions/0019-site-domain-expiry-notice.md)
 - [0020 목록 페이지 뒤로가기·링크 네비게이션 상태](./decisions/0020-list-page-navigation-state.md)
+- [0021 유튜브 AI 요약 — 자막·메타데이터 통합 경로](./decisions/0021-youtube-transcript-unified-ai-path.md)
 
 ### 학습 내용
 
@@ -121,6 +122,7 @@
 | [0033](./learnings/0033-aws-ops-security-troubleshooting.md) | AWS 운영·보안·트러블슈팅                     | 배포, aws, 인프라, 백엔드, 개발방법론 |
 | [0034](./learnings/0034-aws-first-production-deploy-success.md) | 첫 AWS 프로덕션 배포 성공 회고 (2026-05) | 배포, aws, 인프라, 프론트, 백엔드, 개발방법론 |
 | [0035](./learnings/0035-vite-src-asset-import-meta-url.md) | Vite src 내부 이미지·import.meta.url | 프론트, 도구, 배포, 개발방법론 |
+| [0036](./learnings/0036-youtube-content-bundle-transcript.md) | YouTube 메타·자막 통합 추출 | ai, 백엔드, 도구 |
 
 ### 에러 픽스
 

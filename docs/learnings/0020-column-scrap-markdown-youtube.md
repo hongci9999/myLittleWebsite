@@ -28,13 +28,19 @@
 - `components={{ a: CustomAnchor }}`에서 `parseYoutubeVideoId(href)`로 ID를 뽑을 수 있으면, **같은 단락 안에** `<iframe>`(권장: youtube-nocookie)과 원문 `<a>`를 반환한다.
 - HTML5에서 `<p>` 안에 `<iframe>`을 두는 것은 유효해, 단락 속 링크도 동작한다.
 
+### 4) YouTube URL — 자막·메타데이터 (2026-06 갱신)
+
+- 유튜브는 watch HTML 본문이 거의 없어 **자막(transcript)** 이 AI 입력의 핵심이다.
+- `youtube-content.ts`가 InnerTube·caption track으로 제목·채널·설명·자막을 묶고, Ollama·Gemini **모두** 텍스트 프롬프트로 분석한다(API 모드의 영상 직접 입력은 사용하지 않음).
+- 자막 없으면 AI 제안 400. 상세: [0036](0036-youtube-content-bundle-transcript.md), [ADR 0021](../decisions/0021-youtube-transcript-unified-ai-path.md).
+
 ## 상세 설명 (이해한 내용)
 
-- 환경 변수: `OLLAMA_HOST`, `OLLAMA_MODEL` (미설정 시 코드 기본 `gemma4`).
-- `fetch-website`는 본문 길이 상한이 있어 **아주 긴 페이지**는 잘린 텍스트만 분석에 쓴다.
-- 칼럼과 무관하게 `MarkdownWithMath`를 쓰는 페이지(패치노트 등)에도 **동일한 YouTube 동작**이 적용된다.
+- 환경 변수: `OLLAMA_HOST`, `OLLAMA_MODEL` (미설정 시 코드 기본 `gemma4`). API 모드는 `GEMINI_API_KEY`, `GEMINI_MODEL`.
+- `fetch-website`는 본문 길이 상한이 있어 **아주 긴 페이지**는 잘린 텍스트만 분석에 쓴다. 유튜브 자막 상한은 약 16_000자.
+- 칼럼과 무관하게 `MarkdownWithMath`를 쓰는 페이지(패치노트 등)에도 **동일한 YouTube 임베드 동작**이 적용된다.
 
 ## 참고
 
-- 코드: `server/src/services/ai/`(칼럼 스크랩 제안), `client/src/shared/ui/MarkdownWithMath.tsx`, `client/src/shared/lib/youtube.ts`
-- 의사결정: `docs/decisions/0014-column-scraps-and-scrap-ux.md`
+- 코드: `server/src/services/youtube-content.ts`, `server/src/services/ai/`(칼럼 스크랩 제안), `client/src/shared/ui/MarkdownWithMath.tsx`, `client/src/shared/lib/youtube.ts`
+- 의사결정: `docs/decisions/0014-column-scraps-and-scrap-ux.md`, `docs/decisions/0021-youtube-transcript-unified-ai-path.md`

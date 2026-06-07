@@ -26,3 +26,4 @@
 
 - 패키지: 서버에 `youtube-transcript` 추가. tsx 실행 시 named ESM import 이슈가 있어 `createRequire`로 CJS 진입 로드 — [learnings 0023](../learnings/0023-youtube-transcript-cjs-load.md).
 - API 명세: [api-spec §8](../api-spec.md).
+- **2026-06-07 갱신**: API 모드에서 Gemini YouTube URL 직접 입력 분기는 [0021](0021-youtube-transcript-unified-ai-path.md)로 폐기. 자막 필수·`/api/meta` 공개 원칙은 유지.

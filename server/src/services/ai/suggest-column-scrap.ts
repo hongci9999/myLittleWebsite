@@ -4,7 +4,6 @@ import {
 } from '../../db/queries/column-scraps.js'
 import { fetchWebsiteContent, type WebsiteContent } from '../fetch-website.js'
 import {
-  obsidianClipToFullText,
   OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR,
   parseObsidianYoutubeClip,
   type ObsidianYoutubeClip,
@@ -157,14 +156,15 @@ async function buildColumnScrapFromSiteAnalysis(params: {
 
 function websiteContentFromObsidianClip(
   pageUrl: string,
-  clip: ObsidianYoutubeClip
+  clip: ObsidianYoutubeClip,
+  pastedRaw: string
 ): WebsiteContent {
   return {
     url: pageUrl,
     title: clip.title,
     metaDescription: clip.description.slice(0, 500),
     bodyText: clip.transcript,
-    fullText: obsidianClipToFullText(clip),
+    fullText: pastedRaw,
     faviconUrl: 'https://www.youtube.com/favicon.ico',
     ogImageUrl: clip.thumbnailUrl,
     youtubeMissingTranscript: false,
@@ -258,8 +258,8 @@ export async function suggestColumnScrapFromUrl(
   let content: WebsiteContent | null = null
   let coverImageUrl: string | null = null
 
-  if (obsidianClip) {
-    content = websiteContentFromObsidianClip(trimmed, obsidianClip)
+  if (obsidianClip && clipRaw) {
+    content = websiteContentFromObsidianClip(trimmed, obsidianClip, clipRaw)
     coverImageUrl = obsidianClip.thumbnailUrl
   } else {
     content = await fetchWebsiteContent(trimmed)
@@ -270,12 +270,15 @@ export async function suggestColumnScrapFromUrl(
 
   if (content && content.fullText.trim().length > 40) {
     try {
-      const analysisPrompt = isYoutubeWatchUrl(trimmed)
-        ? ColumnScrapPrompts.deepAnalysisNoteYoutubeTranscript(
-            trimmed,
-            content.fullText
-          )
-        : ColumnScrapPrompts.deepAnalysisNote(trimmed, content.fullText)
+      const analysisPrompt =
+        obsidianClip && clipRaw
+          ? ColumnScrapPrompts.deepAnalysisNoteObsidianClip(clipRaw)
+          : isYoutubeWatchUrl(trimmed)
+            ? ColumnScrapPrompts.deepAnalysisNoteYoutubeTranscript(
+                trimmed,
+                content.fullText
+              )
+            : ColumnScrapPrompts.deepAnalysisNote(trimmed, content.fullText)
       siteAnalysis = await ai.complete(analysisPrompt)
     } catch {
       siteAnalysis = ''

@@ -71,6 +71,7 @@ export function ColumnScrapAdminDialog({
   const [youtubeClipSource, setYoutubeClipSource] = useState<string | null>(null)
   const [clipPasteDraft, setClipPasteDraft] = useState('')
   const clipFileInputRef = useRef<HTMLInputElement>(null)
+  const clipTextareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
     if (!open) {
@@ -228,17 +229,31 @@ export function ColumnScrapAdminDialog({
     setClipPasteDraft('')
   }
 
+  /** textarea DOM 우선 — 붙여넣 직후 클릭해도 state 미반영 문제 방지 */
+  function getClipTextForAi(): string {
+    const fromDom = clipTextareaRef.current?.value.trim() ?? ''
+    if (fromDom) return fromDom
+    if (youtubeClipText?.trim()) return youtubeClipText.trim()
+    return clipPasteDraft.trim()
+  }
+
   function resolveYoutubeClipForAi(): string | undefined {
-    if (youtubeClipText?.trim()) return youtubeClipText
-    const draft = clipPasteDraft.trim()
-    if (draft && looksLikeYoutubeClipDraft(draft)) return draft
+    const text = getClipTextForAi()
+    if (!text) return undefined
+    if (looksLikeYoutubeClipDraft(text)) return text
+    if (text.length >= 50) return text
     return undefined
   }
 
   function syncClipPasteDraft(text: string) {
     setClipPasteDraft(text)
     const trimmed = text.trim()
-    if (!trimmed || !looksLikeYoutubeClipDraft(trimmed)) return
+    if (!trimmed) {
+      setYoutubeClipText(null)
+      setYoutubeClipSource(null)
+      return
+    }
+    if (!looksLikeYoutubeClipDraft(trimmed)) return
     setYoutubeClipText(trimmed)
     const prefill = prefillFromObsidianYoutubeClip(trimmed)
     if (prefill) {
@@ -263,6 +278,10 @@ export function ColumnScrapAdminDialog({
         '원문 URL을 입력하거나 Obsidian YouTube 클립을 붙여넣어 주세요.'
       )
       return
+    }
+    if (clipForAi) {
+      setYoutubeClipText(clipForAi)
+      if (!youtubeClipSource) setYoutubeClipSource('붙여넣기')
     }
     setAiFillLoading(true)
     try {
@@ -379,7 +398,7 @@ export function ColumnScrapAdminDialog({
                         variant="secondary"
                         size="sm"
                         disabled={
-                          (!form.url.trim() && !looksLikeYoutubeClipDraft(clipPasteDraft)) ||
+                          (!form.url.trim() && !resolveYoutubeClipForAi()) ||
                           aiFillLoading ||
                           saving
                         }
@@ -389,7 +408,7 @@ export function ColumnScrapAdminDialog({
                       </Button>
                     </span>
                     <input
-                      required={!looksLikeYoutubeClipDraft(clipPasteDraft)}
+                      required={!resolveYoutubeClipForAi()}
                       type="text"
                       inputMode="url"
                       value={form.url}
@@ -411,6 +430,7 @@ export function ColumnScrapAdminDialog({
                       있습니다.
                     </p>
                     <textarea
+                      ref={clipTextareaRef}
                       value={clipPasteDraft}
                       onChange={(e) => syncClipPasteDraft(e.target.value)}
                       rows={8}

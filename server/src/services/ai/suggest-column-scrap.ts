@@ -201,20 +201,21 @@ export async function suggestColumnScrapFromUrl(
 ): Promise<ColumnScrapAiFillResult> {
   const ai = getAiTextProvider(preference)
   const clipRaw = options?.youtubeClip?.trim()
+  const hasClipRequest = Boolean(clipRaw)
   let trimmed = url.trim()
   let obsidianClip: ObsidianYoutubeClip | null = null
 
-  if (clipRaw) {
+  if (hasClipRequest && clipRaw) {
     obsidianClip = parseObsidianYoutubeClip(clipRaw)
     if (!obsidianClip) {
       throw new Error(OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR)
     }
   }
 
-  const clipTranscriptOnly = Boolean(obsidianClip && clipRaw)
+  const clipTranscriptOnly = hasClipRequest && Boolean(obsidianClip)
 
-  if (!clipTranscriptOnly && !trimmed) {
-    throw new Error('url is required')
+  if (!hasClipRequest && !trimmed) {
+    throw new Error('원문 URL 또는 Obsidian YouTube 클립이 필요합니다.')
   }
 
   const kindHint = clipTranscriptOnly

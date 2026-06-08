@@ -26,7 +26,7 @@ function parseAllowedOrigins(raw: string | undefined): string[] {
 
 const allowedOrigins = parseAllowedOrigins(process.env.CORS_ALLOWED_ORIGINS)
 
-app.use(express.json())
+app.use(express.json({ limit: '2mb' }))
 app.use(
   cors({
     origin(origin, cb) {

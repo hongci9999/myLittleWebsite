@@ -196,8 +196,10 @@ export async function suggestColumnScrapAiFill(
     method: 'POST',
     headers: authHeaders(token),
     body: JSON.stringify({
-      url: url.trim() || undefined,
-      youtubeClip: options?.youtubeClip?.trim() || undefined,
+      ...(url.trim() ? { url: url.trim() } : {}),
+      ...(options?.youtubeClip?.trim()
+        ? { youtubeClip: options.youtubeClip.trim() }
+        : {}),
       ...aiProviderBodyField(),
     }),
   })

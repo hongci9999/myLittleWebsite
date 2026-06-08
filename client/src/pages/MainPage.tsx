@@ -6,6 +6,7 @@ import type { ComponentType } from 'react'
 import DomainExpiryNotice from '@/widgets/DomainExpiryNotice'
 import FavoriteLinksWidget from '@/widgets/FavoriteLinksWidget'
 import GeekNewsWidget from '@/widgets/GeekNewsWidget'
+import TechInterviewRandomWidget from '@/widgets/TechInterviewRandomWidget'
 import TarotDailyWidget from '@/widgets/TarotDailyWidget'
 import { WidgetGrid } from '@/widgets/WidgetGrid'
 import {
@@ -16,6 +17,7 @@ import {
 const WIDGET_COMPONENTS: Record<MainWidgetId, ComponentType> = {
   'favorite-links': FavoriteLinksWidget,
   'geeknews-latest': GeekNewsWidget,
+  'tech-interview-random': TechInterviewRandomWidget,
   'tarot-daily': TarotDailyWidget,
 }
 
@@ -28,7 +30,7 @@ export default function MainPage() {
           ({ id, gridClassName }) => {
             const Comp = WIDGET_COMPONENTS[id]
             return (
-              <div key={id} className={gridClassName}>
+              <div key={id} className={`h-full min-h-0 ${gridClassName}`}>
                 <Comp />
               </div>
             )

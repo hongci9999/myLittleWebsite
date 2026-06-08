@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useListPageScrollRestore } from '@/shared/hooks/useListPageScrollRestore'
+import { useListPageSearchInput } from '@/shared/hooks/useListPageSearchInput'
 import { patchSearchParams } from '@/shared/lib/list-page-url'
 import {
   deleteAiScrap,
@@ -27,21 +28,16 @@ export default function AiDevToolsPage() {
   const [items, setItems] = useState<AiToolScrap[]>([])
   const [loading, setLoading] = useState(true)
   const [dbOff, setDbOff] = useState(false)
-  const q = searchParams.get('q') ?? ''
-  const [debouncedQ, setDebouncedQ] = useState(q)
+  const { committedValue: q, inputProps: searchInputProps } =
+    useListPageSearchInput('q')
   const kind = (searchParams.get('kind') ?? '') as SourceKind | ''
-
-  useEffect(() => {
-    const t = window.setTimeout(() => setDebouncedQ(q), 300)
-    return () => window.clearTimeout(t)
-  }, [q])
 
   const load = useCallback(async () => {
     setLoading(true)
     setDbOff(false)
     try {
       const data = await fetchAiScraps({
-        q: debouncedQ || undefined,
+        q: q || undefined,
         kind,
       })
       setItems(data)
@@ -53,7 +49,7 @@ export default function AiDevToolsPage() {
     } finally {
       setLoading(false)
     }
-  }, [debouncedQ, kind])
+  }, [q, kind])
 
   useEffect(() => {
     load()
@@ -66,13 +62,6 @@ export default function AiDevToolsPage() {
   }, [load])
 
   useListPageScrollRestore('ai-dev-tools', !loading)
-
-  const setQ = (value: string) => {
-    setSearchParams(
-      (prev) => patchSearchParams(prev, { q: value.trim() || null }),
-      { replace: true }
-    )
-  }
 
   const setKind = (value: SourceKind | '') => {
     setSearchParams(
@@ -90,8 +79,7 @@ export default function AiDevToolsPage() {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
           <input
             type="search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
+            {...searchInputProps}
             placeholder="검색: 제목·URL·본문·태그…"
             aria-label="스크랩 검색"
             className={cn(filterControl, 'min-w-0 flex-1')}

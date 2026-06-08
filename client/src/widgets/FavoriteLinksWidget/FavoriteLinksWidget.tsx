@@ -48,47 +48,49 @@ export default function FavoriteLinksWidget() {
   }, [])
 
   return (
-    <BentoCard className="h-full p-3 sm:p-4">
-      <h2 className="text-sm font-medium tracking-tight text-muted-foreground">
+    <BentoCard className="flex h-full min-h-0 flex-col overflow-hidden p-3 sm:p-4">
+      <h2 className="shrink-0 text-sm font-medium tracking-tight text-muted-foreground">
         즐겨찾기 링크
       </h2>
-      {loading ? (
-        <FavoriteLinksSkeleton />
-      ) : featuredLinks.length === 0 ? (
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          즐겨찾기 링크가 없습니다
-        </p>
-      ) : (
-        <ul className="mt-2 flex flex-col gap-1.5">
-          {featuredLinks.map((link) => (
-            <li key={link.id}>
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-2 rounded-lg px-1.5 py-2 no-underline transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                <LinkSiteIcon
-                  faviconUrl={link.faviconUrl}
-                  className="size-4 opacity-90 group-hover:opacity-100"
-                />
-                <span className="min-w-0 flex-1 truncate font-medium text-foreground">
-                  {link.title}
-                </span>
-                <span className="shrink-0 rounded p-1 opacity-70 group-hover:opacity-100">
-                  <ExternalLinkIcon />
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
+      <div className="scrollbar-gutter mt-2 min-h-0 flex-1 overflow-y-auto">
+        {loading ? (
+          <FavoriteLinksSkeleton />
+        ) : featuredLinks.length === 0 ? (
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            즐겨찾기 링크가 없습니다
+          </p>
+        ) : (
+          <ul className="flex flex-col gap-1.5">
+            {featuredLinks.map((link) => (
+              <li key={link.id}>
+                <a
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-2 rounded-lg px-1.5 py-2 no-underline transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <LinkSiteIcon
+                    faviconUrl={link.faviconUrl}
+                    className="size-4 shrink-0 opacity-90 group-hover:opacity-100"
+                  />
+                  <span className="min-w-0 flex-1 truncate font-medium text-foreground">
+                    {link.title}
+                  </span>
+                  <span className="shrink-0 rounded p-1 opacity-70 group-hover:opacity-100">
+                    <ExternalLinkIcon />
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
       {featuredLinks.length > 0 && (
         <Link
-          to="/links"
-          className="mt-2 inline-block text-sm text-primary no-underline transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          to="/links?featured=1"
+          className="mt-2 inline-block shrink-0 text-sm text-primary no-underline transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          유용한 링크에서 더 보기 →
+          즐겨찾기 모아보기 →
         </Link>
       )}
     </BentoCard>

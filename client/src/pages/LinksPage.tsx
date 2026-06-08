@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useListPageScrollRestore } from '@/shared/hooks/useListPageScrollRestore'
+import { useListPageSearchInput } from '@/shared/hooks/useListPageSearchInput'
 import {
   dimensionFiltersToParams,
   patchSearchParams,
@@ -70,7 +71,7 @@ const StarIcon = ({ filled }: { filled: boolean }) => (
 type SortKey = 'title' | 'createdAt' | 'sortOrder'
 
 const SORT_KEYS: SortKey[] = ['title', 'createdAt', 'sortOrder']
-const LINKS_URL_RESERVED = new Set(['q', 'sort'])
+const LINKS_URL_RESERVED = new Set(['q', 'sort', 'featured'])
 
 function parseSortKey(raw: string | null): SortKey {
   if (raw && SORT_KEYS.includes(raw as SortKey)) return raw as SortKey
@@ -82,12 +83,14 @@ export default function LinksPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [links, setLinks] = useState<LinkWithValues[]>([])
   const [dimensions, setDimensions] = useState<DimensionWithValues[]>([])
-  const search = searchParams.get('q') ?? ''
+  const { committedValue: search, inputProps: searchInputProps } =
+    useListPageSearchInput('q')
   const selectedByDimension = useMemo(
     () => readDimensionFilters(searchParams, LINKS_URL_RESERVED),
     [searchParams]
   )
   const sortBy = parseSortKey(searchParams.get('sort'))
+  const featuredOnly = searchParams.get('featured') === '1'
   const [loading, setLoading] = useState(true)
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   /** 별 버튼 비활성 표시용 (API 대기 중) */
@@ -185,13 +188,6 @@ export default function LinksPage() {
     [token]
   )
 
-  const setSearch = (value: string) => {
-    setSearchParams(
-      (prev) => patchSearchParams(prev, { q: value.trim() || null }),
-      { replace: true }
-    )
-  }
-
   const setSortBy = (value: SortKey) => {
     setSearchParams(
       (prev) =>
@@ -223,6 +219,14 @@ export default function LinksPage() {
     )
   }
 
+  const toggleFeaturedOnly = () => {
+    setSearchParams(
+      (prev) =>
+        patchSearchParams(prev, { featured: featuredOnly ? null : '1' }),
+      { replace: true }
+    )
+  }
+
   const clearFilters = () => {
     setSearchParams(
       (prev) => {
@@ -236,17 +240,27 @@ export default function LinksPage() {
   }
 
   const hasActiveFilters =
-    search.trim() !== '' || Object.keys(selectedByDimension).length > 0
+    search.trim() !== '' ||
+    Object.keys(selectedByDimension).length > 0 ||
+    featuredOnly
 
   const sortedLinks = useMemo(() => {
-    const arr = [...links]
+    const arr = featuredOnly
+      ? links.filter((l) => l.isFeatured)
+      : [...links]
     const tieBreak = (a: LinkWithValues, b: LinkWithValues) => {
       const t =
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       if (t !== 0) return t
       return a.id.localeCompare(b.id)
     }
-    if (sortBy === 'title') {
+    if (featuredOnly) {
+      arr.sort((a, b) => {
+        const d =
+          (a.featuredSortOrder ?? 0) - (b.featuredSortOrder ?? 0)
+        return d !== 0 ? d : tieBreak(a, b)
+      })
+    } else if (sortBy === 'title') {
       arr.sort((a, b) => {
         const c = a.title.localeCompare(b.title)
         return c !== 0 ? c : tieBreak(a, b)
@@ -264,7 +278,7 @@ export default function LinksPage() {
       })
     }
     return arr
-  }, [links, sortBy])
+  }, [links, sortBy, featuredOnly])
 
   const valueIdToMeta = useMemo(
     () => buildValueIdToMeta(dimensions),
@@ -284,9 +298,8 @@ export default function LinksPage() {
             </span>
             <input
               type="search"
+              {...searchInputProps}
               placeholder="링크 검색..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-full border-0 bg-muted/40 py-3 pl-11 pr-5 text-sm text-foreground placeholder:text-muted-foreground/80 focus:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
@@ -316,7 +329,7 @@ export default function LinksPage() {
       {/* 사이드바 + 링크 그리드 */}
       <div className="flex flex-1">
         {/* 좌측 사이드 - 태그 선택, 분류, 링크 관리 */}
-        <aside className="sticky top-[8.5rem] hidden h-[calc(100vh-8.5rem)] w-56 shrink-0 flex-col gap-6 overflow-y-auto border-r border-border/40 bg-background/50 py-6 pl-4 pr-4 lg:flex">
+        <aside className="scrollbar-gutter sticky top-[8.5rem] hidden h-[calc(100vh-8.5rem)] w-56 shrink-0 flex-col gap-6 overflow-y-auto border-r border-border/40 bg-background/50 py-6 pl-4 pr-4 lg:flex">
           {dimensions.map((dim) => {
             const values = collectValueIds(dim.values)
             const selected = selectedByDimension[dim.slug] ?? new Set()
@@ -346,6 +359,19 @@ export default function LinksPage() {
             )
           })}
           <div className="mt-auto flex flex-col gap-2 border-t border-border/40 pt-4">
+            <button
+              type="button"
+              onClick={toggleFeaturedOnly}
+              className={`flex w-full items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                featuredOnly
+                  ? 'bg-secondary text-secondary-foreground shadow-sm'
+                  : 'bg-muted/50 text-muted-foreground hover-bg hover:text-secondary'
+              }`}
+              aria-pressed={featuredOnly}
+            >
+              <StarIcon filled={featuredOnly} />
+              즐겨찾기만
+            </button>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as SortKey)}
@@ -410,7 +436,20 @@ export default function LinksPage() {
                 </div>
               )
             })}
-            <div className="flex w-full items-center gap-2">
+            <div className="flex w-full flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleFeaturedOnly}
+                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
+                  featuredOnly
+                    ? 'bg-secondary text-secondary-foreground'
+                    : 'bg-muted/60 text-muted-foreground'
+                }`}
+                aria-pressed={featuredOnly}
+              >
+                <StarIcon filled={featuredOnly} />
+                즐겨찾기만
+              </button>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortKey)}
@@ -451,10 +490,14 @@ export default function LinksPage() {
               ) : sortedLinks.length === 0 ? (
                 <div className="flex flex-col items-center justify-center gap-2 py-24 text-center">
                   <p className="text-sm text-muted-foreground">
-                    등록된 링크가 없습니다.
+                    {featuredOnly
+                      ? '즐겨찾기한 링크가 없습니다.'
+                      : '등록된 링크가 없습니다.'}
                   </p>
                   <p className="text-xs text-muted-foreground/70">
-                    필터를 조정하거나 검색어를 바꿔 보세요.
+                    {featuredOnly
+                      ? '유용한 링크 카드의 별 아이콘으로 즐겨찾기를 추가해 보세요.'
+                      : '필터를 조정하거나 검색어를 바꿔 보세요.'}
                   </p>
                 </div>
               ) : (

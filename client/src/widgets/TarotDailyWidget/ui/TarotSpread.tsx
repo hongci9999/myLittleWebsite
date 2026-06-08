@@ -62,7 +62,7 @@ export function TarotSpread({
         </div>
       </div>
 
-      <div className="mt-4 h-[13rem] overflow-y-auto rounded-md border border-border/60 p-3">
+      <div className="scrollbar-gutter mt-4 h-[13rem] overflow-y-auto rounded-md border border-border/60 p-3">
         {readingLoading && (
           <p className="text-xs text-muted-foreground">
             카드를 해석하고 있습니다...

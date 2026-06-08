@@ -33,3 +33,4 @@
 - [CloudFront /main](https://d4a3hmxzy83r1.cloudfront.net/main)에서 API 위젯 정상 로드 확인.
 - [API health](https://mylittlewebsite.p-e.kr/api/health) `{"status":"ok"}`.
 - 전체 회고: [learnings/0034](../learnings/0034-aws-first-production-deploy-success.md).
+- 후속(2026-06): EB `update-environment` IAM 순차 보강 — [0006](./0006-github-actions-eb-iam-deploy.md).

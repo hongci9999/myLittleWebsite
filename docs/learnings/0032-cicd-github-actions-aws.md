@@ -59,7 +59,7 @@
 ### 6. 이 레포에 적용된 워크플로 (2026-05)
 
 - 파일: [`.github/workflows/deploy-aws.yml`](../../.github/workflows/deploy-aws.yml) — `main` push·수동 실행, OIDC, 프론트 S3 sync + CloudFront invalidation, EB zip 업로드·버전·환경 업데이트.
-- Variables·실패 패턴: [0034 첫 프로덕션 배포 회고](./0034-aws-first-production-deploy-success.md), [error-fixes/0003](../error-fixes/0003-aws-eb-cloudfront-cors-deploy.md).
+- Variables·실패 패턴: [0034 첫 프로덕션 배포 회고](./0034-aws-first-production-deploy-success.md), [error-fixes/0003](../error-fixes/0003-aws-eb-cloudfront-cors-deploy.md), [error-fixes/0006 EB IAM 순차 보강](../error-fixes/0006-github-actions-eb-iam-deploy.md) (2026-06).
 
 ---
 

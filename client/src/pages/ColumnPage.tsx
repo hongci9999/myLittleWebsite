@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useListPageScrollRestore } from '@/shared/hooks/useListPageScrollRestore'
+import { useListPageSearchInput } from '@/shared/hooks/useListPageSearchInput'
 import { patchSearchParams } from '@/shared/lib/list-page-url'
 import {
   deleteColumnScrap,
@@ -35,23 +36,18 @@ export default function ColumnPage() {
   const [rawItems, setRawItems] = useState<ColumnScrap[]>([])
   const [loading, setLoading] = useState(true)
   const [dbOff, setDbOff] = useState(false)
-  const q = searchParams.get('q') ?? ''
-  const [debouncedQ, setDebouncedQ] = useState(q)
+  const { committedValue: q, inputProps: searchInputProps } =
+    useListPageSearchInput('q')
   const kind = (searchParams.get('kind') ?? '') as ColumnSourceKind | ''
   const [adminOpen, setAdminOpen] = useState(false)
   const [adminSlug, setAdminSlug] = useState<string | null>(null)
-
-  useEffect(() => {
-    const t = window.setTimeout(() => setDebouncedQ(q), 300)
-    return () => window.clearTimeout(t)
-  }, [q])
 
   const load = useCallback(async () => {
     setLoading(true)
     setDbOff(false)
     try {
       const data = await fetchColumnScraps({
-        q: debouncedQ || undefined,
+        q: q || undefined,
         kind: kind || undefined,
       })
       setRawItems(data)
@@ -63,7 +59,7 @@ export default function ColumnPage() {
     } finally {
       setLoading(false)
     }
-  }, [debouncedQ, kind])
+  }, [q, kind])
 
   useEffect(() => {
     load()
@@ -76,13 +72,6 @@ export default function ColumnPage() {
   }, [load])
 
   useListPageScrollRestore('column', !loading)
-
-  const setQ = (value: string) => {
-    setSearchParams(
-      (prev) => patchSearchParams(prev, { q: value.trim() || null }),
-      { replace: true }
-    )
-  }
 
   const setKind = (value: ColumnSourceKind | '') => {
     setSearchParams(
@@ -115,8 +104,7 @@ export default function ColumnPage() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
             <input
               type="search"
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
+              {...searchInputProps}
               placeholder="검색: 제목·URL·태그·메모…"
               aria-label="칼럼 스크랩 검색"
               className={cn(filterControl, 'min-w-0 flex-1')}

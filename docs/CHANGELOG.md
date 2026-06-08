@@ -6,6 +6,10 @@
 
 ### Added
 
+- **메인 — CS 한 조각 위젯** — [gyoogle/tech-interview-for-developer](https://github.com/gyoogle/tech-interview-for-developer)의 CS·알고리즘·디자인 패턴·웹·언어 폴더에서 무작위 `.md` 1건 표시. `GET /api/tech-interview/random`, GeekNews 아래 그리드 슬롯(`col-start`/`row-start` 고정). 새로고침·「다른 문서」·「원문 보기」.
+
+- **유용한 링크 — 즐겨찾기만 보기** — `?featured=1` URL 필터, 사이드바·모바일 「즐겨찾기만」 토글. 메인 즐겨찾기 위젯 링크를 `/links?featured=1`로 연결.
+
 - **칼럼 스크랩 — Obsidian 유튜브 클립 붙여넣기** — Web Clipper `raw/youtube` 노트(frontmatter·JSON 템플릿·트랜스크립트)를 textarea에 붙여넣거나 파일로 가져와 AI 요약. `POST /api/column-scraps/ai-fill`에 `youtubeClip` 필드, `parse-obsidian-youtube-clip.ts`. 비표준 JSON(`noteNameFormat` 따옴표 깨짐)도 regex 폴백 파싱. [ADR 0022](decisions/0022-obsidian-youtube-clip-column-scrap.md), [learnings 0037](learnings/0037-obsidian-youtube-clip-column-scrap.md).
 
 - **프로젝트 페이지 — LLM Wiki** — Karpathy LLM Wiki 패턴 기반 Obsidian·Claude Code·Graphify 개인 지식 베이스 카드 추가. [LinkedIn 구축 후기](https://www.linkedin.com/posts/ingee-hong99_llmwiki-graphify-obsidian-share-7468332115928133632-h891/) 링크(`postUrl`), LinkedIn URL일 때 구축 후기 버튼에 아이콘 표시. 스크린샷 `client/public/projects/llm-wiki/`.
@@ -13,11 +17,19 @@
 
 ### Changed
 
+- **스크롤바** — 테마 변수 기반 얇은 둥근 thumb(WebKit·Firefox), `scrollbar-gutter` 유틸. 페이지·위젯·사이드바 스크롤 영역에 적용.
+
 - **유튜브 AI 요약 — 자막·메타데이터 통합** — API(Gemini) 모드의 영상 직접 분석(`completeWithYoutubeUrl`)을 제거하고, InnerTube·caption track으로 **제목·채널·설명+자막**을 추출한 뒤 Ollama·Gemini 모두 텍스트 `complete`로 요약한다. `youtube-content.ts` 추가, `GET /api/meta` `features.columnScrapYoutubeTranscript`. [ADR 0021](decisions/0021-youtube-transcript-unified-ai-path.md), [learnings 0036](learnings/0036-youtube-content-bundle-transcript.md).
 - **패치노트 (`/patch-notes`)** — `CHANGELOG` 월별 `## YYYY년 M월` 구조, 카테고리 뱃지·월 제목 스타일, 본문 가독성(`doc-reader`). `[Unreleased]`·버전 목차 제거.
 - **About** — 패치노트 안내에 월별 정리 명시.
 
 ### Fixed
+
+- **목록 검색 한글 IME** — URL 즉시 동기화 제어 input에서 자음·모음 분리되던 문제. `useListPageSearchInput`(로컬 state + composition + 디바운스 URL)을 칼럼·AI 도구·링크 검색에 적용.
+
+- **메인 즐겨찾기 위젯 overflow** — 링크가 카드 밖으로 넘치던 문제. `min-h-0`·내부 `overflow-y-auto`·그리드 슬롯 `overflow-hidden`.
+
+- **GitHub Actions EB 배포 IAM 권한 부족** — `main` 푸시 후 프론트(S3·CloudFront)만 갱신되고 API는 `update-environment` 실패로 구버전 유지. 역할 `github-actions-mylittlewebsite-deploy` 인라인 정책 `deploy-github-minimal`에 S3 ACL·버킷 정책·DeleteObject, CloudFormation `DescribeStackResource`, Auto Scaling, (권장) EC2 Describe 등을 순차 추가 후 2026-06-08 배포 성공. [error-fixes 0006](error-fixes/0006-github-actions-eb-iam-deploy.md).
 
 - **배포 환경 유튜브 URL만으로 칼럼 AI 요약 실패** — 로컬에서는 YouTube URL→서버 자막 fetch→AI가 됐으나 EB 등 배포에서는 YouTube가 서버 IP에 자막을 잘 주지 않아 「자막 없음」 400이 잦았음. Obsidian 클립 붙여넣기로 **클라이언트(Clipper)가 받은 자막**을 서버에 넘기는 경로 추가. URL-only는 fetch 성공 환경에서 계속 사용.
 

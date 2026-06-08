@@ -29,3 +29,4 @@
 | [0003](./0003-aws-eb-cloudfront-cors-deploy.md) | EB Degraded·Mixed Content·CORS (AWS 배포) | 2026-05-16 |
 | [0004](./0004-tarot-deploy-image-paths.md) | 타로 위젯 배포 환경에서 카드 이미지 미표시 | 2026-05-19 |
 | [0005](./0005-learning-production-split-hosting.md) | 학습 기록 프로덕션: 준비 중·목록 순서 깜빡임 | 2026-05-19 |
+| [0006](./0006-github-actions-eb-iam-deploy.md) | GitHub Actions EB 배포 IAM 권한 부족 (순차 보강) | 2026-06-08 |

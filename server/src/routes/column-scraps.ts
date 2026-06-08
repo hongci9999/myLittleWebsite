@@ -114,7 +114,10 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
     const youtubeClip = body.youtubeClip?.trim()
     let url = body.url?.trim()
     if (!url && !youtubeClip) {
-      res.status(400).json({ error: 'url or youtubeClip is required' })
+      res.status(400).json({
+        error:
+          '원문 URL 또는 Obsidian YouTube 클립(youtubeClip)이 필요합니다.',
+      })
       return
     }
     const pref = parseAiRequestPreference(req.headers, req.body)

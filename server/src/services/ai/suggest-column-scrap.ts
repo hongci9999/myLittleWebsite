@@ -61,17 +61,32 @@ async function buildColumnScrapFromSiteAnalysis(params: {
   siteAnalysis: string
   coverImageUrl: string | null
   ai: AiTextProvider
+  clipTranscriptOnly?: boolean
 }): Promise<ColumnScrapAiFillResult> {
-  const { trimmed, kindHint, content, siteAnalysis, coverImageUrl, ai } = params
+  const {
+    trimmed,
+    kindHint,
+    content,
+    siteAnalysis,
+    coverImageUrl,
+    ai,
+    clipTranscriptOnly = false,
+  } = params
 
   const pageTitleLine = content?.title
-    ? `페이지 제목(HTML): ${content.title}`
+    ? clipTranscriptOnly
+      ? `영상 제목(클립 메타, 참고): ${content.title}`
+      : `페이지 제목(HTML): ${content.title}`
     : '페이지 제목을 가져오지 못했습니다.'
-  const urlKindLine = `URL 패턴 기준 추정 형식(참고): ${kindHint}. 더 맞으면 sourceKind에 반영하세요.`
+  const urlKindLine = clipTranscriptOnly
+    ? `형식(참고): ${kindHint} — 클립 자막만으로 생성. sourceKind는 youtube 권장.`
+    : `URL 패턴 기준 추정 형식(참고): ${kindHint}. 더 맞으면 sourceKind에 반영하세요.`
 
   const contextBlock = siteAnalysis
     ? `[심층 분석 노트 — 반드시 bodyMd의 "상세 정리"에 반영할 재료]\n${siteAnalysis}\n\n`
-    : `[페이지 본문 없음 또는 fetch 실패 — URL·제목만으로 추론]\nURL: ${trimmed}\n\n`
+    : clipTranscriptOnly
+      ? `[클립 자막만 제공 — URL·페이지 fetch 없음]\n제목(참고): ${content?.title ?? '없음'}\n\n`
+      : `[페이지 본문 없음 또는 fetch 실패 — URL·제목만으로 추론]\nURL: ${trimmed}\n\n`
 
   const metadataPrompt = ColumnScrapPrompts.metadataJson({
     contextBlock,
@@ -95,7 +110,9 @@ async function buildColumnScrapFromSiteAnalysis(params: {
   try {
     parsed = JSON.parse(jsonStr) as typeof parsed
   } catch {
-    const fallbackTitle = content?.title?.trim() || defaultTitleFromUrl(trimmed)
+    const fallbackTitle =
+      content?.title?.trim() ||
+      (trimmed ? defaultTitleFromUrl(trimmed) : 'YouTube 스크랩')
     return {
       title: fallbackTitle,
       summary: '',
@@ -117,7 +134,7 @@ async function buildColumnScrapFromSiteAnalysis(params: {
   const resolvedTitle =
     parsed.title?.trim() ||
     content?.title?.trim() ||
-    defaultTitleFromUrl(trimmed)
+    (trimmed ? defaultTitleFromUrl(trimmed) : 'YouTube 스크랩')
 
   let bodyMd = parsed.bodyMd?.trim() ?? ''
   const summaryLine = parsed.summary?.trim() ?? ''
@@ -127,7 +144,9 @@ async function buildColumnScrapFromSiteAnalysis(params: {
     try {
       const expanded = await ai.complete(
         ColumnScrapPrompts.expandBodyMarkdown({
-          url: trimmed,
+          url: clipTranscriptOnly
+            ? '(원문 URL 없음 — 클립 자막만 사용)'
+            : trimmed,
           title: resolvedTitle,
           summaryLine: summaryForExpand,
           siteAnalysis,
@@ -154,17 +173,13 @@ async function buildColumnScrapFromSiteAnalysis(params: {
   }
 }
 
-function websiteContentFromObsidianClip(
-  pageUrl: string,
-  clip: ObsidianYoutubeClip,
-  pastedRaw: string
-): WebsiteContent {
+function websiteContentFromObsidianClip(clip: ObsidianYoutubeClip): WebsiteContent {
   return {
-    url: pageUrl,
+    url: clip.sourceUrl || '',
     title: clip.title,
     metaDescription: clip.description.slice(0, 500),
     bodyText: clip.transcript,
-    fullText: pastedRaw,
+    fullText: clip.transcript,
     faviconUrl: 'https://www.youtube.com/favicon.ico',
     ogImageUrl: clip.thumbnailUrl,
     youtubeMissingTranscript: false,
@@ -194,15 +209,18 @@ export async function suggestColumnScrapFromUrl(
     if (!obsidianClip) {
       throw new Error(OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR)
     }
-    trimmed = trimmed || obsidianClip.sourceUrl
   }
 
-  if (!trimmed) {
+  const clipTranscriptOnly = Boolean(obsidianClip && clipRaw)
+
+  if (!clipTranscriptOnly && !trimmed) {
     throw new Error('url is required')
   }
 
-  const kindHint = inferColumnSourceKindFromUrl(trimmed)
-  const skipHtml = isXOrTwitterHost(trimmed)
+  const kindHint = clipTranscriptOnly
+    ? 'youtube'
+    : inferColumnSourceKindFromUrl(trimmed)
+  const skipHtml = !clipTranscriptOnly && isXOrTwitterHost(trimmed)
 
   if (skipHtml) {
     const handle = xStatusHandleFromUrl(trimmed)
@@ -258,8 +276,8 @@ export async function suggestColumnScrapFromUrl(
   let content: WebsiteContent | null = null
   let coverImageUrl: string | null = null
 
-  if (obsidianClip && clipRaw) {
-    content = websiteContentFromObsidianClip(trimmed, obsidianClip, clipRaw)
+  if (clipTranscriptOnly && obsidianClip) {
+    content = websiteContentFromObsidianClip(obsidianClip)
     coverImageUrl = obsidianClip.thumbnailUrl
   } else {
     content = await fetchWebsiteContent(trimmed)
@@ -270,9 +288,14 @@ export async function suggestColumnScrapFromUrl(
 
   if (content && content.fullText.trim().length > 40) {
     try {
-      const analysisPrompt =
-        obsidianClip && clipRaw
-          ? ColumnScrapPrompts.deepAnalysisNoteObsidianClip(clipRaw)
+      const analysisPrompt = clipTranscriptOnly
+          ? ColumnScrapPrompts.deepAnalysisNoteObsidianClipTranscript(
+              obsidianClip!.transcript,
+              {
+                title: obsidianClip!.title,
+                channel: obsidianClip!.channel,
+              }
+            )
           : isYoutubeWatchUrl(trimmed)
             ? ColumnScrapPrompts.deepAnalysisNoteYoutubeTranscript(
                 trimmed,
@@ -285,15 +308,19 @@ export async function suggestColumnScrapFromUrl(
     }
   }
 
-  const resolvedKind =
-    isYoutubeWatchUrl(trimmed) && kindHint === 'other' ? 'youtube' : kindHint
+  const resolvedKind = clipTranscriptOnly
+    ? 'youtube'
+    : isYoutubeWatchUrl(trimmed) && kindHint === 'other'
+      ? 'youtube'
+      : kindHint
 
   return buildColumnScrapFromSiteAnalysis({
-    trimmed,
+    trimmed: clipTranscriptOnly ? '' : trimmed,
     kindHint: resolvedKind,
     content,
     siteAnalysis,
     coverImageUrl,
     ai,
+    clipTranscriptOnly,
   })
 }

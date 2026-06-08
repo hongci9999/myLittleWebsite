@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import {
   isObsidianYoutubeClip,
+  looksLikeYoutubeClipDraft,
   prefillFromObsidianYoutubeClip,
 } from '@/shared/lib/obsidian-youtube-clip'
 import { Link } from 'react-router-dom'
@@ -119,6 +120,16 @@ export function ColumnScrapAdminDialog({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!token) return
+    let urlToSave = form.url.trim()
+    if (!urlToSave) {
+      const clip = resolveYoutubeClipForAi()
+      urlToSave = clip ? (prefillFromObsidianYoutubeClip(clip)?.url ?? '') : ''
+      if (urlToSave) setForm((f) => ({ ...f, url: urlToSave }))
+    }
+    if (!urlToSave) {
+      window.alert('원문 URL을 입력하거나 클립에서 URL을 추출할 수 있어야 합니다.')
+      return
+    }
     setSaving(true)
     try {
       const tags = form.tagsStr
@@ -134,7 +145,7 @@ export function ColumnScrapAdminDialog({
       if (editing) {
         await updateColumnScrap(token, editing.id, {
           title: form.title.trim(),
-          url: form.url.trim(),
+          url: urlToSave,
           sourceKind: form.sourceKind,
           summary: form.summary.trim() || null,
           bodyMd: form.bodyMd.trim() || null,
@@ -146,7 +157,7 @@ export function ColumnScrapAdminDialog({
       } else {
         await createColumnScrap(token, {
           title: form.title.trim(),
-          url: form.url.trim(),
+          url: urlToSave,
           sourceKind: form.sourceKind,
           summary: form.summary.trim() || null,
           bodyMd: form.bodyMd.trim() || null,
@@ -220,16 +231,42 @@ export function ColumnScrapAdminDialog({
   function resolveYoutubeClipForAi(): string | undefined {
     if (youtubeClipText?.trim()) return youtubeClipText
     const draft = clipPasteDraft.trim()
-    if (draft && isObsidianYoutubeClip(draft)) return draft
+    if (draft && looksLikeYoutubeClipDraft(draft)) return draft
     return undefined
+  }
+
+  function syncClipPasteDraft(text: string) {
+    setClipPasteDraft(text)
+    const trimmed = text.trim()
+    if (!trimmed || !looksLikeYoutubeClipDraft(trimmed)) return
+    setYoutubeClipText(trimmed)
+    const prefill = prefillFromObsidianYoutubeClip(trimmed)
+    if (prefill) {
+      setForm((f) => ({
+        ...f,
+        url: f.url.trim() ? f.url : prefill.url,
+        title: f.title.trim() ? f.title : prefill.title,
+        sourceKind: 'youtube',
+        coverImageUrl: f.coverImageUrl.trim()
+          ? f.coverImageUrl
+          : (prefill.coverImageUrl ?? ''),
+      }))
+    }
   }
 
   async function handleAiFill() {
     const clipForAi = resolveYoutubeClipForAi()
-    if (!token || (!form.url.trim() && !clipForAi)) return
+    const urlForAi = clipForAi ? '' : form.url.trim()
+    if (!token) return
+    if (!urlForAi && !clipForAi) {
+      window.alert(
+        '원문 URL을 입력하거나 Obsidian YouTube 클립을 붙여넣어 주세요.'
+      )
+      return
+    }
     setAiFillLoading(true)
     try {
-      const r = await suggestColumnScrapAiFill(token, form.url.trim(), {
+      const r = await suggestColumnScrapAiFill(token, urlForAi, {
         youtubeClip: clipForAi,
       })
       const clipPrefill = clipForAi
@@ -342,7 +379,7 @@ export function ColumnScrapAdminDialog({
                         variant="secondary"
                         size="sm"
                         disabled={
-                          (!form.url.trim() && !resolveYoutubeClipForAi()) ||
+                          (!form.url.trim() && !looksLikeYoutubeClipDraft(clipPasteDraft)) ||
                           aiFillLoading ||
                           saving
                         }
@@ -352,7 +389,7 @@ export function ColumnScrapAdminDialog({
                       </Button>
                     </span>
                     <input
-                      required
+                      required={!looksLikeYoutubeClipDraft(clipPasteDraft)}
                       type="text"
                       inputMode="url"
                       value={form.url}
@@ -369,12 +406,13 @@ export function ColumnScrapAdminDialog({
                     </span>
                     <p className="mt-1 text-[11px] text-muted-foreground">
                       Obsidian Web Clipper raw/youtube 노트 전문을 붙여넣으세요.
-                      「클립 적용」으로 URL·제목을 미리 채우거나, 바로 「AI
-                      채우기」를 눌러도 됩니다.
+                      「AI 채우기」는 URL 없이 **자막(스크립트)만** 서버에 보내
+                      분석합니다. 저장용 URL·제목은 「클립 적용」으로 채울 수
+                      있습니다.
                     </p>
                     <textarea
                       value={clipPasteDraft}
-                      onChange={(e) => setClipPasteDraft(e.target.value)}
+                      onChange={(e) => syncClipPasteDraft(e.target.value)}
                       rows={8}
                       spellCheck={false}
                       placeholder={`---\nsource: "https://www.youtube.com/watch?v=…"\ntitle: "영상 제목"\ncreator:\n  - "[[채널명]]"\npublished: 2026-06-04\ntags:\n  - "raw/youtube"\n---\n…## 트랜스크립트…`}

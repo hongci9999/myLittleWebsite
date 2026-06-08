@@ -4,15 +4,17 @@ type ClipperProperty = { name?: string; value?: string }
 
 function readClipperJsonProperties(text: string): ClipperProperty[] | null {
   const t = text.trim()
-  if (!t.startsWith('{')) return null
+  const jsonStart = t.search(/\{\s*"schemaVersion"/)
+  const slice = jsonStart >= 0 ? t.slice(jsonStart) : t.startsWith('{') ? t : null
+  if (!slice) return null
   try {
-    const parsed = JSON.parse(t) as { properties?: ClipperProperty[] }
+    const parsed = JSON.parse(slice) as { properties?: ClipperProperty[] }
     return Array.isArray(parsed.properties) ? parsed.properties : null
   } catch {
     const out: ClipperProperty[] = []
     const re = /"name"\s*:\s*"([^"]+)"\s*,\s*"value"\s*:\s*"((?:\\.|[^"\\])*)"/g
     let m: RegExpExecArray | null
-    while ((m = re.exec(t)) !== null) {
+    while ((m = re.exec(slice)) !== null) {
       out.push({
         name: m[1],
         value: m[2]
@@ -36,12 +38,27 @@ export function isObsidianYoutubeClip(text: string): boolean {
   const t = text.trim()
   if (!t) return false
   if (/^\{[\s\S]*"schemaVersion"/.test(t) && /youtube/i.test(t)) return true
+  if (/"schemaVersion"/.test(t) && /youtube/i.test(t)) return true
   if (!t.startsWith('---')) return false
   if (/source:\s*["']?https?:\/\/[^\n"' ]*youtube/i.test(t)) return true
   if (/raw\/youtube/i.test(t) && /##\s*(트랜스크립트|Transcript)/i.test(t)) {
     return true
   }
-  return /"schemaVersion"/.test(t) && /youtube/i.test(t)
+  return false
+}
+
+/** 붙여넣기만 해도 AI 채우기 시도 가능한지 (서버 파싱 위임 포함) */
+export function looksLikeYoutubeClipDraft(text: string): boolean {
+  const t = text.trim()
+  if (!t) return false
+  if (isObsidianYoutubeClip(t)) return true
+  return (
+    t.length >= 80 &&
+    (/youtube\.com|youtu\.be/i.test(t) ||
+      /##\s*(트랜스크립트|Transcript)/i.test(t) ||
+      /"schemaVersion"/.test(t) ||
+      /raw\/youtube/i.test(t))
+  )
 }
 
 /** 붙여넣기 직후 폼 URL·제목·표지 미리 채우기 */
@@ -50,7 +67,7 @@ export function prefillFromObsidianYoutubeClip(text: string): {
   title: string
   coverImageUrl: string | null
 } | null {
-  if (!isObsidianYoutubeClip(text)) return null
+  if (!looksLikeYoutubeClipDraft(text)) return null
 
   const jsonProps = readClipperJsonProperties(text)
   let url = propValue(jsonProps, 'source')

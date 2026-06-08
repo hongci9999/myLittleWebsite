@@ -319,8 +319,6 @@ export function parseObsidianYoutubeClip(raw: string): ObsidianYoutubeClip | nul
     )
     if (loose) sourceUrl = loose[0].replace(/\\+$/, '')
   }
-  if (!sourceUrl || !parseYoutubeVideoId(sourceUrl)) return null
-
   let title = fmString(fm, 'title') || fromJson.meta.title || ''
   if (!title) {
     const about = extractMarkdownSection(body, ['About'])
@@ -356,9 +354,12 @@ export function parseObsidianYoutubeClip(raw: string): ObsidianYoutubeClip | nul
   const transcript = truncateTranscript(transcriptSectionToPlain(transcriptSection))
   if (!transcript) return null
 
-  const videoId = parseYoutubeVideoId(sourceUrl)!
+  const videoId = sourceUrl ? parseYoutubeVideoId(sourceUrl) : null
+  if (sourceUrl && !videoId) return null
+
   const thumbnailUrl =
-    fromJson.meta.thumbnailUrl ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+    fromJson.meta.thumbnailUrl ??
+    (videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : null)
 
   const tags =
     fmStringList(fm, 'tags').length > 0

@@ -5,7 +5,7 @@
 export const SITE_DOMAIN = {
   hostname: 'mylittlewebsite.p-e.kr',
   registrarName: '내도메인.한국',
-  registrarUrl: 'https://www.nadomdomain.co.kr/',
+  registrarUrl: 'https://xn--220b31d95hq8o.xn--3e0b707e/',
   /** 달력 기준 등록일 (YYYY-MM-DD, KST 날짜로 해석) */
   registeredDate: '2026-05-16',
   /** 달력 기준 만료일 (YYYY-MM-DD, KST 날짜로 해석) */

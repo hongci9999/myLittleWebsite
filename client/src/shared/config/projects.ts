@@ -139,3 +139,25 @@ export const PROJECT_ITEMS: ProjectItem[] = [
     status: 'archived',
   },
 ]
+
+export type ProjectPresentation = {
+  id: string
+  title: string
+  summary: string
+  meta?: string
+  pdfUrl: string
+  tags?: string[]
+}
+
+/** `/project` 하단 — 세미나·발표 자료 (프로젝트 카드와 별도) */
+export const PROJECT_PRESENTATIONS: ProjectPresentation[] = [
+  {
+    id: 'hicc-docker-seminar',
+    title: 'Docker 세미나',
+    summary:
+      'HICC 동아리 세미나에서 Docker에 대해 발표했습니다. 컨테이너가 무엇인지, 왜 쓰는지, 이미지·컨테이너를 다루는 기본 흐름을 동아리원들에게 소개한 슬라이드입니다.',
+    meta: 'HICC 동아리 · 세미나',
+    pdfUrl: '/projects/hicc-docker-seminar/docker-hicc.pdf',
+    tags: ['Docker', 'HICC', '세미나'],
+  },
+]

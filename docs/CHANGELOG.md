@@ -6,6 +6,8 @@
 
 ### Added
 
+- **메인 — D2 Hello world 최신 영상 위젯** — [NAVER D2 Hello world](https://d2.naver.com/helloworld) Atom 피드(`d2.atom`)에서 Engineering Day 영상 최신 1건 표시. `GET /api/d2-helloworld/latest`, NAVER TV oembed 썸네일, 메인 그리드 하단 전폭 슬롯.
+
 - **메인 — CS 한 조각 위젯** — [gyoogle/tech-interview-for-developer](https://github.com/gyoogle/tech-interview-for-developer)의 CS·알고리즘·디자인 패턴·웹·언어 폴더에서 무작위 `.md` 1건 표시. `GET /api/tech-interview/random`, GeekNews 아래 그리드 슬롯(`col-start`/`row-start` 고정). 새로고침·「다른 문서」·「원문 보기」.
 
 - **유용한 링크 — 즐겨찾기만 보기** — `?featured=1` URL 필터, 사이드바·모바일 「즐겨찾기만」 토글. 메인 즐겨찾기 위젯 링크를 `/links?featured=1`로 연결.

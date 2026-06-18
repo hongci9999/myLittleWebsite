@@ -8,6 +8,7 @@ import FavoriteLinksWidget from '@/widgets/FavoriteLinksWidget'
 import GeekNewsWidget from '@/widgets/GeekNewsWidget'
 import TechInterviewRandomWidget from '@/widgets/TechInterviewRandomWidget'
 import TarotDailyWidget from '@/widgets/TarotDailyWidget'
+import D2HelloWorldWidget from '@/widgets/D2HelloWorldWidget'
 import { WidgetGrid } from '@/widgets/WidgetGrid'
 import {
   MAIN_WIDGET_LAYOUT,
@@ -19,6 +20,7 @@ const WIDGET_COMPONENTS: Record<MainWidgetId, ComponentType> = {
   'geeknews-latest': GeekNewsWidget,
   'tech-interview-random': TechInterviewRandomWidget,
   'tarot-daily': TarotDailyWidget,
+  'd2-helloworld-latest': D2HelloWorldWidget,
 }
 
 export default function MainPage() {

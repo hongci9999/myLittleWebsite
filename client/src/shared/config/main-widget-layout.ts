@@ -14,6 +14,7 @@ export type MainWidgetId =
   | 'geeknews-latest'
   | 'tech-interview-random'
   | 'tarot-daily'
+  | 'd2-helloworld-latest'
 
 export type WidgetLayoutItem = {
   id: MainWidgetId
@@ -46,5 +47,11 @@ export const MAIN_WIDGET_LAYOUT: WidgetLayoutItem[] = [
     enabled: true,
     gridClassName:
       'min-w-0 md:col-start-1 md:row-start-5 md:col-span-5 md:row-span-6',
+  },
+  {
+    id: 'd2-helloworld-latest',
+    enabled: true,
+    gridClassName:
+      'min-w-0 md:col-start-1 md:row-start-11 md:col-span-12 md:row-span-4',
   },
 ]

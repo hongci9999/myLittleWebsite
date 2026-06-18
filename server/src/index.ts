@@ -8,6 +8,7 @@ import aiScrapsRoutes from './routes/ai-scraps.js'
 import columnScrapsRoutes from './routes/column-scraps.js'
 import aiSmokeRoutes from './routes/ai-smoke.js'
 import geekNewsRoutes from './routes/geeknews.js'
+import d2HelloWorldRoutes from './routes/d2-helloworld.js'
 import techInterviewRoutes from './routes/tech-interview.js'
 import tarotRoutes from './routes/tarot.js'
 import siteDomainRoutes from './routes/site-domain.js'
@@ -65,6 +66,7 @@ app.use('/api/ai-smoke', aiSmokeRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/links', linksRoutes)
 app.use('/api/geeknews', geekNewsRoutes)
+app.use('/api/d2-helloworld', d2HelloWorldRoutes)
 app.use('/api/tech-interview', techInterviewRoutes)
 app.use('/api/ai-scraps', aiScrapsRoutes)
 app.use('/api/column-scraps', columnScrapsRoutes)

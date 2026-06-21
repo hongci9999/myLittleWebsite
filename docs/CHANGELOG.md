@@ -6,6 +6,12 @@
 
 ### Added
 
+- **프로젝트 페이지 — CHEESESTORM** — 치지직 스트리머 HotS 내전 전적·티어리스트 [CheeseStorm-website](https://github.com/hongci9999/CheeseStorm-website), [Vercel 데모](https://cheese-storm-website.vercel.app), 스크린샷 `client/public/projects/cheese-storm/`.
+
+- **타로 — 카드 이미지 출처·저작권 안내** — 오늘의 타로 운세 위젯 우상단 정보 버튼. 호버·포커스 시 이영도 『눈물을 마시는새』 아트북 『한계선을 넘다』 AI 변형 출처와 비영리·수익 창출 금지 안내.
+
+- **메인 — 최신 기술 콘텐츠 블로그 RSS** — D2 Hello world 영상과 함께 [GitHub Blog](https://github.blog/)·[NVIDIA Blog](https://developer.nvidia.com/blog/)·[MIT Technology Review Korea](https://www.technologyreview.kr/)·[Google Developers KR](https://developers-kr.googleblog.com/) 최신글 1건씩 표시. `rss-feed.ts`·`tech-blogs.ts`, `GET /api/d2-helloworld/latest` → `{ d2Video, blogs }`.
+
 - **메인 — D2 Hello world 최신 영상 위젯** — [NAVER D2 Hello world](https://d2.naver.com/helloworld) Atom 피드(`d2.atom`)에서 Engineering Day 영상 최신 1건 표시. `GET /api/d2-helloworld/latest`, NAVER TV oembed 썸네일, 메인 그리드 하단 전폭 슬롯.
 
 - **메인 — CS 한 조각 위젯** — [gyoogle/tech-interview-for-developer](https://github.com/gyoogle/tech-interview-for-developer)의 CS·알고리즘·디자인 패턴·웹·언어 폴더에서 무작위 `.md` 1건 표시. `GET /api/tech-interview/random`, GeekNews 아래 그리드 슬롯(`col-start`/`row-start` 고정). 새로고침·「다른 문서」·「원문 보기」.
@@ -18,6 +24,10 @@
 - **프로젝트 페이지 (`/project`)** — 2열 그리드, 포트폴리오 등록 최신순(맨 아래가 최초 등록). **HICC 동아리 박람회**([hicc-expo-project](https://github.com/hongci9999/hicc-expo-project)), **치지직 구독채널 그라데이션**([chzzk-subscribe-gradation](https://github.com/hongci9999/chzzk-subscribe-gradation)) 카드·스크린샷(`client/public/projects/`).
 
 ### Changed
+
+- **프로젝트 페이지 — 세미나 통합** — 「발표 · 세미나」 별도 섹션 제거. Docker 세미나를 프로젝트 그리드 맨 아래 카드로 이동, `ProjectCard`에 `pdfUrl`·PDF 커버 지원. `ProjectPresentationCard` 삭제.
+
+- **메인 — 최신 기술 콘텐츠 레이아웃** — 2열 그리드 → D2·블로그 항목당 1행 스택. 그리드 `row-span`·`h-full` 조정으로 카드 하단 빈 여백 축소.
 
 - **스크롤바** — 테마 변수 기반 얇은 둥근 thumb(WebKit·Firefox), `scrollbar-gutter` 유틸. 페이지·위젯·사이드바 스크롤 영역에 적용.
 

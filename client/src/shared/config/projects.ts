@@ -40,6 +40,8 @@ export const PROJECT_ITEMS: ProjectItem[] = [
     meta: '개인 사이드 · Next.js · Firebase · 치지직 OAuth',
     repoUrl: 'https://github.com/hongci9999/CheeseStorm-website',
     demoUrl: 'https://cheese-storm-website.vercel.app',
+    postUrl:
+      'https://www.linkedin.com/posts/ingee-hong99_firebase-nextjs-rpwstwrzgtgkrht-share-7472634687417491456-oc-J/',
     screenshotSrc: '/projects/cheese-storm/home.png',
     screenshotAlt: 'CHEESESTORM 홈 — 티어리스트와 스트리머 순위',
     screenshots: [

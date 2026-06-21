@@ -144,7 +144,7 @@ export default function D2HelloWorldWidget() {
   const hasContent = feed.d2Video !== null || feed.blogs.length > 0
 
   return (
-    <BentoCard className="h-full p-4 sm:p-5">
+    <BentoCard className="p-4 sm:p-5">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-medium tracking-tight text-muted-foreground">
           최신 기술 콘텐츠

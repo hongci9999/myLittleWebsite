@@ -23,20 +23,10 @@ function formatPublishedAt(publishedAt: string): string {
 
 function TechFeedSkeleton() {
   return (
-    <div className="mt-4 grid gap-3 lg:grid-cols-12">
-      <div className="flex flex-col gap-3 sm:flex-row lg:col-span-5">
-        <div className="aspect-video w-full shrink-0 animate-pulse rounded-xl bg-muted/40 sm:w-48 md:w-full" />
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <div className="h-5 w-4/5 animate-pulse rounded bg-muted/40" />
-          <div className="h-4 w-24 animate-pulse rounded bg-muted/30" />
-          <div className="h-12 w-full animate-pulse rounded bg-muted/30" />
-        </div>
-      </div>
-      <div className="grid gap-2 sm:grid-cols-2 lg:col-span-7">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className="h-24 animate-pulse rounded-xl bg-muted/40" />
-        ))}
-      </div>
+    <div className="mt-4 space-y-2">
+      {Array.from({ length: 5 }).map((_, index) => (
+        <div key={index} className="h-20 animate-pulse rounded-xl bg-muted/40" />
+      ))}
     </div>
   )
 }
@@ -47,7 +37,7 @@ function D2VideoCard({ item }: { item: D2HelloWorldVideo }) {
       href={item.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex h-full flex-col gap-3 rounded-xl border border-border/60 bg-background/70 p-3 no-underline transition-all hover:bg-muted/50 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:flex-row sm:items-start"
+      className="flex flex-col gap-3 rounded-xl border border-border/60 bg-background/70 p-3 no-underline transition-all hover:bg-muted/50 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:flex-row sm:items-start"
     >
       <div className="relative aspect-video w-full shrink-0 overflow-hidden rounded-lg bg-muted/40 sm:w-44 md:w-52">
         {item.thumbnailUrl ? (
@@ -102,10 +92,10 @@ function TechBlogCard({ item }: { item: TechBlogPost }) {
       href={item.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex h-full gap-3 rounded-xl border border-border/60 bg-background/70 p-3 no-underline transition-all hover:bg-muted/50 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      className="flex gap-3 rounded-xl border border-border/60 bg-background/70 p-3 no-underline transition-all hover:bg-muted/50 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:items-center"
     >
       {item.thumbnailUrl ? (
-        <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-muted/40">
+        <div className="h-14 w-24 shrink-0 overflow-hidden rounded-lg bg-muted/40 sm:h-16 sm:w-28">
           <img
             src={item.thumbnailUrl}
             alt=""
@@ -178,21 +168,11 @@ export default function D2HelloWorldWidget() {
           표시할 콘텐츠가 없습니다
         </p>
       ) : (
-        <div className="mt-3 grid gap-3 lg:grid-cols-12">
-          {feed.d2Video ? (
-            <div className="lg:col-span-5">
-              <D2VideoCard item={feed.d2Video} />
-            </div>
-          ) : null}
-          {feed.blogs.length > 0 ? (
-            <div
-              className={`grid gap-2 sm:grid-cols-2 ${feed.d2Video ? 'lg:col-span-7' : 'lg:col-span-12 lg:grid-cols-4'}`}
-            >
-              {feed.blogs.map((item) => (
-                <TechBlogCard key={`${item.source}-${item.url}`} item={item} />
-              ))}
-            </div>
-          ) : null}
+        <div className="mt-3 space-y-2">
+          {feed.d2Video ? <D2VideoCard item={feed.d2Video} /> : null}
+          {feed.blogs.map((item) => (
+            <TechBlogCard key={`${item.source}-${item.url}`} item={item} />
+          ))}
         </div>
       )}
     </BentoCard>

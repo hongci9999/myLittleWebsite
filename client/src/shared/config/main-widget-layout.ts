@@ -52,6 +52,6 @@ export const MAIN_WIDGET_LAYOUT: WidgetLayoutItem[] = [
     id: 'd2-helloworld-latest',
     enabled: true,
     gridClassName:
-      'min-w-0 md:col-start-1 md:row-start-11 md:col-span-12 md:row-span-6',
+      'min-w-0 md:col-start-1 md:row-start-11 md:col-span-12 md:row-span-10',
   },
 ]

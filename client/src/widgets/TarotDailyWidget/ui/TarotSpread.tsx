@@ -2,6 +2,7 @@ import { BentoCard } from '@/shared/ui/BentoCard'
 import type { TarotReadingResponse } from '@/shared/api/tarot'
 import type { TarotDrawCard } from '../model/types'
 import { TarotCard } from './TarotCard'
+import { TarotImageNotice } from './TarotImageNotice'
 import './tarot.css'
 
 type TarotSpreadProps = {
@@ -31,10 +32,11 @@ export function TarotSpread({
 }: TarotSpreadProps) {
   return (
     <BentoCard className="h-full p-4 sm:p-5">
-      <div>
+      <div className="flex items-start justify-between gap-2">
         <h2 className="text-sm font-medium tracking-tight text-muted-foreground">
           오늘의 타로 운세
         </h2>
+        <TarotImageNotice />
       </div>
 
       <div className="relative mt-3">

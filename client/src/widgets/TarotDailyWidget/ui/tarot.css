@@ -155,3 +155,71 @@
     box-shadow: 0 8px 24px rgb(251 191 36 / 0.26);
   }
 }
+
+.tarot-image-notice-button {
+  display: inline-flex;
+  height: 1.65rem;
+  width: 1.65rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  background: color-mix(in oklab, var(--card) 92%, var(--muted) 8%);
+  color: var(--muted-foreground);
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.tarot-image-notice-button:hover,
+.tarot-image-notice-button:focus-visible {
+  border-color: color-mix(in oklab, var(--primary) 55%, transparent);
+  background: color-mix(in oklab, var(--card) 86%, var(--primary) 14%);
+  color: var(--foreground);
+  box-shadow: 0 2px 8px color-mix(in oklab, var(--primary) 16%, transparent);
+  outline: none;
+}
+
+.tarot-image-notice-panel {
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.45rem);
+  z-index: 30;
+  width: min(17.5rem, calc(100vw - 2.5rem));
+  border-radius: 0.75rem;
+  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  background: var(--card);
+  padding: 0.7rem 0.8rem;
+  font-size: 0.68rem;
+  line-height: 1.55;
+  color: var(--muted-foreground);
+  box-shadow:
+    0 10px 24px rgb(15 23 42 / 0.14),
+    0 0 0 1px color-mix(in oklab, var(--border) 35%, transparent) inset;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-0.25rem);
+  transition:
+    opacity 160ms ease,
+    visibility 160ms ease,
+    transform 160ms ease;
+}
+
+.tarot-image-notice-panel-copyright {
+  margin-top: 0.55rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid color-mix(in oklab, var(--border) 55%, transparent);
+  font-size: 0.64rem;
+  line-height: 1.5;
+  color: color-mix(in oklab, var(--muted-foreground) 92%, var(--foreground) 8%);
+}
+
+.tarot-image-notice:hover .tarot-image-notice-panel,
+.tarot-image-notice:focus-within .tarot-image-notice-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}

@@ -70,7 +70,39 @@ type Props = {
   project: ProjectItem
 }
 
+function PdfIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6" />
+      <path d="M10 13H8" />
+      <path d="M16 13h-2" />
+      <path d="M10 17H8" />
+      <path d="M13 17h3" />
+    </svg>
+  )
+}
+
 function ProjectScreenshots({ project }: Props) {
+  if (project.pdfUrl && !project.screenshotSrc) {
+    return (
+      <div className="flex aspect-[16/10] items-center justify-center border-b border-border/50 bg-muted/25 text-primary">
+        <PdfIcon />
+      </div>
+    )
+  }
+
   const shots =
     project.screenshots && project.screenshots.length > 0
       ? project.screenshots
@@ -178,6 +210,18 @@ export default function ProjectCard({ project }: Props) {
               className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm font-medium text-foreground no-underline transition-colors hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               라이브 데모
+              <ExternalLinkIcon />
+            </a>
+          ) : null}
+          {project.pdfUrl ? (
+            <a
+              href={project.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm font-medium text-foreground no-underline transition-colors hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <PdfIcon />
+              발표자료
               <ExternalLinkIcon />
             </a>
           ) : null}

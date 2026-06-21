@@ -16,6 +16,8 @@ export type ProjectItem = {
   demoUrl?: string
   /** LinkedIn 등 구축 후기·소개 글 (선택) */
   postUrl?: string
+  /** 발표·세미나 PDF (선택) */
+  pdfUrl?: string
   screenshotSrc: string
   screenshotAlt: string
   /** 있으면 카드 상단에 갤러리로 표시 (없으면 screenshotSrc 단일 이미지) */
@@ -26,10 +28,40 @@ export type ProjectItem = {
 
 /**
  * `/project` 목록 — 화면 **위→아래 = 포트폴리오 등록 최신순**.
- * HICC가 맨 처음 등록한 프로젝트이므로 배열 맨 아래.
+ * HICC 박람회·Docker 세미나가 맨 아래(초기 등록).
  * 스크린샷: `client/public/projects/`
  */
 export const PROJECT_ITEMS: ProjectItem[] = [
+  {
+    id: 'cheese-storm',
+    title: 'CHEESESTORM',
+    summary:
+      '치지직 스트리머들의 히어로즈 오브 더 스톰(HotS) 내전 전적 기록·티어리스트 서비스. 자동·큐레이션 티어, 경기 입력(OCR), 스트리머 프로필, 치지직 OAuth 권한 체계. 이벤트 기간 집중 운영에 맞춰 Firestore reads를 stats/current·서버 캐시로 최적화한 Next.js 앱.',
+    meta: '개인 사이드 · Next.js · Firebase · 치지직 OAuth',
+    repoUrl: 'https://github.com/hongci9999/CheeseStorm-website',
+    demoUrl: 'https://cheese-storm-website.vercel.app',
+    screenshotSrc: '/projects/cheese-storm/home.png',
+    screenshotAlt: 'CHEESESTORM 홈 — 티어리스트와 스트리머 순위',
+    screenshots: [
+      {
+        src: '/projects/cheese-storm/home.png',
+        alt: 'CHEESESTORM 홈 — 자동·큐레이션 티어리스트',
+        caption: '홈',
+      },
+      {
+        src: '/projects/cheese-storm/matches.png',
+        alt: 'CHEESESTORM 경기 기록 타임라인',
+        caption: '경기 기록',
+      },
+      {
+        src: '/projects/cheese-storm/streamers.png',
+        alt: 'CHEESESTORM 스트리머 목록·프로필',
+        caption: '스트리머',
+      },
+    ],
+    tags: ['Next.js', 'TypeScript', 'Firebase', 'Chzzk', 'HotS'],
+    status: 'active',
+  },
   {
     id: 'llm-wiki',
     title: 'LLM Wiki',
@@ -138,19 +170,6 @@ export const PROJECT_ITEMS: ProjectItem[] = [
     tags: ['React', 'Vite', 'JavaScript'],
     status: 'archived',
   },
-]
-
-export type ProjectPresentation = {
-  id: string
-  title: string
-  summary: string
-  meta?: string
-  pdfUrl: string
-  tags?: string[]
-}
-
-/** `/project` 하단 — 세미나·발표 자료 (프로젝트 카드와 별도) */
-export const PROJECT_PRESENTATIONS: ProjectPresentation[] = [
   {
     id: 'hicc-docker-seminar',
     title: 'Docker 세미나',
@@ -158,6 +177,9 @@ export const PROJECT_PRESENTATIONS: ProjectPresentation[] = [
       'HICC 동아리 세미나에서 Docker에 대해 발표했습니다. 컨테이너가 무엇인지, 왜 쓰는지, 이미지·컨테이너를 다루는 기본 흐름을 동아리원들에게 소개한 슬라이드입니다.',
     meta: 'HICC 동아리 · 세미나',
     pdfUrl: '/projects/hicc-docker-seminar/docker-hicc.pdf',
+    screenshotSrc: '',
+    screenshotAlt: 'Docker 세미나 발표 자료',
     tags: ['Docker', 'HICC', '세미나'],
+    status: 'archived',
   },
 ]

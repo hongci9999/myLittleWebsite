@@ -37,7 +37,7 @@ function normalizeTags(raw: unknown): string[] {
   return []
 }
 
-/** GET /api/game-dev-resources?q=&kind= */
+/** GET /api/game-dev-resources?q=&kind=&category= */
 router.get('/', async (req, res) => {
   try {
     const q = req.query.q ? String(req.query.q) : undefined
@@ -52,7 +52,9 @@ router.get('/', async (req, res) => {
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Failed to list resources'
     if (msg === 'Supabase not configured') {
-      res.status(503).json({ error: 'Database not configured' })
+      res.status(503).json({
+        error: 'Database not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY in server/.env',
+      })
       return
     }
     console.error('[game-dev] list error:', err)
@@ -98,6 +100,10 @@ router.post('/', requireAuth, async (req, res) => {
       return
     }
     const cat = body.category?.trim()
+    if (cat && !isCategory(cat)) {
+      res.status(400).json({ error: 'Invalid category' })
+      return
+    }
     const category: Category = cat && isCategory(cat) ? cat : 'graphics'
     const item = await createGameDevResource(authToken, {
       title,

@@ -42,6 +42,8 @@
 
 | 날짜                                                                  | 제목                                         |
 | --------------------------------------------------------------------- | -------------------------------------------- |
+| [2026-06-22](./plans/2026-06-22-game-dev-library.md)                  | 게임 개발 도서관 구현 계획 (형식·분야 2축)   |
+| [2026-06-22](./plans/2026-06-22-game-dev-resources-migration.sql)     | 게임 개발 도서관 테이블 마이그레이션         |
 | [2026-05-04](./plans/2026-05-04-aws-first-deploy-walkthrough.md)     | 첫 AWS 배포 실습 가이드 (단계별)            |
 | [2026-05-19](./plans/2026-05-19-api-subdomain-migration.md)         | API `api.` 서브도메인 이전 + 프론트 커스텀 도메인 |
 | [2026-05-19](./plans/2026-05-19-site-domain-settings.sql)           | 메인 도메인 만료 알림 DB(`site_domain_settings`) |
@@ -83,6 +85,7 @@
 - [0021 유튜브 AI 요약 — 자막·메타데이터 통합 경로](./decisions/0021-youtube-transcript-unified-ai-path.md)
 - [0022 칼럼 스크랩 Obsidian 유튜브 클립 붙여넣기](./decisions/0022-obsidian-youtube-clip-column-scrap.md)
 - [0023 랜딩 페이지 셰이더 오로라 배경 (three.js)](./decisions/0023-animated-shader-landing.md)
+- [0024 게임 개발 도서관 (형식·분야 2축 분류)](./decisions/0024-game-dev-library.md)
 
 ### 학습 내용
 

@@ -6,6 +6,8 @@
 
 ### Added
 
+- **게임 개발 도서관 (`/game-dev`)** — 게임 개발 정보(방법론·이론·기술·프로그램)를 유튜브·기사·Git 저장소·블로그글·문서 등 **형식**(`mediaKind`)으로 모으고, 그래픽스·물리·AI·게임플레이·엔진·네트워크·사운드·최적화·기타 **분야**(`category`, 1급 필드)별 **좌측 네비**로 구분. 목록(형식 필터·검색)·상세·관리자 CRUD. 새 테이블 `game_dev_resources`(마이그레이션 `plans/2026-06-22-game-dev-resources-migration.sql`), API `/api/game-dev-resources`, 상단 네비·우측 바로가기 노출. AI 채우기는 Phase 2로 보류. [ADR 0024](decisions/0024-game-dev-library.md).
+
 - **랜딩 페이지 — 셰이더 오로라 배경** — 진입 페이지(`/`)에 three.js GLSL 프래그먼트 셰이더 오로라 배경(`components/ui/animated-shader-background.tsx`) 적용. 슬로건·가치 칩(Reason-First / Always Extensible / For Humans)·시작하기 CTA를 글래스모피즘으로 재구성. `three`·`lucide-react` 의존성 추가, `index.css` `float` 키프레임. [ADR 0023](decisions/0023-animated-shader-landing.md).
 
 - **프로젝트 페이지 — 치지직 그라데이션 스토어 링크** — [Chrome 웹 스토어](https://chromewebstore.google.com/detail/ooipicoekgocpjfpakkffnibmpkdhjla) 게시 링크(`demoUrl`) 추가.

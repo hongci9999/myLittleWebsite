@@ -33,7 +33,10 @@ export function OverflowMenu({ items, className, align = 'end' }: Props) {
     <div
       ref={rootRef}
       className={cn('relative', className)}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}
       onKeyDown={(e) => e.stopPropagation()}
     >
       <Button
@@ -44,7 +47,11 @@ export function OverflowMenu({ items, className, align = 'end' }: Props) {
         aria-expanded={open}
         aria-haspopup="menu"
         aria-label="항목 메뉴"
-        onClick={() => setOpen((o) => !o)}
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          setOpen((o) => !o)
+        }}
       >
         <span className="sr-only">메뉴</span>
         <svg
@@ -77,7 +84,9 @@ export function OverflowMenu({ items, className, align = 'end' }: Props) {
                   'flex w-full px-3 py-2 text-left text-sm transition-colors hover:bg-muted/70',
                   item.destructive && 'text-destructive hover:bg-destructive/10'
                 )}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
                   setOpen(false)
                   item.onSelect()
                 }}

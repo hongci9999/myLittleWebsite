@@ -197,41 +197,41 @@ export default function GameDevLibraryPage() {
             ) : (
               <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((s) => (
-                  <div key={s.id} className="relative min-h-0 min-w-0">
+                  <div
+                    key={s.id}
+                    className="group relative min-h-0 min-w-0 flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+                  >
+                    {token ? (
+                      <div className="absolute right-2 top-2 z-20">
+                        <OverflowMenu
+                          items={[
+                            {
+                              label: '편집',
+                              onSelect: () => openGameDevAdmin({ slug: s.slug }),
+                            },
+                            {
+                              label: '삭제',
+                              destructive: true,
+                              onSelect: () => {
+                                void (async () => {
+                                  if (!token || !confirm('삭제할까요?')) return
+                                  const ok = await deleteGameDevResource(token, s.id)
+                                  if (ok) {
+                                    void load()
+                                    notifyGameDevChanged()
+                                  }
+                                })()
+                              },
+                            },
+                          ]}
+                        />
+                      </div>
+                    ) : null}
                     <Link
                       to={`/game-dev/${encodeURIComponent(s.slug)}`}
-                      className="group relative flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border/60 bg-card text-inherit no-underline shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+                      className="flex min-h-0 min-w-0 flex-1 flex-col text-inherit no-underline"
                       aria-label={`${s.title} 상세로 이동`}
                     >
-                      {token ? (
-                        <div
-                          className="absolute right-2 top-2 z-20"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <OverflowMenu
-                            items={[
-                              {
-                                label: '편집',
-                                onSelect: () => openGameDevAdmin({ slug: s.slug }),
-                              },
-                              {
-                                label: '삭제',
-                                destructive: true,
-                                onSelect: () => {
-                                  void (async () => {
-                                    if (!token || !confirm('삭제할까요?')) return
-                                    const ok = await deleteGameDevResource(token, s.id)
-                                    if (ok) {
-                                      void load()
-                                      notifyGameDevChanged()
-                                    }
-                                  })()
-                                },
-                              },
-                            ]}
-                          />
-                        </div>
-                      ) : null}
                       <article className="flex min-h-[16rem] flex-1 flex-col overflow-hidden">
                         <div
                           className={cn(

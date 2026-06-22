@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS game_dev_resources (
   title TEXT NOT NULL,
   url TEXT NOT NULL,
   media_kind TEXT NOT NULL CHECK (
-    media_kind IN ('youtube', 'article', 'repo', 'blog', 'doc', 'book', 'other')
+    media_kind IN ('youtube', 'article', 'repo', 'blog', 'doc', 'book', 'asset', 'other')
   ),
   category TEXT NOT NULL DEFAULT 'graphics' CHECK (
     category IN ('graphics', 'physics', 'ai', 'gameplay', 'engine', 'network', 'sound', 'optimization', 'etc')

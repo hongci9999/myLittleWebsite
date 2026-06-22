@@ -141,6 +141,22 @@ export function inferGameDevMediaKindFromUrl(urlStr: string): MediaKind {
     ) {
       return 'book'
     }
+    if (
+      host === 'itch.io' ||
+      host.endsWith('.itch.io') ||
+      host === 'sketchfab.com' ||
+      host === 'opengameart.org' ||
+      host === 'kenney.nl' ||
+      host === 'assetstore.unity3d.com' ||
+      host === 'fab.com' ||
+      host === 'polyhaven.com' ||
+      host === 'ambientcg.com' ||
+      host === 'cgtrader.com' ||
+      host === 'turbosquid.com' ||
+      host.includes('unrealengine.com') && path.includes('/marketplace')
+    ) {
+      return 'asset'
+    }
     if (host === 'x.com' || host === 'twitter.com') {
       return 'other'
     }

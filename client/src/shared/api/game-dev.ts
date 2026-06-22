@@ -4,7 +4,7 @@ import {
 } from '@/shared/lib/ai-provider-preference'
 import { apiUrl } from '@/shared/api/base'
 
-export type MediaKind = 'youtube' | 'article' | 'repo' | 'blog' | 'doc' | 'book' | 'other'
+export type MediaKind = 'youtube' | 'article' | 'repo' | 'blog' | 'doc' | 'book' | 'asset' | 'other'
 
 export type Category =
   | 'graphics' | 'physics' | 'ai' | 'gameplay' | 'engine'
@@ -211,6 +211,7 @@ export const MEDIA_KIND_OPTIONS: { value: MediaKind; label: string }[] = [
   { value: 'blog', label: '블로그글' },
   { value: 'doc', label: '문서 / 공식' },
   { value: 'book', label: '책 / 강의' },
+  { value: 'asset', label: '에셋' },
   { value: 'other', label: '기타' },
 ]
 

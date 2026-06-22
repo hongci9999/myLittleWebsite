@@ -118,7 +118,7 @@ ${urlKindLine}
 - title: 목록용 40자 이내
 - summary: 한 줄 80자 이내
 - bodyMd: 마크다운. ## 요약 → 2~4문장, ## 상세 정리 → 글머리 6개 이상 또는 ### 3개 이상. 합계 **800자 이상** 목표. 줄바꿈은 JSON에서 \\n
-- mediaKind: youtube | article | repo | blog | doc | book | other 중 **정확히 하나**
+- mediaKind: youtube | article | repo | blog | doc | book | asset | other 중 **정확히 하나**
 - category: graphics | physics | ai | gameplay | engine | network | sound | optimization | etc 중 **정확히 하나** (콘텐츠 주제 분야)
 - tags: 키워드 최대 5개 (예: Unity, ECS, 렌더링, GDC)
 

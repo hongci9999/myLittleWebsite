@@ -7,6 +7,7 @@ export type MediaKind =
   | 'blog'
   | 'doc'
   | 'book'
+  | 'asset'
   | 'other'
 
 export type Category =
@@ -36,7 +37,7 @@ export interface GameDevResource {
   updatedAt: string
 }
 
-const KINDS: MediaKind[] = ['youtube', 'article', 'repo', 'blog', 'doc', 'book', 'other']
+const KINDS: MediaKind[] = ['youtube', 'article', 'repo', 'blog', 'doc', 'book', 'asset', 'other']
 
 export function isMediaKind(s: string): s is MediaKind {
   return KINDS.includes(s as MediaKind)

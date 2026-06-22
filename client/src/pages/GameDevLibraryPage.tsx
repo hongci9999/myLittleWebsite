@@ -32,6 +32,7 @@ const mediaKindAccent: Record<MediaKind, string> = {
   blog: 'from-violet-500/25 to-fuchsia-500/20',
   doc: 'from-cyan-500/25 to-blue-500/15',
   book: 'from-amber-500/25 to-orange-500/15',
+  asset: 'from-pink-500/25 to-fuchsia-500/20',
   other: 'from-muted/50 to-muted/30',
 }
 

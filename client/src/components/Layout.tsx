@@ -3,6 +3,7 @@ import Header from '@/widgets/Header'
 import Hero from '@/widgets/Hero'
 import RightSidebar from '@/widgets/RightSidebar'
 import { ScrapAdminDialogProvider } from '@/shared/context/ScrapAdminDialogContext'
+import { GameDevAdminDialogProvider } from '@/shared/context/GameDevAdminDialogContext'
 
 export default function Layout() {
   const { pathname } = useLocation()
@@ -10,6 +11,7 @@ export default function Layout() {
 
   return (
     <ScrapAdminDialogProvider>
+    <GameDevAdminDialogProvider>
     <div className="min-h-svh flex flex-col bg-background text-foreground font-sans">
       <Header />
       {/* 히어로: 메인 페이지에서만 전체 너비, 사이드바 침범 없음 */}
@@ -25,6 +27,7 @@ export default function Layout() {
         <RightSidebar />
       </div>
     </div>
+    </GameDevAdminDialogProvider>
     </ScrapAdminDialogProvider>
   )
 }

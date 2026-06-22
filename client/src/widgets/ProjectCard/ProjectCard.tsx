@@ -66,6 +66,14 @@ function isLinkedInUrl(url: string) {
   }
 }
 
+function isChromeStoreUrl(url: string) {
+  try {
+    return new URL(url).hostname.includes('chromewebstore.google.com')
+  } catch {
+    return false
+  }
+}
+
 type Props = {
   project: ProjectItem
 }
@@ -168,9 +176,26 @@ export default function ProjectCard({ project }: Props) {
             </span>
           ))}
         </div>
-        <h2 className="mt-2 text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-          {project.title}
-        </h2>
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            {project.title}
+          </h2>
+          {project.demoUrl ? (
+            <a
+              href={project.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary no-underline transition-colors hover:border-primary/60 hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/70" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+              </span>
+              {isChromeStoreUrl(project.demoUrl) ? '스토어' : '라이브'}
+              <ExternalLinkIcon />
+            </a>
+          ) : null}
+        </div>
         {project.meta ? (
           <p className="mt-1 text-xs text-muted-foreground">{project.meta}</p>
         ) : null}
@@ -199,17 +224,6 @@ export default function ProjectCard({ project }: Props) {
             >
               {isLinkedInUrl(project.postUrl) ? <LinkedInIcon /> : null}
               구축 후기
-              <ExternalLinkIcon />
-            </a>
-          ) : null}
-          {project.demoUrl ? (
-            <a
-              href={project.demoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-background px-4 py-2.5 text-sm font-medium text-foreground no-underline transition-colors hover:border-primary/40 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              라이브 데모
               <ExternalLinkIcon />
             </a>
           ) : null}

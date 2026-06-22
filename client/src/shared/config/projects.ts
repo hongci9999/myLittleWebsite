@@ -96,6 +96,8 @@ export const PROJECT_ITEMS: ProjectItem[] = [
       '치지직(chzzk.naver.com)에서 내가 구독 중인 채널 이름에 그라데이션을 표시하는 Chrome 확장. 설치·브라우저 시작 시 Chzzk 구독 API로 목록을 가져와 로컬 저장 후, 팔로잉·라이브 카드 등 채널명이 보이는 곳에 일괄 적용한다.',
     meta: '개인 사이드 · Chrome Extension (Manifest V3)',
     repoUrl: 'https://github.com/hongci9999/chzzk-subscribe-gradation',
+    demoUrl:
+      'https://chromewebstore.google.com/detail/%EC%B9%98%EC%A7%80%EC%A7%81-%EA%B5%AC%EB%8F%85%EC%B1%84%EB%84%90-%EA%B7%B8%EB%9D%BC%EB%8D%B0%EC%9D%B4%EC%85%98/ooipicoekgocpjfpakkffnibmpkdhjla',
     screenshotSrc: '/projects/chzzk-subscribe-gradation/live.png',
     screenshotAlt:
       '치지직 팔로잉 채널·라이브 카드에서 구독 채널명 그라데이션 적용',

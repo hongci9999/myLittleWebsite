@@ -82,6 +82,7 @@
 - [0020 목록 페이지 뒤로가기·링크 네비게이션 상태](./decisions/0020-list-page-navigation-state.md)
 - [0021 유튜브 AI 요약 — 자막·메타데이터 통합 경로](./decisions/0021-youtube-transcript-unified-ai-path.md)
 - [0022 칼럼 스크랩 Obsidian 유튜브 클립 붙여넣기](./decisions/0022-obsidian-youtube-clip-column-scrap.md)
+- [0023 랜딩 페이지 셰이더 오로라 배경 (three.js)](./decisions/0023-animated-shader-landing.md)
 
 ### 학습 내용
 

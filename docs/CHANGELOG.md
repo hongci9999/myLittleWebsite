@@ -6,6 +6,10 @@
 
 ### Added
 
+- **랜딩 페이지 — 셰이더 오로라 배경** — 진입 페이지(`/`)에 three.js GLSL 프래그먼트 셰이더 오로라 배경(`components/ui/animated-shader-background.tsx`) 적용. 슬로건·가치 칩(Reason-First / Always Extensible / For Humans)·시작하기 CTA를 글래스모피즘으로 재구성. `three`·`lucide-react` 의존성 추가, `index.css` `float` 키프레임. [ADR 0023](decisions/0023-animated-shader-landing.md).
+
+- **프로젝트 페이지 — 치지직 그라데이션 스토어 링크** — [Chrome 웹 스토어](https://chromewebstore.google.com/detail/ooipicoekgocpjfpakkffnibmpkdhjla) 게시 링크(`demoUrl`) 추가.
+
 - **프로젝트 페이지 — CHEESESTORM** — 치지직 스트리머 HotS 내전 전적·티어리스트 [CheeseStorm-website](https://github.com/hongci9999/CheeseStorm-website), [Vercel 데모](https://cheese-storm-website.vercel.app), 스크린샷 `client/public/projects/cheese-storm/`.
 
 - **타로 — 카드 이미지 출처·저작권 안내** — 오늘의 타로 운세 위젯 우상단 정보 버튼. 호버·포커스 시 이영도 『눈물을 마시는새』 아트북 『한계선을 넘다』 AI 변형 출처와 비영리·수익 창출 금지 안내.
@@ -24,6 +28,8 @@
 - **프로젝트 페이지 (`/project`)** — 2열 그리드, 포트폴리오 등록 최신순(맨 아래가 최초 등록). **HICC 동아리 박람회**([hicc-expo-project](https://github.com/hongci9999/hicc-expo-project)), **치지직 구독채널 그라데이션**([chzzk-subscribe-gradation](https://github.com/hongci9999/chzzk-subscribe-gradation)) 카드·스크린샷(`client/public/projects/`).
 
 ### Changed
+
+- **프로젝트 카드 — 라이브/스토어 버튼 위치** — `demoUrl` 버튼을 하단 버튼 행에서 **제목 옆**으로 이동, ping 도트로 강조. Chrome 웹 스토어 링크면 「스토어」, 그 외 「라이브」 라벨(`isChromeStoreUrl`).
 
 - **프로젝트 페이지 — 세미나 통합** — 「발표 · 세미나」 별도 섹션 제거. Docker 세미나를 프로젝트 그리드 맨 아래 카드로 이동, `ProjectCard`에 `pdfUrl`·PDF 커버 지원. `ProjectPresentationCard` 삭제.
 

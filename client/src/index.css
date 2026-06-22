@@ -219,6 +219,21 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* 둥둥 떠다니는 모션: 랜딩 등에서 요소 강조용 */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
 code,
 pre,
 kbd {

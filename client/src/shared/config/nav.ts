@@ -5,6 +5,7 @@ export const MAIN_NAV = [
     label: 'AI 개발 도구',
     description: '도구 스크랩 검색·목록',
   },
+  { path: '/game-dev', label: '게임 개발 도서관', description: '게임 개발 정보 모음' },
   { path: '/portfolio', label: '포트폴리오', description: '작업물과 경력' },
   { path: '/learning', label: '학습 기록', description: '기술 학습 정리' },
   { path: '/links', label: '유용한 링크', description: '모아둔 도구 사이트' },

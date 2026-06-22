@@ -6,6 +6,9 @@ function shortcutIsActive(pathname: string, path: string): boolean {
   if (path === '/ai-dev-tools') {
     return pathname === '/ai-dev-tools' || pathname.startsWith('/ai-dev-tools/')
   }
+  if (path === '/game-dev') {
+    return pathname === '/game-dev' || pathname.startsWith('/game-dev/')
+  }
   if (path === '/column') {
     return pathname === '/column' || pathname.startsWith('/column/')
   }

@@ -20,6 +20,8 @@ import AdminLoginPage from './pages/AdminLoginPage'
 import ImpeccableSkillsIntroPage from './pages/ImpeccableSkillsIntroPage'
 import AiDevToolsPage from './pages/AiDevToolsPage'
 import AiDevToolScrapDetailPage from './pages/AiDevToolScrapDetailPage'
+import GameDevLibraryPage from './pages/GameDevLibraryPage'
+import GameDevResourceDetailPage from './pages/GameDevResourceDetailPage'
 import AiSmokeTestPage from './pages/AiSmokeTestPage'
 
 function App() {
@@ -36,6 +38,8 @@ function App() {
           <Route path="about" element={<AboutPage />} />
           <Route path="ai-dev-tools" element={<AiDevToolsPage />} />
           <Route path="ai-dev-tools/:slug" element={<AiDevToolScrapDetailPage />} />
+          <Route path="game-dev" element={<GameDevLibraryPage />} />
+          <Route path="game-dev/:slug" element={<GameDevResourceDetailPage />} />
           <Route path="patch-notes" element={<PatchNotesPage />} />
           <Route path="portfolio" element={<PortfolioPage />} />
           <Route path="learning" element={<LearningPage />} />

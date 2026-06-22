@@ -5,6 +5,7 @@ import learningRoutes from './routes/learning.js'
 import authRoutes from './routes/auth.js'
 import linksRoutes from './routes/links.js'
 import aiScrapsRoutes from './routes/ai-scraps.js'
+import gameDevResourcesRoutes from './routes/game-dev-resources.js'
 import columnScrapsRoutes from './routes/column-scraps.js'
 import aiSmokeRoutes from './routes/ai-smoke.js'
 import geekNewsRoutes from './routes/geeknews.js'
@@ -69,6 +70,7 @@ app.use('/api/geeknews', geekNewsRoutes)
 app.use('/api/d2-helloworld', d2HelloWorldRoutes)
 app.use('/api/tech-interview', techInterviewRoutes)
 app.use('/api/ai-scraps', aiScrapsRoutes)
+app.use('/api/game-dev-resources', gameDevResourcesRoutes)
 app.use('/api/column-scraps', columnScrapsRoutes)
 app.use('/api/learning', learningRoutes)
 app.use('/api/tarot', tarotRoutes)

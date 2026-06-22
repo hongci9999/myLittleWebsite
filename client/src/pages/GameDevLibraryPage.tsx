@@ -249,12 +249,19 @@ export default function GameDevLibraryPage() {
                             />
                           ) : null}
                           <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
-                          <span className="absolute left-3 top-3 rounded-full bg-background/90 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary backdrop-blur-sm">
-                            {categoryLabel(s.category)}
-                          </span>
-                          <span className="absolute right-3 top-3 rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm">
-                            {mediaKindLabel(s.mediaKind)}
-                          </span>
+                          <div
+                            className={cn(
+                              'absolute left-3 top-3 z-10 flex max-w-[calc(100%-0.75rem)] flex-wrap gap-1.5',
+                              token && 'max-w-[calc(100%-3.5rem)]'
+                            )}
+                          >
+                            <span className="rounded-full bg-background/90 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary backdrop-blur-sm">
+                              {categoryLabel(s.category)}
+                            </span>
+                            <span className="rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm">
+                              {mediaKindLabel(s.mediaKind)}
+                            </span>
+                          </div>
                           <h2
                             className={cn(
                               'absolute bottom-3 left-3 line-clamp-2 text-base font-bold leading-snug text-foreground drop-shadow-sm',

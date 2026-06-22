@@ -1,5 +1,6 @@
 import type { ColumnSourceKind } from '../../db/queries/column-scraps.js'
 import type { SourceKind as AiScrapSourceKind } from '../../db/queries/ai-scraps.js'
+import type { Category, MediaKind } from '../../db/queries/game-dev-resources.js'
 
 export interface AiSuggestResult {
   title: string
@@ -25,6 +26,17 @@ export interface AiToolScrapAiFillResult {
   summary: string
   bodyMd: string
   sourceKind: AiScrapSourceKind
+  tags: string[]
+  rawResponse?: string
+}
+
+export interface GameDevResourceAiFillResult {
+  title: string
+  summary: string
+  bodyMd: string
+  mediaKind: MediaKind
+  category: Category
+  coverImageUrl: string | null
   tags: string[]
   rawResponse?: string
 }

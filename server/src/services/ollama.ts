@@ -4,9 +4,11 @@
  */
 export {
   suggestAiToolScrapFromUrl,
+  suggestGameDevResourceFromUrl,
   suggestColumnScrapFromUrl,
   suggestLinkMeta,
   type AiSuggestResult,
   type AiToolScrapAiFillResult,
+  type GameDevResourceAiFillResult,
   type ColumnScrapAiFillResult,
 } from './ai/index.js'

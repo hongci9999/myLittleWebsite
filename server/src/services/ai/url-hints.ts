@@ -1,5 +1,6 @@
 import type { ColumnSourceKind } from '../../db/queries/column-scraps.js'
 import type { SourceKind as AiScrapSourceKind } from '../../db/queries/ai-scraps.js'
+import type { MediaKind } from '../../db/queries/game-dev-resources.js'
 
 /** URL 호스트·경로로 칼럼 스크랩 형식 힌트 (AI·폴백용) */
 export function inferColumnSourceKindFromUrl(urlStr: string): ColumnSourceKind {
@@ -97,6 +98,53 @@ export function inferAiToolSourceKindFromUrl(urlStr: string): AiScrapSourceKind 
       return 'doc'
     }
     return 'doc'
+  } catch {
+    return 'other'
+  }
+}
+
+/** URL 힌트 → 게임 개발 도서관 mediaKind */
+export function inferGameDevMediaKindFromUrl(urlStr: string): MediaKind {
+  try {
+    const u = new URL(urlStr.trim())
+    const host = u.hostname.replace(/^www\./, '').toLowerCase()
+    const path = u.pathname.toLowerCase()
+
+    if (host === 'youtu.be' || host === 'youtube.com' || host.endsWith('.youtube.com')) {
+      return 'youtube'
+    }
+    if (host === 'github.com' || host === 'gitlab.com' || host === 'codeberg.org') {
+      return 'repo'
+    }
+    if (
+      host.includes('velog') ||
+      host === 'medium.com' ||
+      host.includes('tistory') ||
+      host.includes('brunch.co.kr') ||
+      host.includes('dev.to')
+    ) {
+      return 'blog'
+    }
+    if (
+      host.includes('docs.') ||
+      host.includes('documentation') ||
+      host === 'docs.unity3d.com' ||
+      host.endsWith('.readthedocs.io')
+    ) {
+      return 'doc'
+    }
+    if (
+      host.includes('amazon.') ||
+      host.includes('goodreads.com') ||
+      host.includes('oreilly.com') ||
+      path.includes('/book')
+    ) {
+      return 'book'
+    }
+    if (host === 'x.com' || host === 'twitter.com') {
+      return 'other'
+    }
+    return 'article'
   } catch {
     return 'other'
   }

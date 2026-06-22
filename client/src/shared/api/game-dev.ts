@@ -1,3 +1,7 @@
+import {
+  aiProviderBodyField,
+  aiProviderRequestHeaders,
+} from '@/shared/lib/ai-provider-preference'
 import { apiUrl } from '@/shared/api/base'
 
 export type MediaKind = 'youtube' | 'article' | 'repo' | 'blog' | 'doc' | 'book' | 'other'
@@ -15,6 +19,7 @@ export interface GameDevResource {
   category: Category
   summary: string | null
   bodyMd: string | null
+  coverImageUrl: string | null
   extraLinks: { label: string; url: string }[]
   tags: string[]
   createdAt: string
@@ -23,8 +28,49 @@ export interface GameDevResource {
 
 const API_BASE = apiUrl('/api/game-dev-resources')
 
+function mapResource(raw: Record<string, unknown>): GameDevResource {
+  const tagsRaw = raw.tags
+  const tags = Array.isArray(tagsRaw)
+    ? tagsRaw.filter((t): t is string => typeof t === 'string').map((t) => t.trim()).filter(Boolean)
+    : []
+  const extraRaw = raw.extraLinks ?? raw.extra_links
+  const extraLinks = Array.isArray(extraRaw)
+    ? extraRaw
+        .filter((x): x is { label?: unknown; url?: unknown } => x != null && typeof x === 'object')
+        .map((x) => ({
+          label: typeof x.label === 'string' && x.label.trim() ? x.label.trim() : '링크',
+          url: typeof x.url === 'string' ? x.url.trim() : '',
+        }))
+        .filter((x) => x.url)
+    : []
+  return {
+    id: String(raw.id),
+    slug: String(raw.slug),
+    title: String(raw.title),
+    url: String(raw.url),
+    mediaKind: raw.mediaKind as MediaKind,
+    category: raw.category as Category,
+    summary: raw.summary != null ? String(raw.summary) : null,
+    bodyMd: raw.bodyMd != null ? String(raw.bodyMd) : null,
+    coverImageUrl:
+      raw.coverImageUrl != null && String(raw.coverImageUrl).trim()
+        ? String(raw.coverImageUrl)
+        : raw.cover_image_url != null && String(raw.cover_image_url).trim()
+          ? String(raw.cover_image_url)
+          : null,
+    extraLinks,
+    tags,
+    createdAt: String(raw.createdAt ?? raw.created_at ?? ''),
+    updatedAt: String(raw.updatedAt ?? raw.updated_at ?? ''),
+  }
+}
+
 function authHeaders(token: string): HeadersInit {
-  return { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+  return {
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    ...aiProviderRequestHeaders(),
+  }
 }
 
 export async function fetchGameDevResources(params?: {
@@ -40,7 +86,8 @@ export async function fetchGameDevResources(params?: {
   const res = await fetch(`${API_BASE}${qs ? `?${qs}` : ''}`)
   if (res.status === 503) throw new Error('SERVICE_UNAVAILABLE')
   if (!res.ok) throw new Error('Failed to load resources')
-  return res.json() as Promise<GameDevResource[]>
+  const data = (await res.json()) as Record<string, unknown>[]
+  return data.map((row) => mapResource(row))
 }
 
 export async function fetchGameDevResourceBySlug(slug: string): Promise<GameDevResource | null> {
@@ -48,14 +95,15 @@ export async function fetchGameDevResourceBySlug(slug: string): Promise<GameDevR
   if (res.status === 404) return null
   if (res.status === 503) throw new Error('SERVICE_UNAVAILABLE')
   if (!res.ok) throw new Error('Failed to load resource')
-  return res.json() as Promise<GameDevResource>
+  const row = (await res.json()) as Record<string, unknown>
+  return mapResource(row)
 }
 
 export async function createGameDevResource(
   token: string,
   body: {
     title: string; url: string; mediaKind: MediaKind; category: Category
-    summary?: string | null; bodyMd?: string | null
+    summary?: string | null; bodyMd?: string | null; coverImageUrl?: string | null
     extraLinks?: { label: string; url: string }[]; tags?: string[]; slug?: string | null
   }
 ): Promise<GameDevResource> {
@@ -64,7 +112,7 @@ export async function createGameDevResource(
     const err = await res.json().catch(() => ({}))
     throw new Error((err as { error?: string }).error || 'Create failed')
   }
-  return res.json() as Promise<GameDevResource>
+  return mapResource((await res.json()) as Record<string, unknown>)
 }
 
 export async function updateGameDevResource(
@@ -72,7 +120,7 @@ export async function updateGameDevResource(
   id: string,
   body: Partial<{
     title: string; url: string; mediaKind: MediaKind; category: Category
-    summary: string | null; bodyMd: string | null
+    summary: string | null; bodyMd: string | null; coverImageUrl: string | null
     extraLinks: { label: string; url: string }[]; tags: string[]; slug: string | null
   }>
 ): Promise<GameDevResource> {
@@ -83,12 +131,77 @@ export async function updateGameDevResource(
     const err = await res.json().catch(() => ({}))
     throw new Error((err as { error?: string }).error || 'Update failed')
   }
-  return res.json() as Promise<GameDevResource>
+  return mapResource((await res.json()) as Record<string, unknown>)
 }
 
 export async function deleteGameDevResource(token: string, id: string): Promise<boolean> {
   const res = await fetch(`${API_BASE}/${encodeURIComponent(id)}`, { method: 'DELETE', headers: authHeaders(token) })
   return res.ok
+}
+
+/** URL 또는 Obsidian 클립으로 제목·요약·본문·형식·분야·표지·태그 제안 */
+export interface GameDevResourceAiFill {
+  title: string
+  summary: string
+  bodyMd: string
+  mediaKind: MediaKind
+  category: Category
+  coverImageUrl: string | null
+  tags: string[]
+  rawResponse?: string
+}
+
+export async function suggestGameDevResourceAiFill(
+  token: string,
+  url: string,
+  options?: { youtubeClip?: string }
+): Promise<GameDevResourceAiFill> {
+  const body: Record<string, unknown> = { ...aiProviderBodyField() }
+  if (url.trim()) body.url = url.trim()
+  if (options?.youtubeClip?.trim()) body.youtubeClip = options.youtubeClip.trim()
+
+  const res = await fetch(`${API_BASE}/ai-fill`, {
+    method: 'POST',
+    headers: authHeaders(token),
+    body: JSON.stringify(body),
+  })
+  const errJson = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    throw new Error((errJson as { error?: string }).error || 'AI 채우기 실패')
+  }
+  const data = errJson as Record<string, unknown>
+  const tagsRaw = data.tags
+  const tags = Array.isArray(tagsRaw)
+    ? tagsRaw
+        .filter((t): t is string => typeof t === 'string')
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .slice(0, 5)
+    : []
+  const mk = data.mediaKind
+  const mediaKind: MediaKind =
+    typeof mk === 'string' && MEDIA_KIND_OPTIONS.some((o) => o.value === mk)
+      ? (mk as MediaKind)
+      : 'article'
+  const cat = data.category
+  const category: Category =
+    typeof cat === 'string' && CATEGORY_OPTIONS.some((o) => o.value === cat)
+      ? (cat as Category)
+      : 'etc'
+
+  return {
+    title: String(data.title ?? ''),
+    summary: String(data.summary ?? ''),
+    bodyMd: String(data.bodyMd ?? ''),
+    mediaKind,
+    category,
+    coverImageUrl:
+      data.coverImageUrl != null && String(data.coverImageUrl).trim()
+        ? String(data.coverImageUrl)
+        : null,
+    tags,
+    rawResponse: data.rawResponse != null ? String(data.rawResponse) : undefined,
+  }
 }
 
 export const MEDIA_KIND_OPTIONS: { value: MediaKind; label: string }[] = [

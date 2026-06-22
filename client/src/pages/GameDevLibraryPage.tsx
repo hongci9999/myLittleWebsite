@@ -25,6 +25,16 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { OverflowMenu } from '@/shared/ui/OverflowMenu'
 
+const mediaKindAccent: Record<MediaKind, string> = {
+  youtube: 'from-red-500/30 to-rose-500/15',
+  article: 'from-sky-500/25 to-cyan-500/15',
+  repo: 'from-emerald-500/25 to-teal-500/15',
+  blog: 'from-violet-500/25 to-fuchsia-500/20',
+  doc: 'from-cyan-500/25 to-blue-500/15',
+  book: 'from-amber-500/25 to-orange-500/15',
+  other: 'from-muted/50 to-muted/30',
+}
+
 export default function GameDevLibraryPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const { token } = useAuth()
@@ -166,7 +176,11 @@ export default function GameDevLibraryPage() {
               <code className="rounded bg-muted px-1 font-mono text-xs">
                 docs/plans/2026-06-22-game-dev-resources-migration.sql
               </code>
-              를 Supabase에서 실행해 주세요.
+              (및 표지 컬럼{' '}
+              <code className="rounded bg-muted px-1 font-mono text-xs">
+                docs/plans/2026-06-22-game-dev-resources-cover-image.sql
+              </code>
+              )를 Supabase에서 실행해 주세요.
             </p>
           )}
 
@@ -180,57 +194,19 @@ export default function GameDevLibraryPage() {
                   : '항목이 없거나 필터에 맞는 자료가 없습니다.'}
               </p>
             ) : (
-              <ul className="space-y-3">
+              <div className="grid auto-rows-fr gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((s) => (
-                  <li key={s.id}>
-                    <div
-                      className={cn(
-                        'group flex overflow-hidden rounded-2xl border border-border/60 bg-background/80 transition-all',
-                        'hover:border-primary/35 hover:shadow-md'
-                      )}
+                  <div key={s.id} className="relative min-h-0 min-w-0">
+                    <Link
+                      to={`/game-dev/${encodeURIComponent(s.slug)}`}
+                      className="group relative flex min-h-0 min-w-0 flex-col overflow-hidden rounded-2xl border border-border/60 bg-card text-inherit no-underline shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+                      aria-label={`${s.title} 상세로 이동`}
                     >
-                      <Link
-                        to={`/game-dev/${encodeURIComponent(s.slug)}`}
-                        className="min-w-0 flex-1 px-4 py-4 text-inherit no-underline"
-                        aria-label={`${s.title} 상세로 이동`}
-                      >
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span className="inline-flex rounded-full border border-primary/30 bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                              {categoryLabel(s.category)}
-                            </span>
-                            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                              {mediaKindLabel(s.mediaKind)}
-                            </span>
-                          </div>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(s.updatedAt).toLocaleDateString('ko-KR')}
-                          </span>
-                        </div>
-                        <h2 className="mt-1.5 text-lg font-semibold tracking-tight text-foreground group-hover:text-primary">
-                          {s.title}
-                        </h2>
-                        {s.summary ? (
-                          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                            {s.summary}
-                          </p>
-                        ) : null}
-                        <p className="mt-2 truncate font-mono text-xs text-muted-foreground">{s.url}</p>
-                        {s.tags.length > 0 ? (
-                          <div className="mt-3 flex flex-wrap gap-1.5">
-                            {s.tags.map((t) => (
-                              <span
-                                key={t}
-                                className="rounded-full border border-border/50 bg-muted/40 px-2 py-0.5 text-xs text-foreground"
-                              >
-                                {t}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
-                      </Link>
                       {token ? (
-                        <div className="flex shrink-0 items-start border-l border-border/50 px-2 py-3">
+                        <div
+                          className="absolute right-2 top-2 z-20"
+                          onClick={(e) => e.preventDefault()}
+                        >
                           <OverflowMenu
                             items={[
                               {
@@ -255,10 +231,62 @@ export default function GameDevLibraryPage() {
                           />
                         </div>
                       ) : null}
-                    </div>
-                  </li>
+                      <article className="flex min-h-[16rem] flex-1 flex-col overflow-hidden">
+                        <div
+                          className={cn(
+                            'relative aspect-[16/10] shrink-0 overflow-hidden bg-gradient-to-br',
+                            mediaKindAccent[s.mediaKind]
+                          )}
+                        >
+                          {s.coverImageUrl ? (
+                            <img
+                              src={s.coverImageUrl}
+                              alt=""
+                              className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+                              loading="lazy"
+                              referrerPolicy="no-referrer"
+                            />
+                          ) : null}
+                          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+                          <span className="absolute left-3 top-3 rounded-full bg-background/90 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary backdrop-blur-sm">
+                            {categoryLabel(s.category)}
+                          </span>
+                          <span className="absolute right-3 top-3 rounded-full bg-background/80 px-2 py-0.5 text-[10px] font-medium text-muted-foreground backdrop-blur-sm">
+                            {mediaKindLabel(s.mediaKind)}
+                          </span>
+                          <h2
+                            className={cn(
+                              'absolute bottom-3 left-3 line-clamp-2 text-base font-bold leading-snug text-foreground drop-shadow-sm',
+                              token ? 'right-12' : 'right-3'
+                            )}
+                          >
+                            {s.title}
+                          </h2>
+                        </div>
+                        <div className="flex min-h-0 flex-1 flex-col gap-2 p-4">
+                          {s.summary ? (
+                            <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                              {s.summary}
+                            </p>
+                          ) : null}
+                          {s.tags.length > 0 ? (
+                            <div className="mt-auto flex flex-wrap gap-1">
+                              {s.tags.slice(0, 5).map((t) => (
+                                <span
+                                  key={t}
+                                  className="rounded-md bg-muted/60 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground"
+                                >
+                                  {t}
+                                </span>
+                              ))}
+                            </div>
+                          ) : null}
+                        </div>
+                      </article>
+                    </Link>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </div>
         </div>

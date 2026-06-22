@@ -29,6 +29,7 @@ export interface GameDevResource {
   category: Category
   summary: string | null
   bodyMd: string | null
+  coverImageUrl: string | null
   extraLinks: { label: string; url: string }[]
   tags: string[]
   createdAt: string
@@ -76,6 +77,10 @@ function mapRow(row: Record<string, unknown>): GameDevResource {
     category: (isCategory(String(row.category)) ? row.category : 'etc') as Category,
     summary: row.summary != null ? String(row.summary) : null,
     bodyMd: row.body_md != null ? String(row.body_md) : null,
+    coverImageUrl:
+      row.cover_image_url != null && String(row.cover_image_url).trim()
+        ? String(row.cover_image_url).trim()
+        : null,
     extraLinks,
     tags,
     createdAt: row.created_at as string,
@@ -175,6 +180,7 @@ export async function createGameDevResource(
     category: Category
     summary?: string | null
     bodyMd?: string | null
+    coverImageUrl?: string | null
     extraLinks?: { label: string; url: string }[]
     tags?: string[]
     slug?: string | null
@@ -201,6 +207,7 @@ export async function createGameDevResource(
       category: input.category,
       summary: input.summary?.trim() || null,
       body_md: input.bodyMd?.trim() || null,
+      cover_image_url: input.coverImageUrl?.trim() || null,
       extra_links: input.extraLinks ?? [],
       tags: input.tags?.length ? input.tags.map((t) => t.trim()).filter(Boolean) : [],
       updated_at: new Date().toISOString(),
@@ -223,6 +230,7 @@ export async function updateGameDevResource(
     category?: Category
     summary?: string | null
     bodyMd?: string | null
+    coverImageUrl?: string | null
     extraLinks?: { label: string; url: string }[]
     tags?: string[]
     slug?: string | null
@@ -238,6 +246,9 @@ export async function updateGameDevResource(
   if (input.category != null) payload.category = input.category
   if (input.summary !== undefined) payload.summary = input.summary?.trim() || null
   if (input.bodyMd !== undefined) payload.body_md = input.bodyMd?.trim() || null
+  if (input.coverImageUrl !== undefined) {
+    payload.cover_image_url = input.coverImageUrl?.trim() || null
+  }
   if (input.extraLinks != null) payload.extra_links = input.extraLinks
   if (input.tags != null) payload.tags = input.tags.map((t) => t.trim()).filter(Boolean)
   if (input.slug !== undefined) {

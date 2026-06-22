@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS game_dev_resources (
   ),
   summary TEXT,
   body_md TEXT,
+  cover_image_url TEXT,
   extra_links JSONB NOT NULL DEFAULT '[]'::jsonb,
   tags TEXT[] NOT NULL DEFAULT '{}',
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -26,6 +27,12 @@ CREATE INDEX IF NOT EXISTS game_dev_resources_tags_gin ON game_dev_resources USI
 CREATE INDEX IF NOT EXISTS game_dev_resources_updated_idx ON game_dev_resources (updated_at DESC);
 
 ALTER TABLE game_dev_resources ENABLE ROW LEVEL SECURITY;
+
+-- 정책은 IF NOT EXISTS가 없어 재실행 시 DROP 후 생성
+DROP POLICY IF EXISTS "game_dev_resources_select_public" ON game_dev_resources;
+DROP POLICY IF EXISTS "game_dev_resources_insert_auth" ON game_dev_resources;
+DROP POLICY IF EXISTS "game_dev_resources_update_auth" ON game_dev_resources;
+DROP POLICY IF EXISTS "game_dev_resources_delete_auth" ON game_dev_resources;
 
 CREATE POLICY "game_dev_resources_select_public"
   ON game_dev_resources FOR SELECT USING (true);

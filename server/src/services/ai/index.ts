@@ -22,11 +22,13 @@ export type {
   AiSuggestResult,
   AiToolScrapAiFillResult,
   ColumnScrapAiFillResult,
+  GameDevResourceAiFillResult,
 } from './types.js'
 
 export { suggestLinkMeta } from './suggest-link-meta.js'
 export { suggestColumnScrapFromUrl } from './suggest-column-scrap.js'
 export { suggestAiToolScrapFromUrl } from './suggest-ai-tool-scrap.js'
+export { suggestGameDevResourceFromUrl } from './suggest-game-dev-resource.js'
 export {
   suggestTarotReading,
   normalizeTarotCards,

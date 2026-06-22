@@ -11,6 +11,10 @@ import {
   type MediaKind,
   type Category,
 } from '../db/queries/game-dev-resources.js'
+import { parseAiRequestPreference } from '../services/ai/index.js'
+import { suggestGameDevResourceFromUrl } from '../services/ollama.js'
+import { OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR } from '../services/parse-obsidian-youtube-clip.js'
+import { YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE } from '../services/youtube-transcript-text.js'
 
 const router = Router()
 
@@ -83,13 +87,77 @@ router.get('/by-slug/:slug', async (req, res) => {
   }
 })
 
+/** POST /api/game-dev-resources/ai-fill — URL 또는 Obsidian 클립 기준 폼 필드 제안 (인증 필요) */
+router.post('/ai-fill', requireAuth, async (req, res) => {
+  try {
+    const body = req.body as { url?: string; youtubeClip?: string }
+    const youtubeClip = body.youtubeClip?.trim()
+    const url = body.url?.trim()
+    if (!url && !youtubeClip) {
+      res.status(400).json({
+        error: '원문 URL 또는 Obsidian YouTube 클립(youtubeClip)이 필요합니다.',
+      })
+      return
+    }
+    const pref = parseAiRequestPreference(req.headers, req.body)
+    const result = await suggestGameDevResourceFromUrl(url ?? '', pref, {
+      youtubeClip,
+    })
+    res.json({
+      title: result.title,
+      summary: result.summary,
+      bodyMd: result.bodyMd,
+      mediaKind: result.mediaKind,
+      category: result.category,
+      coverImageUrl: result.coverImageUrl,
+      tags: result.tags,
+      rawResponse: result.rawResponse,
+    })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'AI fill failed'
+    if (msg === OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR) {
+      res.status(400).json({ error: msg })
+      return
+    }
+    if (msg === YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE) {
+      const pref = parseAiRequestPreference(req.headers, req.body)
+      console.error('[game-dev] ai-fill transcript required', {
+        resolvedPreference: pref,
+        headerAiProvider: req.headers['x-ai-provider'],
+        bodyAiProvider: (req.body as { aiProvider?: string })?.aiProvider,
+        url: (req.body as { url?: string })?.url?.slice(0, 120),
+      })
+      res.status(400).json({
+        error: msg,
+        resolvedPreference: pref,
+        hint: '자막이 켜진 공개 영상인지 확인하세요. 한국어·영어 자막이 없으면 AI 제안을 사용할 수 없습니다.',
+      })
+      return
+    }
+    if (msg.includes('GEMINI_API_KEY') || msg.includes('GOOGLE_AI_API_KEY')) {
+      res.status(503).json({
+        error: 'API 모드에는 서버에 GEMINI_API_KEY(또는 GOOGLE_AI_API_KEY)가 필요합니다.',
+      })
+      return
+    }
+    if (msg.includes('Ollama') || msg.includes('fetch')) {
+      res.status(503).json({
+        error: 'Ollama를 실행 중인지 확인하세요. (ollama run gemma4)',
+      })
+      return
+    }
+    console.error('[game-dev] ai-fill error:', err)
+    res.status(500).json({ error: msg })
+  }
+})
+
 /** POST /api/game-dev-resources */
 router.post('/', requireAuth, async (req, res) => {
   try {
     const { authToken } = req as AuthenticatedRequest
     const body = req.body as {
       title?: string; url?: string; mediaKind?: string; category?: string
-      summary?: string | null; bodyMd?: string | null
+      summary?: string | null; bodyMd?: string | null; coverImageUrl?: string | null
       extraLinks?: unknown; tags?: unknown; slug?: string | null
     }
     const title = body.title?.trim()
@@ -112,6 +180,7 @@ router.post('/', requireAuth, async (req, res) => {
       category,
       summary: body.summary,
       bodyMd: body.bodyMd,
+      coverImageUrl: body.coverImageUrl,
       extraLinks: normalizeExtraLinks(body.extraLinks),
       tags: normalizeTags(body.tags),
       slug: body.slug?.trim() || null,
@@ -133,7 +202,7 @@ router.patch('/:id', requireAuth, async (req, res) => {
     const { id } = req.params
     const body = req.body as {
       title?: string; url?: string; mediaKind?: string; category?: string
-      summary?: string | null; bodyMd?: string | null
+      summary?: string | null; bodyMd?: string | null; coverImageUrl?: string | null
       extraLinks?: unknown; tags?: unknown; slug?: string | null
     }
     const patch: Parameters<typeof updateGameDevResource>[2] = {}
@@ -149,6 +218,7 @@ router.patch('/:id', requireAuth, async (req, res) => {
     }
     if (body.summary !== undefined) patch.summary = body.summary
     if (body.bodyMd !== undefined) patch.bodyMd = body.bodyMd
+    if (body.coverImageUrl !== undefined) patch.coverImageUrl = body.coverImageUrl
     if (body.extraLinks !== undefined) patch.extraLinks = normalizeExtraLinks(body.extraLinks)
     if (body.tags !== undefined) patch.tags = normalizeTags(body.tags)
     if (body.slug !== undefined) patch.slug = body.slug

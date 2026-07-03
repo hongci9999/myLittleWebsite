@@ -75,6 +75,41 @@ const SECTION_SPECS = [
     },
     headerTitle: 'SQLD',
   },
+  {
+    inputDir: 'CS_면접대비',
+    outputFile: 'learning-cs-interview.ts',
+    exportName: 'csInterviewSection',
+    sectionId: 'cs-interview',
+    sectionLabel: 'CS 면접대비',
+    basePath: '/learnings/CS_면접대비',
+    nodeMeta: {
+      '00_개요': {
+        name: '개요',
+        description: '학습 가이드·문서 형식',
+      },
+      '01_운영체제': {
+        name: '운영체제',
+        description: '프로세스, 동기화, 메모리, 스케줄링',
+      },
+      '02_컴퓨터네트워크': {
+        name: '컴퓨터 네트워크',
+        description: 'TCP/IP, HTTP, DNS, CORS, CAN',
+      },
+      '03_자료구조_알고리즘': {
+        name: '자료구조 및 알고리즘',
+        description: 'DS, 정렬, 탐색, DP, 공간 인덱스',
+      },
+      '04_데이터베이스': {
+        name: '데이터베이스',
+        description: '트랜잭션, 인덱스, 정규화, 스케일링',
+      },
+      '05_파이썬_타입스크립트': {
+        name: '파이썬 & 타입스크립트',
+        description: '타입, 메모리, 비동기, 내부 동작',
+      },
+    },
+    headerTitle: 'CS 면접대비',
+  },
 ]
 
 function slugFromFilename(filename) {

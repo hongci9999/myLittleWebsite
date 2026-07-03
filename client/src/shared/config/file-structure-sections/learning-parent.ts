@@ -4,6 +4,7 @@
  */
 import { registerFileStructureParent } from '../file-structure'
 import type { FileStructureSection } from '../file-structure'
+import { csInterviewSection } from './learning-cs-interview'
 import { infoEngineerPracticalSection } from './learning-info-engineer-practical'
 import { infoEngineerSection } from './learning-info-engineer'
 import { sqldSection } from './learning-sqld'
@@ -24,5 +25,11 @@ const STUB_SECTIONS: FileStructureSection[] = [
 registerFileStructureParent({
   parentPath: '/learning',
   parentLabel: '학습 기록',
-  sections: [infoEngineerSection, infoEngineerPracticalSection, sqldSection, ...STUB_SECTIONS],
+  sections: [
+    infoEngineerSection,
+    infoEngineerPracticalSection,
+    sqldSection,
+    csInterviewSection,
+    ...STUB_SECTIONS,
+  ],
 })

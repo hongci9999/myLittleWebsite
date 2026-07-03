@@ -32,6 +32,7 @@ export const LEARNING_SECTIONS: LearningSectionConfig[] = [
     folderName: '정보처리기사_실기',
   },
   { sectionId: 'sqld', label: 'SQLD', folderName: 'SQLD' },
+  { sectionId: 'cs-interview', label: 'CS 면접대비', folderName: 'CS_면접대비' },
   { sectionId: 'big-data-analyst', label: '빅데이터분석기사', folderName: '빅데이터분석기사' },
   {
     sectionId: 'project-learning',

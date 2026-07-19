@@ -11,9 +11,15 @@ CREATE TABLE IF NOT EXISTS site_domain_settings (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- 등록일=만료 1년 전(365일 기간) → 연장 반영 시 +1년
 INSERT INTO site_domain_settings (id, registered_date, expiry_date)
-VALUES (1, '2026-05-16', '2026-08-16')
+VALUES (1, '2026-08-16', '2027-08-16')
 ON CONFLICT (id) DO NOTHING;
+
+-- 이미 잘못된 값(3개월 주기 등)이 들어간 경우 아래로 현행화:
+-- UPDATE site_domain_settings
+-- SET registered_date = '2026-08-16', expiry_date = '2027-08-16', updated_at = now()
+-- WHERE id = 1;
 
 ALTER TABLE site_domain_settings ENABLE ROW LEVEL SECURITY;
 

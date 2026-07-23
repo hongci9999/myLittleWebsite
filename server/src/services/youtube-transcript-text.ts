@@ -11,17 +11,22 @@ type FetchTranscriptFn = (
  * - `require('youtube-transcript')` / `import('youtube-transcript')` 는 CJS 메인 때문에 Node에서 깨질 수 있음.
  * - `require.resolve('youtube-transcript/dist/...')` 는 package `exports` 에 없으면 `ERR_PACKAGE_PATH_NOT_EXPORTED` (EB 빌치).
  * → `youtube-transcript/package.json` 까지만 resolve 후 디스크 상 `dist/*.esm.js` 를 file URL 로 import.
+ *
+ * 주의: resolve/import는 반드시 **지연 실행**해야 한다. 모듈 로드 시점에 실행하면
+ * (Vercel 서버리스 등) 번들에 youtube-transcript가 없을 때 앱 전체 로드가 실패한다.
  */
-const require = createRequire(import.meta.url)
-const youtubeTranscriptEsmUrl = pathToFileURL(
-  join(dirname(require.resolve('youtube-transcript/package.json')), 'dist', 'youtube-transcript.esm.js')
-).href
+function resolveYoutubeTranscriptEsmUrl(): string {
+  const require = createRequire(import.meta.url)
+  return pathToFileURL(
+    join(dirname(require.resolve('youtube-transcript/package.json')), 'dist', 'youtube-transcript.esm.js')
+  ).href
+}
 
 let fetchTranscriptPromise: Promise<FetchTranscriptFn> | null = null
 
 async function getFetchTranscript(): Promise<FetchTranscriptFn> {
   if (!fetchTranscriptPromise) {
-    fetchTranscriptPromise = import(youtubeTranscriptEsmUrl).then(
+    fetchTranscriptPromise = import(resolveYoutubeTranscriptEsmUrl()).then(
       (m) => m.fetchTranscript as FetchTranscriptFn
     )
   }

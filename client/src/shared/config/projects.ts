@@ -108,12 +108,12 @@ export const PROJECT_ITEMS: ProjectItem[] = [
     id: 'my-little-website',
     title: 'myLittleWebsite',
     summary:
-      '자료 정리·포트폴리오·기술 학습을 위한 개인 웹사이트. React + Express + Supabase, AWS(S3·CloudFront·Elastic Beanstalk)로 프로덕션 배포.',
+      '자료 정리·포트폴리오·기술 학습을 위한 개인 웹사이트. React + Express + Supabase, Vercel 단일 호스팅(프론트 + API 서버리스, same-origin)으로 배포.',
     repoUrl: 'https://github.com/hongci9999/myLittleWebsite',
-    demoUrl: 'https://d4a3hmxzy83r1.cloudfront.net/main',
+    demoUrl: 'https://mylittlewebsite.p-e.kr/main',
     screenshotSrc: '/projects/my-little-website.png',
     screenshotAlt: 'myLittleWebsite 메인 페이지 스크린샷',
-    tags: ['React', 'TypeScript', 'Express', 'Supabase', 'AWS'],
+    tags: ['React', 'TypeScript', 'Express', 'Supabase', 'Vercel'],
     status: 'active',
   },
   {

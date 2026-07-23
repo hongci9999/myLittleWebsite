@@ -22,9 +22,10 @@
 
 name: Deploy to AWS
 
+# [DEPRECATED] Vercel로 이전(ADR 0025). Vercel Git 연동이 main 푸시 배포를 담당한다.
+# 자동 push 트리거는 제거(이중 배포 방지). AWS 롤백/비상용으로 수동 실행만 남겨 둔다.
+# AWS 자원 정리(EB·CloudFront·S3·ACM·IAM) 완료 후 이 파일을 삭제할 것.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

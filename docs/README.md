@@ -86,6 +86,7 @@
 - [0022 칼럼 스크랩 Obsidian 유튜브 클립 붙여넣기](./decisions/0022-obsidian-youtube-clip-column-scrap.md)
 - [0023 랜딩 페이지 셰이더 오로라 배경 (three.js)](./decisions/0023-animated-shader-landing.md)
 - [0024 게임 개발 도서관 (형식·분야 2축 분류)](./decisions/0024-game-dev-library.md)
+- [0025 Vercel 단일 호스팅으로 이전 (0018 대체)](./decisions/0025-vercel-single-hosting.md)
 
 ### 학습 내용
 

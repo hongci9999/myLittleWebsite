@@ -4,6 +4,10 @@
 
 ## 2026년 7월
 
+### Changed
+
+- **배포 인프라 — AWS에서 Vercel로 이전** — 프론트(S3+CloudFront)·API(Elastic Beanstalk) 분리 호스팅을 **Vercel 단일 호스팅**으로 통합. Express 앱을 `server/src/app.ts`로 분리(export), 로컬 dev는 `server/src/index.ts`가 `listen`, Vercel은 `api/index.ts`가 서버리스 함수로 감싼다. `vercel.json`(build·output·`/api` rewrite·SPA fallback·`maxDuration`·`includeFiles: docs/learnings/**`) 추가. 프론트·API가 **same-origin**이 되어 CORS·커스텀 API 도메인·`VITE_API_BASE_URL`이 불필요해짐. `project-learning` 섹션 FS 의존은 `includeFiles` + 프로젝트 루트 cwd 폴백([`learning-sections.ts`](../server/src/config/learning-sections.ts))으로 해결. `deploy-aws.yml` 자동 트리거 제거(수동 전용). 자기소개 카드 데모 URL·태그를 Vercel로 갱신. [ADR 0025](decisions/0025-vercel-single-hosting.md), [walkthrough](plans/2026-07-23-vercel-migration.md).
+
 ### Fixed
 
 - **도메인 만료 알림 — 연장 반영이 +3개월로 계산되던 문제** — 등록/만료 기본값이 3개월 주기(`2026-05-16`~`2026-08-16`)로 남아 있어 「오늘 연장 반영」이 오늘+92일(2026-10-19)로 계산됐다. 실제 도메인(만료 `2027-08-16`, 1년 주기)에 맞춰 등록일을 만료 1년 전(`2026-08-16`)으로 두어 등록~만료 기간을 365일로 정정. client·server config 및 seed SQL 동기화, 기존 DB 행은 `UPDATE`로 현행화. [error-fixes 0007](error-fixes/0007-domain-renew-period-mismatch.md).

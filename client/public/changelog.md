@@ -2,6 +2,12 @@
 
 월별 변경 내역. 항목 분류(Added / Changed / Fixed 등)는 [Keep a Changelog](https://keepachangelog.com/) 관례를 따릅니다.
 
+## 2026년 7월
+
+### Fixed
+
+- **도메인 만료 알림 — 연장 반영이 +3개월로 계산되던 문제** — 등록/만료 기본값이 3개월 주기(`2026-05-16`~`2026-08-16`)로 남아 있어 「오늘 연장 반영」이 오늘+92일(2026-10-19)로 계산됐다. 실제 도메인(만료 `2027-08-16`, 1년 주기)에 맞춰 등록일을 만료 1년 전(`2026-08-16`)으로 두어 등록~만료 기간을 365일로 정정. client·server config 및 seed SQL 동기화, 기존 DB 행은 `UPDATE`로 현행화. [error-fixes 0007](error-fixes/0007-domain-renew-period-mismatch.md).
+
 ## 2026년 6월
 
 ### Added

@@ -2,13 +2,27 @@
  * 학습 기록 섹션 정의 (동적 폴더 스캔용)
  * 새 섹션 추가: 폴더 생성 후 여기에 등록
  */
+import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+/**
+ * 프로젝트 루트 해석.
+ * 로컬(tsx/컴파일)은 소스 파일 기준 상위 3단계가 레포 루트다.
+ * Vercel 서버리스 번들에서는 `__dirname`이 번들 경로라 이 기준이 깨지므로,
+ * `docs/learnings`가 존재하지 않으면 함수 실행 cwd(배포 루트)로 폴백한다.
+ * (docs/learnings는 vercel.json functions.includeFiles로 배포 루트에 포함됨)
+ */
+function resolveProjectRoot(): string {
+  const fromSource = path.join(__dirname, '..', '..', '..')
+  if (fs.existsSync(path.join(fromSource, 'docs', 'learnings'))) return fromSource
+  return process.cwd()
+}
+
 /** learnings 루트 경로 (client/public/learnings) */
-const projectRoot = path.join(__dirname, '..', '..', '..')
+const projectRoot = resolveProjectRoot()
 export const LEARNINGS_ROOT =
   process.env.LEARNINGS_ROOT ?? path.join(projectRoot, 'client', 'public', 'learnings')
 

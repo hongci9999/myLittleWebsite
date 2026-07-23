@@ -1,7 +1,7 @@
 # 이 사이트에 대해
 
 > **한 줄 요약**: 자료 정리, 포트폴리오, 기술 학습을 위해 만들고 **만들면서 기록하는** 개인 웹사이트입니다.  
-> **마지막 갱신**: 2026-05-25 (AWS 배포 절 추가)
+> **마지막 갱신**: 2026-07-23 (AWS → Vercel 이전)
 
 ## 목적
 
@@ -56,7 +56,7 @@
 | UI              | shadcn + CSS 변수 테마                      | 일관된 컴포넌트·테마 전환              | `0005-design-system-shadcn`, `0008-color-themes` |
 | 색 테마         | blue-orange / amber-cyan / **midnight**     | 플레이그라운드에서 고른 메인·서브·다크 | `0007-design-playground-result`                  |
 | 학습 폴더       | `public/learnings` + 빌드 시 config         | 마크다운 추가만으로 섹션 확장          | `0010`, `0011`                                   |
-| 프로덕션 호스팅 | S3+CloudFront / EB 분리                     | HTTPS·배포 주기·CORS를 명확히          | `0018-aws-production-split-hosting`              |
+| 프로덕션 호스팅 | Vercel 단일 (프론트 + API 서버리스)         | same-origin으로 CORS·배포 복잡도 제거  | `0025-vercel-single-hosting` (0018 대체)        |
 
 ## 기술 스택
 
@@ -130,7 +130,13 @@ flowchart LR
   S --> AI[AI providers]
 ```
 
-## 프로덕션 배포 (AWS)
+## 프로덕션 배포
+
+> **2026-07 이전 진행 중 — AWS에서 Vercel로**  
+> 프론트(S3+CloudFront)·API(Elastic Beanstalk) 분리 호스팅을 **Vercel 단일 호스팅**(프론트 + API 서버리스, same-origin `/api`)으로 통합합니다. CORS·커스텀 API 도메인·`VITE_API_BASE_URL`이 불필요해집니다. 결정·이유: ADR `docs/decisions/0025-vercel-single-hosting.md`, 실행 절차: `docs/plans/2026-07-23-vercel-migration.md`.  
+> 아래 AWS 절은 이전 완료 전까지의 **기존 구조 기록**으로 남겨 둡니다.
+
+## (이전 기록) 프로덕션 배포 (AWS)
 
 **2026-05-16**에 첫 end-to-end 배포에 성공했습니다. 프론트(정적)와 API(Node)는 **호스트·배포 주기가 달라** AWS에서 분리해 두었습니다. (상세 회고: 저장소 `docs/learnings/0034-aws-first-production-deploy-success.md`, ADR `docs/decisions/0018-aws-production-split-hosting.md`)
 

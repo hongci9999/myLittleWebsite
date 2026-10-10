@@ -17,6 +17,7 @@ export function ExtraLinkWithEmbed({ label, url }: Props) {
           <iframe
             title={iframeTitle}
             src={youtubeNocookieEmbedSrc(ytId)}
+            loading="lazy"
             className="size-full"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen

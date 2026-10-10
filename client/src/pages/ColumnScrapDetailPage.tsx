@@ -123,6 +123,7 @@ export default function ColumnScrapDetailPage() {
               <iframe
                 title={s.title}
                 src={youtubeNocookieEmbedSrc(ytId)}
+                loading="lazy"
                 className="size-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen

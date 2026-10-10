@@ -8,6 +8,7 @@ import {
 } from '@/shared/api/game-dev'
 import { useAuth } from '@/shared/context/AuthContext'
 import { useGameDevAdmin } from '@/shared/context/GameDevAdminDialogContext'
+import { parseYoutubeVideoId, youtubeNocookieEmbedSrc } from '@/shared/lib/youtube'
 import { ExtraLinkWithEmbed } from '@/shared/ui/ExtraLinkWithEmbed'
 import { MarkdownWithMath } from '@/shared/ui/MarkdownWithMath'
 import { Button } from '@/components/ui/button'
@@ -85,6 +86,7 @@ export default function GameDevResourceDetailPage() {
   }
 
   const s = scrap
+  const ytId = s.mediaKind === 'youtube' ? parseYoutubeVideoId(s.url) : null
 
   return (
     <div className="mx-auto max-w-3xl px-5 pb-14 pt-6 sm:px-8 md:px-10 md:pb-20 md:pt-8">
@@ -122,6 +124,19 @@ export default function GameDevResourceDetailPage() {
 
       {s.summary ? (
         <p className="mt-3 text-lg leading-relaxed text-muted-foreground">{s.summary}</p>
+      ) : null}
+
+      {ytId ? (
+        <div className="mt-5 aspect-video w-full overflow-hidden rounded-xl border border-border/60 bg-muted/30 shadow-sm">
+          <iframe
+            title={s.title}
+            src={youtubeNocookieEmbedSrc(ytId)}
+            loading="lazy"
+            className="size-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
+        </div>
       ) : null}
 
       <div className="mt-5">

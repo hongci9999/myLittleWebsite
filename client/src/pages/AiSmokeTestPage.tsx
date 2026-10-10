@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { apiUrl } from '@/shared/api/base'
+import { useAuth } from '@/shared/context/AuthContext'
 
 type FetchBlock = {
   name: string
@@ -48,6 +49,45 @@ async function fetchJsonBlock(
 export default function AiSmokeTestPage() {
   const [running, setRunning] = useState(false)
   const [blocks, setBlocks] = useState<FetchBlock[] | null>(null)
+  const { token } = useAuth()
+  const [ytUrl, setYtUrl] = useState('')
+  const [ytRunning, setYtRunning] = useState(false)
+  const [ytBlock, setYtBlock] = useState<FetchBlock | null>(null)
+
+  /** 서버 자막 fetch 없이 Gemini가 YouTube URL을 직접 분석하는지 확인 (임시) */
+  async function runGeminiYoutube(e: React.FormEvent) {
+    e.preventDefault()
+    if (!token) return
+    setYtRunning(true)
+    setYtBlock(null)
+    const url = apiUrl('/api/ai-smoke/gemini-youtube')
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ url: ytUrl }),
+      })
+      const text = await res.text()
+      let body: unknown
+      try {
+        body = JSON.parse(text)
+      } catch {
+        body = { raw: text.slice(0, 2000) }
+      }
+      const ok = res.ok && (body as { ok?: boolean })?.ok === true
+      setYtBlock({ name: 'Gemini YouTube 직접 분석', url, ok, status: res.status, body })
+    } catch (err) {
+      setYtBlock({
+        name: 'Gemini YouTube 직접 분석',
+        url,
+        ok: false,
+        status: 0,
+        body: { error: err instanceof Error ? err.message : String(err) },
+      })
+    } finally {
+      setYtRunning(false)
+    }
+  }
 
   const run = useCallback(async () => {
     setRunning(true)
@@ -77,9 +117,32 @@ export default function AiSmokeTestPage() {
         </Button>
       </div>
 
-      {blocks && (
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold tracking-tight">Gemini YouTube 직접 분석</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          서버 자막 fetch 없이 Gemini가 영상 URL을 직접 분석하는지 확인합니다. (Gemini 비용 발생 · 로그인 필요)
+        </p>
+        {token ? (
+          <form onSubmit={runGeminiYoutube} className="mt-3 flex gap-2">
+            <input
+              value={ytUrl}
+              onChange={(e) => setYtUrl(e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=..."
+              required
+              className="min-w-0 flex-1 rounded-md border border-border/60 bg-background px-3 py-2 text-sm"
+            />
+            <Button type="submit" disabled={ytRunning}>
+              {ytRunning ? '분석 중…' : '분석'}
+            </Button>
+          </form>
+        ) : (
+          <p className="mt-3 text-sm text-destructive">로그인 후 사용할 수 있습니다.</p>
+        )}
+      </div>
+
+      {(ytBlock || blocks) && (
         <div className="grid gap-4 md:grid-cols-1">
-          {blocks.map((b) => (
+          {[...(ytBlock ? [ytBlock] : []), ...(blocks ?? [])].map((b) => (
             <Card
               key={b.name}
               className="border-border/60 shadow-sm"

@@ -3,14 +3,10 @@
   "buildCommand": "npm install --no-save @rollup/rollup-linux-x64-gnu@$(node -p \"require('rollup/package.json').version\") && npm run build -w client",
   "outputDirectory": "client/dist",
   "rewrites": [
-    { "source": "/api/yt-transcript-test", "destination": "/api/yt-transcript-test" },
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "functions": {
-    "api/yt-transcript-test.py": {
-      "excludeFiles": "{node_modules,client,server,docs,scripts,.omc}/**"
-    },
     "api/index.ts": {
       "maxDuration": 60,
       "includeFiles": "docs/learnings/**"

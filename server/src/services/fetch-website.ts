@@ -10,6 +10,7 @@ import {
   type YoutubeContentBundle,
 } from './youtube-content.js'
 import { parseYoutubeVideoId, tryFetchYoutubeTranscriptPlain } from './youtube-transcript-text.js'
+import { fetchYoutubeGeminiDigest } from './ai/youtube-ai-path.js'
 
 export interface WebsiteContent {
   url: string
@@ -145,6 +146,27 @@ function websiteContentFromYoutubeTranscriptOnly(
   }
 }
 
+/** 자막 fetch 실패 시 Gemini가 영상을 직접 보고 만든 텍스트로 AI 입력 구성 */
+function websiteContentFromYoutubeGeminiDigest(
+  pageUrl: string,
+  videoId: string,
+  digest: string
+): WebsiteContent {
+  const title = digest.match(/^제목:\s*(.+)$/m)?.[1]?.trim() || 'YouTube 동영상'
+  return {
+    url: pageUrl,
+    title,
+    metaDescription: '',
+    bodyText: digest,
+    fullText: `동영상 내용 (자막 대신 Gemini가 영상을 직접 보고 정리) — 요약·본문 작성의 주요 근거:
+
+${digest}`,
+    faviconUrl: 'https://www.youtube.com/favicon.ico',
+    ogImageUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+    youtubeMissingTranscript: false,
+  }
+}
+
 /**
  * URL fetch 후 HTML에서 title, meta description, 본문 텍스트 추출.
  * YouTube는 HTML에 본문이 거의 없어 **자막(transcript)** 이 있으면 그것을 본문으로 넣는다.
@@ -161,6 +183,11 @@ export async function fetchWebsiteContent(url: string): Promise<WebsiteContent |
   }
 
   const ytTranscript = ytId ? await tryFetchYoutubeTranscriptPlain(trimmed) : null
+
+  if (ytId && !ytTranscript) {
+    const digest = await fetchYoutubeGeminiDigest(trimmed)
+    if (digest) return websiteContentFromYoutubeGeminiDigest(trimmed, ytId, digest)
+  }
 
   try {
     const res = await fetch(trimmed, {

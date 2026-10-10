@@ -2,6 +2,12 @@
 
 월별 변경 내역. 항목 분류(Added / Changed / Fixed 등)는 [Keep a Changelog](https://keepachangelog.com/) 관례를 따릅니다.
 
+## 2026년 10월
+
+### Changed
+
+- **유튜브 AI 채우기 — 자막 fetch 실패 시 Gemini 영상 직접 분석 폴백** — 배포 서버(Vercel) IP에서 유튜브 자막이 막혀 자막 있는 영상도 AI 채우기가 실패하던 문제. 자막을 못 받으면 Gemini가 영상 URL을 직접 보고 자막 대체 텍스트를 만들어 기존 섹션별 AI 정리를 그대로 탄다(Obsidian 클립 붙여넣기 불필요). `maxDuration` 60→300. 게임 개발 도서관 상세에 유튜브 원문 임베드, iframe lazy 로딩. [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md).
+
 ## 2026년 7월
 
 ### Changed

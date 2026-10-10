@@ -87,6 +87,8 @@
 - [0023 랜딩 페이지 셰이더 오로라 배경 (three.js)](./decisions/0023-animated-shader-landing.md)
 - [0024 게임 개발 도서관 (형식·분야 2축 분류)](./decisions/0024-game-dev-library.md)
 - [0025 Vercel 단일 호스팅으로 이전 (0018 대체)](./decisions/0025-vercel-single-hosting.md)
+- [0026 유튜브 자막 fetch 실패 시 Gemini 영상 직접 분석 폴백](./decisions/0026-youtube-gemini-digest-fallback.md)
+- [0027 유튜브 링크 일괄 등록 로컬 스크립트](./decisions/0027-bulk-youtube-import-script.md)
 
 ### 학습 내용
 
@@ -130,6 +132,7 @@
 | [0035](./learnings/0035-vite-src-asset-import-meta-url.md) | Vite src 내부 이미지·import.meta.url | 프론트, 도구, 배포, 개발방법론 |
 | [0036](./learnings/0036-youtube-content-bundle-transcript.md) | YouTube 메타·자막 통합 추출 | ai, 백엔드, 도구 |
 | [0037](./learnings/0037-obsidian-youtube-clip-column-scrap.md) | Obsidian 유튜브 클립·배포 AI 요약 | ai, 백엔드, 프론트, 도구 |
+| [0038](./learnings/0038-youtube-cloud-ip-block.md) | 클라우드 IP 유튜브 자막 차단·우회 | ai, 백엔드, 배포, 도구 |
 
 ### 에러 픽스
 

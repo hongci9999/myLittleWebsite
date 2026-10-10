@@ -2,7 +2,22 @@
 
 월별 변경 내역. 항목 분류(Added / Changed / Fixed 등)는 [Keep a Changelog](https://keepachangelog.com/) 관례를 따릅니다.
 
+## 2026년 10월
+
+### Added
+
+- **유튜브 링크 일괄 등록 스크립트** — `npm run bulk-youtube -w server -- prepare <links.txt>` → 미리보기 JSON 검토 → `save`. 중복 확인(세 섹션 메인·추가 링크), AI 섹션 분류, 섹션별 AI 채우기, GitHub 레포 추가 링크. AI 개발 도구 영상은 도구 레포·공식 사이트를 메인 링크로, 영상은 「소개 영상」 추가 링크. [ADR 0027](decisions/0027-bulk-youtube-import-script.md).
+- **Gemini YouTube 직접 분석 점검** — `/ai-smoke-test`에 입력칸, `POST /api/ai-smoke/gemini-youtube`(로그인 필요).
+
+### Changed
+
+- **유튜브 AI 채우기 — 자막 fetch 실패 시 Gemini 영상 직접 분석 폴백** — 배포 서버(Vercel) IP에서 유튜브 자막이 막혀 자막 있는 영상도 AI 채우기가 실패하던 문제. 자막을 못 받으면 Gemini가 영상 URL을 직접 보고 자막 대체 텍스트를 만들어 기존 섹션별 AI 정리를 그대로 탄다(Obsidian 클립 붙여넣기 불필요). `maxDuration` 60→300. 게임 개발 도서관 상세에 유튜브 원문 임베드, iframe lazy 로딩. [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md).
+
 ## 2026년 7월
+
+### Changed
+
+- **배포 인프라 — AWS에서 Vercel로 이전** — 프론트(S3+CloudFront)·API(Elastic Beanstalk) 분리 호스팅을 **Vercel 단일 호스팅**으로 통합. Express 앱을 `server/src/app.ts`로 분리(export), 로컬 dev는 `server/src/index.ts`가 `listen`, Vercel은 `api/index.ts`가 서버리스 함수로 감싼다. `vercel.json`(build·output·`/api` rewrite·SPA fallback·`maxDuration`·`includeFiles: docs/learnings/**`) 추가. 프론트·API가 **same-origin**이 되어 CORS·커스텀 API 도메인·`VITE_API_BASE_URL`이 불필요해짐. `project-learning` 섹션 FS 의존은 `includeFiles` + 프로젝트 루트 cwd 폴백([`learning-sections.ts`](../server/src/config/learning-sections.ts))으로 해결. `deploy-aws.yml` 자동 트리거 제거(수동 전용). 자기소개 카드 데모 URL·태그를 Vercel로 갱신. [ADR 0025](decisions/0025-vercel-single-hosting.md), [walkthrough](plans/2026-07-23-vercel-migration.md).
 
 ### Fixed
 

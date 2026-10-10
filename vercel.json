@@ -8,6 +8,9 @@
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
   "functions": {
+    "api/yt-transcript-test.py": {
+      "excludeFiles": "{node_modules,client,server,docs,scripts,.omc}/**"
+    },
     "api/index.ts": {
       "maxDuration": 60,
       "includeFiles": "docs/learnings/**"

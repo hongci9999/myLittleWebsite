@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>YT 자막 테스트</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 0 auto; padding: 24px 16px; }
+  form { display: flex; gap: 8px; }
+  input { flex: 1; min-width: 0; padding: 8px; font-size: 16px; }
+  button { padding: 8px 16px; font-size: 16px; }
+  pre { white-space: pre-wrap; word-break: break-all; padding: 12px; border-radius: 8px; background: rgba(127,127,127,.15); }
+  .ok { color: #16a34a; } .fail { color: #dc2626; }
+</style>
+</head>
+<body>
+<h1>YouTube 자막 테스트 (Vercel · youtube-transcript-api)</h1>
+<p>유튜브 URL 또는 영상 ID 입력 → 배포 서버(Python 함수)가 자막을 받는지 확인.</p>
+<form id="f">
+  <input id="u" placeholder="https://www.youtube.com/watch?v=..." required />
+  <button>테스트</button>
+</form>
+<h2 id="s"></h2>
+<pre id="o"></pre>
+<script>
+  // 임시 테스트 페이지 — 확인 끝나면 api/yt-transcript-test.py 와 함께 삭제
+  function videoId(s) {
+    s = s.trim()
+    const m = s.match(/(?:v=|youtu\.be\/|shorts\/|embed\/|live\/)([\w-]{6,})/)
+    return m ? m[1] : s
+  }
+  document.getElementById('f').onsubmit = async (e) => {
+    e.preventDefault()
+    const s = document.getElementById('s'), o = document.getElementById('o')
+    s.textContent = '요청 중…'; s.className = ''; o.textContent = ''
+    const t0 = performance.now()
+    try {
+      const r = await fetch('/api/yt-transcript-test?v=' + encodeURIComponent(videoId(document.getElementById('u').value)))
+      const text = await r.text()
+      let j; try { j = JSON.parse(text) } catch { j = { ok: false, httpStatus: r.status, raw: text.slice(0, 2000) } }
+      const ms = Math.round(performance.now() - t0)
+      s.textContent = (j.ok ? '✅ 성공' : '❌ 실패 — ' + (j.errorType || 'HTTP ' + r.status)) + ` (${ms}ms)`
+      s.className = j.ok ? 'ok' : 'fail'
+      o.textContent = JSON.stringify(j, null, 2)
+    } catch (err) {
+      s.textContent = '❌ 네트워크 오류'; s.className = 'fail'; o.textContent = String(err)
+    }
+  }
+</script>
+</body>
+</html>

@@ -4,6 +4,7 @@
  *   1) 미리보기:  npm run bulk-youtube -w server -- prepare <links.txt> [--local]
  *      → 링크마다 중복 확인 · 섹션 분류 · AI 채우기 · GitHub 레포 찾기 → <links>.preview.json
  *   2) 검토:      preview.json 에서 include / section / url / data 수정
+ *                 (url을 고치면 data를 지우고 `refill <links.preview.json>` → 그 항목만 AI로 다시 채움)
  *   3) 저장:      npm run bulk-youtube -w server -- save <links.preview.json>
  *      → 사이트 관리자 계정으로 로그인(server/.env 의 BULK_EMAIL / BULK_PASSWORD, 없으면 터미널에서 입력) 후 저장.
  *        저장된 항목은 savedSlug 기록 → 재실행 시 건너뜀.
@@ -378,6 +379,30 @@ async function prepare(linksPath: string, pref: AiRequestPreference) {
   console.log('검토 후: npm run bulk-youtube -w server -- save ' + outPath)
 }
 
+/** 검토 중 url을 직접 고친 항목(include: true, data 삭제)만 AI로 다시 채움 */
+async function refill(previewPath: string, pref: AiRequestPreference) {
+  const entries = JSON.parse(readFileSync(previewPath, 'utf8')) as PreviewEntry[]
+  const saved = await loadSavedLinks()
+  for (const e of entries.filter((x) => x.include && !x.data && !x.savedSlug)) {
+    const dup = saved.get(linkKey(e.url))
+    if (dup) {
+      Object.assign(e, { include: false, duplicateOf: dup, error: undefined })
+      console.log(`⤳ 이미 저장됨: ${e.url} — ${dup}`)
+      continue
+    }
+    try {
+      const data = await fill(e.section, e.url, pref)
+      const extraLinks = e.url === e.videoUrl ? [] : [{ label: '소개 영상', url: e.videoUrl }]
+      Object.assign(e, { data: { ...data, extraLinks }, error: undefined, check: undefined })
+      console.log(`✓ ${data.title} — ${e.url}`)
+    } catch (err) {
+      e.error = err instanceof Error ? err.message : String(err)
+      console.log(`✗ ${e.url} — ${e.error}`)
+    }
+    writeFileSync(previewPath, JSON.stringify(entries, null, 2))
+  }
+}
+
 /** 터미널 입력 (hidden=true면 입력 내용을 * 로 가림) */
 function ask(question: string, hidden = false): Promise<string> {
   return new Promise((resolve) => {
@@ -457,8 +482,9 @@ const [cmd, file, ...flags] = process.argv.slice(2)
 const pref: AiRequestPreference = flags.includes('--local') ? 'local' : 'api'
 ;(async () => {
   if (cmd === 'prepare' && file) await prepare(file, pref)
+  else if (cmd === 'refill' && file) await refill(file, pref)
   else if (cmd === 'save' && file) await save(file)
-  else console.log('사용법: prepare <links.txt> [--local]  |  save <links.preview.json>')
+  else console.log('사용법: prepare <links.txt> [--local]  |  refill <links.preview.json> [--local]  |  save <links.preview.json>')
 })().catch((e) => {
   console.error(e instanceof Error ? e.message : e)
   process.exit(1)

@@ -1,6 +1,6 @@
 # MCP 연결 가이드
 
-이 사이트에 모아 둔 자료(AI 개발 도구, 칼럼, 게임 개발 자료)와 포트폴리오를 **내가 쓰는 AI(Claude, Cursor 등)가 직접 읽게** 하는 MCP 서버입니다. 연결해 두면 AI가 답할 때 이 사이트 자료를 근거로 쓰고 출처 링크를 달아 줍니다.
+이 사이트에 모아 둔 자료(AI 개발 도구, 칼럼, 게임 개발 자료, 유용한 링크)와 포트폴리오를 **내가 쓰는 AI(Claude, Cursor 등)가 직접 읽게** 하는 MCP 서버입니다. 연결해 두면 AI가 답할 때 이 사이트 자료를 근거로 쓰고 출처 링크를 달아 줍니다.
 
 ```
 https://my-little-website-client-self.vercel.app/api/mcp
@@ -73,7 +73,7 @@ claude mcp add --transport http mysite https://my-little-website-client-self.ver
 
 | 도구 | 입력 | 하는 일 |
 |---|---|---|
-| `list_scraps` | `section?`: `ai-tools` / `columns` / `game-dev`, `tag?` | 저장 자료 전체 목록(id·제목·요약·태그). AI가 여기서 관련 항목을 고릅니다 |
+| `list_scraps` | `section?`: `ai-tools` / `columns` / `game-dev` / `links`, `tag?` | 저장 자료 전체 목록(id·제목·요약·태그). AI가 여기서 관련 항목을 고릅니다 |
 | `get_scraps` | `ids` (최대 10개) | 고른 항목의 정리 본문, 원본 링크, 추가 링크(소개 영상·레포), 사이트 페이지 링크 |
 | `get_source` | `url`, `offset?` | 원문. 유튜브는 **자막 스크립트**, GitHub 레포는 README, 그 외는 페이지 본문. 4만 자씩 나눠서 줍니다 |
 | `get_portfolio` | 없음 | 자기소개(About)와 프로젝트 목록 |

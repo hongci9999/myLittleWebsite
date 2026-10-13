@@ -39,6 +39,12 @@ export default function Hero() {
           >
             패치노트 →
           </Link>
+          <Link
+            to="/mcp"
+            className="text-sm text-primary no-underline hover:underline"
+          >
+            AI 연결(MCP) →
+          </Link>
           <span className="text-muted-foreground/40" aria-hidden>
             |
           </span>

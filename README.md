@@ -42,6 +42,27 @@
 
 ---
 
+## 사이트 지식 MCP 서버
+
+사이트에 모은 자료(AI 개발 도구·칼럼·게임 개발)와 포트폴리오를 **Claude·Cursor 등 AI가 직접 읽게** 하는 원격 MCP 서버. 인증 없음·읽기 전용(이미 공개된 정보만).
+
+```bash
+claude mcp add --transport http mysite https://my-little-website-client-self.vercel.app/api/mcp
+```
+
+| 도구 | 하는 일 |
+| ---- | ------- |
+| `list_scraps` / `get_scraps` | 저장 자료 목록 → 정리 본문·링크 |
+| `get_source` | 원문 — 유튜브 자막, GitHub README, 페이지 본문 |
+| `get_portfolio` | 자기소개·프로젝트 목록 (자소서용) |
+| `read_dev_notes` | 기술 결정 기록(ADR)·학습 노트 |
+
+- 연결 방법(Claude 웹·Cursor·VS Code), 질문 예시: [docs/mcp-guide.md](docs/mcp-guide.md) — 사이트 `/mcp` 페이지와 같은 문서
+- 유튜브 자막은 Vercel IP에서 막혀 로컬에서 캐시: `npm run backfill-sources -w server`
+- 설계: [docs/decisions/0028-site-knowledge-mcp.md](docs/decisions/0028-site-knowledge-mcp.md)
+
+---
+
 ## 프로젝트 구조
 
 ```

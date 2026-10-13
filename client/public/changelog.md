@@ -6,6 +6,7 @@
 
 ### Added
 
+- **사이트 지식 MCP 서버** — `POST /api/mcp`(Streamable HTTP, 인증 없음·읽기 전용). Claude·ChatGPT 등이 저장 자료(AI 도구·칼럼·게임 개발), 원문(유튜브 자막·README·페이지), 포트폴리오(about·프로젝트), 개발 기록(ADR·학습 노트)을 읽어 답변·자소서에 쓴다. 원문 캐시 `scrap_sources` + 로컬 `npm run backfill-sources -w server`. 프로젝트 목록 데이터를 `projects.json`으로 분리. [ADR 0028](decisions/0028-site-knowledge-mcp.md).
 - **유튜브 링크 일괄 등록 스크립트** — `npm run bulk-youtube -w server -- prepare <links.txt>` → 미리보기 JSON 검토 → `save`. 중복 확인(세 섹션 메인·추가 링크), AI 섹션 분류, 섹션별 AI 채우기, GitHub 레포 추가 링크. AI 개발 도구 영상은 도구 레포·공식 사이트를 메인 링크로, 영상은 「소개 영상」 추가 링크. [ADR 0027](decisions/0027-bulk-youtube-import-script.md).
 - **Gemini YouTube 직접 분석 점검** — `/ai-smoke-test`에 입력칸, `POST /api/ai-smoke/gemini-youtube`(로그인 필요).
 

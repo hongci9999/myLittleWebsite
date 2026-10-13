@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { MarkdownWithMath } from '@/shared/ui/MarkdownWithMath'
 
-function PatchNotesSkeleton() {
+function DocSkeleton() {
   return (
     <div className="animate-pulse space-y-6" aria-hidden>
       <div className="h-8 w-48 rounded bg-muted" />
@@ -19,19 +19,26 @@ function PatchNotesSkeleton() {
   )
 }
 
-export default function PatchNotesPage() {
+/** `public/`의 마크다운 한 파일을 읽어 렌더 (패치노트, MCP 가이드). 원본은 docs/ — client prebuild가 복사 */
+export default function MarkdownDocPage({
+  src,
+  changelogHeadings = false,
+}: {
+  src: string
+  changelogHeadings?: boolean
+}) {
   const [content, setContent] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/changelog.md')
+    fetch(src)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         return res.text()
       })
       .then(setContent)
       .catch((err) => setError(err.message))
-  }, [])
+  }, [src])
 
   if (error) {
     return (
@@ -44,10 +51,10 @@ export default function PatchNotesPage() {
   return (
     <div className="doc-reader patch-notes-page mx-auto max-w-3xl px-6 py-16 sm:px-8">
       {!content ? (
-        <PatchNotesSkeleton />
+        <DocSkeleton />
       ) : (
         <article className="prose prose-neutral dark:prose-invert max-w-none doc-article">
-          <MarkdownWithMath changelogHeadings>{content}</MarkdownWithMath>
+          <MarkdownWithMath changelogHeadings={changelogHeadings}>{content}</MarkdownWithMath>
         </article>
       )}
     </div>

@@ -27,6 +27,11 @@ function useBreadcrumb(pathname: string): BreadcrumbItem[] {
     return items
   }
 
+  if (pathname === '/mcp') {
+    items.push({ label: 'MCP 연결 가이드', href: undefined })
+    return items
+  }
+
   if (pathname === '/admin') {
     items.push({ label: '관리자 페이지', href: undefined })
     return items

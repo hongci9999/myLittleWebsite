@@ -12,7 +12,7 @@ import ColumnPage from './pages/ColumnPage'
 import ColumnScrapDetailPage from './pages/ColumnScrapDetailPage'
 import ProjectPage from './pages/ProjectPage'
 import AboutPage from './pages/AboutPage'
-import PatchNotesPage from './pages/PatchNotesPage'
+import MarkdownDocPage from './pages/MarkdownDocPage'
 import LinksPage from './pages/LinksPage'
 import LinksAdminPage from './pages/LinksAdminPage'
 import AdminPage from './pages/AdminPage'
@@ -40,7 +40,11 @@ function App() {
           <Route path="ai-dev-tools/:slug" element={<AiDevToolScrapDetailPage />} />
           <Route path="game-dev" element={<GameDevLibraryPage />} />
           <Route path="game-dev/:slug" element={<GameDevResourceDetailPage />} />
-          <Route path="patch-notes" element={<PatchNotesPage />} />
+          <Route
+            path="patch-notes"
+            element={<MarkdownDocPage key="patch-notes" src="/changelog.md" changelogHeadings />}
+          />
+          <Route path="mcp" element={<MarkdownDocPage key="mcp" src="/mcp-guide.md" />} />
           <Route path="portfolio" element={<PortfolioPage />} />
           <Route path="learning" element={<LearningPage />} />
           <Route

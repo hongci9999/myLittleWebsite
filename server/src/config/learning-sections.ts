@@ -22,7 +22,7 @@ function resolveProjectRoot(): string {
 }
 
 /** learnings 루트 경로 (client/public/learnings) */
-const projectRoot = resolveProjectRoot()
+export const projectRoot = resolveProjectRoot()
 export const LEARNINGS_ROOT =
   process.env.LEARNINGS_ROOT ?? path.join(projectRoot, 'client', 'public', 'learnings')
 

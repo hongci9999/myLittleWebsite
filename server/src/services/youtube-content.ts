@@ -243,7 +243,8 @@ function buildFullText(meta: YoutubeVideoMeta, transcript: string, transcriptLan
  * 자막이 없으면 null.
  */
 export async function fetchYoutubeContentBundle(
-  videoUrl: string
+  videoUrl: string,
+  maxTranscriptChars = MAX_TRANSCRIPT_CHARS
 ): Promise<YoutubeContentBundle | null> {
   const videoId = parseYoutubeVideoId(videoUrl.trim())
   if (!videoId) return null
@@ -260,8 +261,8 @@ export async function fetchYoutubeContentBundle(
   let transcript = await fetchTranscriptFromTrack(track)
   if (!transcript) return null
 
-  if (transcript.length > MAX_TRANSCRIPT_CHARS) {
-    transcript = transcript.slice(0, MAX_TRANSCRIPT_CHARS) + '...'
+  if (transcript.length > maxTranscriptChars) {
+    transcript = transcript.slice(0, maxTranscriptChars) + '...'
   }
 
   const meta = extractMeta(videoId, player)

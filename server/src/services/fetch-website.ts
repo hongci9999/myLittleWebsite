@@ -171,7 +171,10 @@ ${digest}`,
  * URL fetch 후 HTML에서 title, meta description, 본문 텍스트 추출.
  * YouTube는 HTML에 본문이 거의 없어 **자막(transcript)** 이 있으면 그것을 본문으로 넣는다.
  */
-export async function fetchWebsiteContent(url: string): Promise<WebsiteContent | null> {
+export async function fetchWebsiteContent(
+  url: string,
+  maxBodyChars = MAX_BODY_CHARS
+): Promise<WebsiteContent | null> {
   const trimmed = url.trim()
   const ytId = parseYoutubeVideoId(trimmed)
 
@@ -217,8 +220,8 @@ export async function fetchWebsiteContent(url: string): Promise<WebsiteContent |
     if (bodyEl.length === 0) bodyEl = $('body')
 
     let bodyText = bodyEl.text().replace(/\s+/g, ' ').trim()
-    if (bodyText.length > MAX_BODY_CHARS) {
-      bodyText = bodyText.slice(0, MAX_BODY_CHARS) + '...'
+    if (bodyText.length > maxBodyChars) {
+      bodyText = bodyText.slice(0, maxBodyChars) + '...'
     }
 
     const parts: string[] = []

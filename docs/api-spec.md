@@ -630,6 +630,11 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 로컬 Ollama 연결 점검(인증 없음). `OLLAMA_HOST`의 `/api/tags` 후, 설정 모델로 `/api/generate` 1회. 성공 시 `ok: true`, `generateResponsePreview` 등. 클라이언트 점검 페이지: `/ai-smoke-test`.
 
+### POST /api/mcp
+
+MCP 서버(Streamable HTTP, stateless, 인증 없음·읽기 전용). JSON-RPC 요청, `Accept: application/json, text/event-stream`. GET/DELETE는 `405`.
+도구: `list_scraps`, `get_scraps`, `get_source`, `get_portfolio`, `read_dev_notes` — 정의는 `server/src/services/knowledge/`. [ADR 0028](decisions/0028-site-knowledge-mcp.md).
+
 ---
 
 ## 11. 참고

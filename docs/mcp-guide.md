@@ -33,6 +33,21 @@ claude mcp add --transport http mysite https://my-little-website-client-self.ver
 
 연결 확인은 `claude mcp list`로 합니다.
 
+### Codex (CLI·IDE 확장·데스크톱 앱)
+
+```bash
+codex mcp add mysite --url https://my-little-website-client-self.vercel.app/api/mcp
+```
+
+같은 설정을 `~/.codex/config.toml`에 직접 적어도 됩니다.
+
+```toml
+[mcp_servers.mysite]
+url = "https://my-little-website-client-self.vercel.app/api/mcp"
+```
+
+CLI, IDE 확장, 데스크톱 앱이 이 설정을 함께 씁니다. 앱이나 확장에서는 **설정(톱니) → MCP servers → Add server → Streamable HTTP**에 URL을 넣고 재시작해도 됩니다. 확인은 `codex mcp list`, 대화 중에는 `/mcp`로 합니다.
+
 ### Claude (웹·데스크톱 앱)
 
 **설정 → 커넥터 → 커스텀 커넥터 추가**에서 이름(예: `mysite`)과 위 URL을 넣습니다. 인증 설정은 비워 둡니다. 대화창 도구 메뉴에서 커넥터를 켜고 질문합니다.

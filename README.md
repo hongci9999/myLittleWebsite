@@ -58,7 +58,7 @@ claude mcp add --transport http mysite https://my-little-website-client-self.ver
 | `get_portfolio` | 자기소개·프로젝트 목록 (자소서용) |
 | `read_dev_notes` | 기술 결정 기록(ADR)·학습 노트 |
 
-- 연결 방법(Claude 웹·Cursor·VS Code), 질문 예시: [docs/mcp-guide.md](docs/mcp-guide.md) — 사이트 `/mcp` 페이지와 같은 문서
+- 연결 방법(Claude Code·Codex·Claude 웹·Cursor·VS Code), 질문 예시: [docs/mcp-guide.md](docs/mcp-guide.md) — 사이트 `/mcp` 페이지와 같은 문서
 - 유튜브 자막은 Vercel IP에서 막혀 로컬에서 캐시: `npm run backfill-sources -w server`
 - 설계: [docs/decisions/0028-site-knowledge-mcp.md](docs/decisions/0028-site-knowledge-mcp.md)
 

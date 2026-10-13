@@ -314,6 +314,8 @@ kbd {
   padding: 1rem 1.25rem;
   border-radius: var(--radius);
   background: var(--muted);
+  /* prose 기본 pre 글자색은 어두운 배경용(밝은 회색) — 배경을 --muted로 바꿨으니 글자도 테마 전경색으로 */
+  color: var(--foreground);
   overflow-x: auto;
   margin: 1.25em 0;
 }

@@ -1,7 +1,7 @@
 # 이 사이트에 대해
 
 > **한 줄 요약**: 자료 정리, 포트폴리오, 기술 학습을 위해 만들고 **만들면서 기록하는** 개인 웹사이트입니다.  
-> **마지막 갱신**: 2026-07-23 (AWS → Vercel 이전)
+> **마지막 갱신**: 2026-10-13 (사이트 지식 MCP 서버, 배포 현행화)
 
 ## 목적
 
@@ -29,6 +29,8 @@
 | 글·스크랩(칼럼)        | [/column](/column)             |
 | 사이드 프로젝트        | [/project](/project)           |
 | AI 개발 도구 스크랩    | [/ai-dev-tools](/ai-dev-tools) |
+| 게임 개발 자료         | [/game-dev](/game-dev)         |
+| 내 AI에 이 사이트 연결 | [/mcp](/mcp)                   |
 | 최근 변경              | [/patch-notes](/patch-notes)   |
 | 허브(위젯 모음)        | [/main](/main)                 |
 
@@ -40,6 +42,8 @@
 - **칼럼**: 생각·에세이·스크랩
 - **프로젝트**: 사이드 프로젝트 기록
 - **AI 개발 도구**: 도구 스크랩 검색·목록
+- **게임 개발 도서관**: 그래픽스·물리·AI 등 분야별 게임 개발 자료
+- **AI 연결(MCP)**: 위 자료와 포트폴리오를 Claude·Cursor 등 AI가 직접 읽게 하는 MCP 서버
 - **패치노트**: `CHANGELOG` 기반 **월별** 변경 내역
 
 관리·실험용(일반 방문자 비공개에 가깝게 사용): `/admin`, `/links/admin`, `/login`, `/ai-smoke-test` 등
@@ -57,6 +61,8 @@
 | 색 테마         | blue-orange / amber-cyan / **midnight**     | 플레이그라운드에서 고른 메인·서브·다크 | `0007-design-playground-result`                  |
 | 학습 폴더       | `public/learnings` + 빌드 시 config         | 마크다운 추가만으로 섹션 확장          | `0010`, `0011`                                   |
 | 프로덕션 호스팅 | Vercel 단일 (프론트 + API 서버리스)         | same-origin으로 CORS·배포 복잡도 제거  | `0025-vercel-single-hosting` (0018 대체)        |
+| 유튜브 요약     | 자막 추출 → 막히면 Gemini 영상 직접 분석    | 클라우드 IP는 유튜브 자막이 차단됨     | `0021`, `0026`                                   |
+| AI 연결         | 원격 MCP 서버 (`/api/mcp`, 읽기 전용)       | 모은 자료를 AI 답변·자소서에 활용      | `0028-site-knowledge-mcp`                        |
 
 ## 기술 스택
 
@@ -99,6 +105,8 @@ Supabase·DB 접근은 **server**에서만 합니다. client는 API를 호출합
 | `/column`, `/column/:slug`             | 칼럼·스크랩              |
 | `/project`                             | 프로젝트                 |
 | `/ai-dev-tools`, `/ai-dev-tools/:slug` | AI 개발 도구             |
+| `/game-dev`, `/game-dev/:slug`         | 게임 개발 도서관         |
+| `/mcp`                                 | MCP 연결 가이드          |
 | `/patch-notes`                         | 패치노트                 |
 | `/skills-intro`                        | UI 스킬 소개 (개발 참고) |
 | `/design-playground`                   | 디자인 실험 (부록)       |
@@ -115,6 +123,8 @@ Supabase·DB 접근은 **server**에서만 합니다. client는 API를 호출합
                  ├─ PostgreSQL (Supabase)
                  ├─ Auth / Storage / Realtime (필요 시)
                  └─ AI provider (Ollama, Gemini 등 — 기능별)
+외부 AI(Claude·Cursor 등)
+  └─ MCP (POST /api/mcp) ── 같은 Server가 저장 자료·포트폴리오를 읽기 전용으로 제공
 ```
 
 아래 Mermaid는 About·학습 문서에서 **렌더링**됩니다.
@@ -128,19 +138,36 @@ flowchart LR
   S --> DB[(PostgreSQL)]
   S --> SB[Supabase 서비스]
   S --> AI[AI providers]
+  X[외부 AI 클라이언트] -->|MCP| S
 ```
 
 ## 프로덕션 배포
 
-> **2026-07 이전 진행 중 — AWS에서 Vercel로**  
-> 프론트(S3+CloudFront)·API(Elastic Beanstalk) 분리 호스팅을 **Vercel 단일 호스팅**(프론트 + API 서버리스, same-origin `/api`)으로 통합합니다. CORS·커스텀 API 도메인·`VITE_API_BASE_URL`이 불필요해집니다. 결정·이유: ADR `docs/decisions/0025-vercel-single-hosting.md`, 실행 절차: `docs/plans/2026-07-23-vercel-migration.md`.  
-> 아래 AWS 절은 이전 완료 전까지의 **기존 구조 기록**으로 남겨 둡니다.
+**2026-07-23**부터 **Vercel 단일 호스팅**입니다. 프론트(Vite 빌드 정적 파일)와 API(Express를 감싼 서버리스 함수 `api/index.ts`)가 같은 출처라 CORS·API 도메인·`VITE_API_BASE_URL`이 필요 없습니다. (ADR `docs/decisions/0025-vercel-single-hosting.md`)
 
-## (이전 기록) 프로덕션 배포 (AWS)
+| 구분        | 내용                                                                 |
+| ----------- | -------------------------------------------------------------------- |
+| **주소**    | https://my-little-website-client-self.vercel.app                     |
+| **API**     | 같은 주소의 `/api/*` → 서버리스 함수 (`maxDuration` 300초)          |
+| **MCP**     | `/api/mcp` — 사용법은 [/mcp](/mcp)                                   |
+| **배포**    | `main` 브랜치 push 시 Vercel 자동 빌드·배포                          |
+| **DB·Auth** | Supabase (Vercel 환경 변수로 연결)                                   |
+
+```text
+브라우저 ──HTTPS──► Vercel ─┬─ 정적 파일 (client/dist, learnings/*.md, changelog 등)
+                            └─ /api/* ──► 서버리스 함수 (Express) ──► Supabase · Gemini
+```
+
+**알려진 제약**
+
+- **유튜브 자막**: Vercel(클라우드) IP에서는 유튜브가 자막 요청을 차단합니다. 배포 환경의 AI 요약은 Gemini가 영상을 직접 보고 만들고(ADR `0026`), MCP용 자막 원문은 로컬 스크립트로 미리 저장합니다(ADR `0028`).
+- **도메인**: 내도메인.한국 `mylittlewebsite.p-e.kr`은 등록해 두었지만 현재 이 사이트에 연결돼 있지 않습니다. 메인의 도메인 만료 알림은 이 도메인의 갱신 일정용입니다.
+
+## (이전 기록) 프로덕션 배포 (AWS, 2026-05 ~ 2026-07)
 
 **2026-05-16**에 첫 end-to-end 배포에 성공했습니다. 프론트(정적)와 API(Node)는 **호스트·배포 주기가 달라** AWS에서 분리해 두었습니다. (상세 회고: 저장소 `docs/learnings/0034-aws-first-production-deploy-success.md`, ADR `docs/decisions/0018-aws-production-split-hosting.md`)
 
-### 접속 URL (현재)
+### 접속 URL (당시, 현재 운영 안 함)
 
 | 구분        | URL                                       | 비고                                        |
 | ----------- | ----------------------------------------- | ------------------------------------------- |
@@ -149,7 +176,7 @@ flowchart LR
 | **헬스**    | https://mylittlewebsite.p-e.kr/api/health | `{"status":"ok"}` 로 확인                   |
 | **DB·Auth** | Supabase                                  | API 서버(EB) 환경 변수로만 연결             |
 
-> **도메인 역할 (현재)**  
+> **도메인 역할 (당시)**  
 > `mylittlewebsite.p-e.kr`(내도메인.한국)은 **API용** CNAME → ALB입니다. 프론트는 아직 CloudFront 기본 도메인(`*.cloudfront.net`)을 씁니다.  
 > 루트=사이트·`api.`=API로 나누는 이전 계획: 저장소 `docs/plans/2026-05-19-api-subdomain-migration.md`
 
@@ -225,8 +252,8 @@ flowchart TB
 | 종류           | 위치                | 웹에서                       |
 | -------------- | ------------------- | ---------------------------- |
 | 변경 내역      | `docs/CHANGELOG.md` | [/patch-notes](/patch-notes) |
-| 의사결정 (ADR) | `docs/decisions/`   | (저장소)                     |
-| 학습 정리      | `docs/learnings/`   | (저장소)                     |
+| 의사결정 (ADR) | `docs/decisions/`   | (저장소, MCP `read_dev_notes`로 AI가 읽기 가능) |
+| 학습 정리      | `docs/learnings/`   | (저장소, MCP `read_dev_notes`로 AI가 읽기 가능) |
 | 개발 일지      | `docs/journal/`     | (저장소)                     |
 | 설계·구현 계획 | `docs/plans/`       | (저장소)                     |
 | 오류 수정 기록 | `docs/error-fixes/` | (저장소)                     |
@@ -240,6 +267,8 @@ flowchart TB
 - [/column](/column) — 칼럼
 - [/project](/project) — 프로젝트
 - [/ai-dev-tools](/ai-dev-tools) — AI 개발 도구
+- [/game-dev](/game-dev) — 게임 개발 도서관
+- [/mcp](/mcp) — MCP 연결 가이드
 - [/patch-notes](/patch-notes) — 패치노트
 - [/skills-intro](/skills-intro) — UI 스킬 소개
 

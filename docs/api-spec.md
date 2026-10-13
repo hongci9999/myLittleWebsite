@@ -1,6 +1,6 @@
 # API 명세서
 
-날짜: 2026-05-19 (§9 사이트 도메인 만료 설정 반영)
+날짜: 2026-10-13 (§11 게임 개발 도서관, §12 메인 위젯, §13 MCP 추가)
 
 myLittleWebsite 서버 REST API 명세. 클라이언트는 이 API만 호출하며, DB는 서버에서만 접근한다.
 
@@ -10,7 +10,7 @@ myLittleWebsite 서버 REST API 명세. 클라이언트는 이 API만 호출하�
 
 | 항목 | 값 |
 |------|-----|
-| Base URL | `http://localhost:3001` (개발) |
+| Base URL | `http://localhost:3001` (개발), `https://my-little-website-client-self.vercel.app` (프로덕션, 같은 출처 `/api`) |
 | Content-Type | `application/json` |
 | 인증 | `Authorization: Bearer <jwt>` (관리 API만) |
 
@@ -508,7 +508,7 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 | `youtubeClip` | `url` 없을 때 | Obsidian Web Clipper `raw/youtube` 노트 전문(frontmatter·JSON 템플릿·`## 트랜스크립트`). 있으면 **서버 YouTube 자막 fetch 생략** — 배포 환경에서 URL-only 실패 시 권장 |
 
 **에러**  
-`400` — 유튜브 URL인데 자막 없음(`youtubeClip` 미제공 시). 클립 형식 인식 실패.  
+`400` — URL·클립 모두 없음, 클립 형식 인식 실패. (유튜브 자막을 못 받으면 Gemini 영상 직접 분석으로 폴백 — [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md))  
 `503` — Ollama·Gemini 연결 실패 등.
 
 의사결정: [0022](decisions/0022-obsidian-youtube-clip-column-scrap.md)
@@ -630,14 +630,56 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 로컬 Ollama 연결 점검(인증 없음). `OLLAMA_HOST`의 `/api/tags` 후, 설정 모델로 `/api/generate` 1회. 성공 시 `ok: true`, `generateResponsePreview` 등. 클라이언트 점검 페이지: `/ai-smoke-test`.
 
-### POST /api/mcp
+### POST /api/ai-smoke/gemini-youtube
 
-MCP 서버(Streamable HTTP, stateless, 인증 없음·읽기 전용). JSON-RPC 요청, `Accept: application/json, text/event-stream`. GET/DELETE는 `405`.
-도구: `list_scraps`, `get_scraps`, `get_source`, `get_portfolio`, `read_dev_notes` — 정의는 `server/src/services/knowledge/`. [ADR 0028](decisions/0028-site-knowledge-mcp.md).
+인증 필요. Gemini가 유튜브 영상을 직접 분석하는지 점검(배포 환경 자막 차단 대응 경로, [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md)).
+**Body**: `{ "url": "https://www.youtube.com/watch?v=…" }` → `{ ok, watchUrl, model, ms, text }`. 실패 시 `502` + `error`.
 
 ---
 
-## 11. 참고
+## 11. 게임 개발 도서관 API (`/api/game-dev-resources`)
+
+칼럼 스크랩 API(§7)와 같은 구조. [ADR 0024](decisions/0024-game-dev-library.md).
+
+### GET /api/game-dev-resources
+
+공개. **Query**: `q`(검색어), `kind`(`mediaKind`: `youtube`·`article`·`repo`·`blog`·`doc`·`book`·`asset`·`other`), `category`(`graphics`·`physics`·`ai`·`gameplay`·`engine`·`network`·`sound`·`optimization`·`etc`).
+
+### GET /api/game-dev-resources/by-slug/:slug
+
+공개.
+
+### POST /api/game-dev-resources/ai-fill
+
+인증 필요. Body `{ url?, youtubeClip?, aiProvider? }` — 둘 중 하나 필수. 칼럼 `ai-fill`과 같은 방식으로 제목·요약·본문·형식·분야·표지·태그 제안.
+
+### POST /api/game-dev-resources · PATCH /:id · DELETE /:id
+
+인증 필요. Body: `title`, `url`, `mediaKind`, `category`, `summary`, `bodyMd`, `coverImageUrl`, `tags`, `extraLinks`, `slug`(선택).
+
+---
+
+## 12. 메인 위젯 API (공개)
+
+| 엔드포인트 | 설명 |
+|------------|------|
+| `GET /api/geeknews/latest?limit=5` | GeekNews RSS 최신글. `limit` 범위 밖이면 `400`, RSS 실패 `503` |
+| `GET /api/d2-helloworld/latest` | `{ d2Video, blogs }` — NAVER D2 Hello world 최신 영상 + 기술 블로그 RSS 최신글 |
+| `GET /api/tech-interview/random` | gyoogle/tech-interview-for-developer 무작위 문서 1건. GitHub 실패 `503` |
+| `POST /api/tarot/reading` | Body `{ cards: [{ slot: past\|present\|advice, majorId, orientation: upright\|reversed }] ×3, aiProvider? }` → AI 해석. 형식 오류 `400`, AI 연결 실패 `503` ([ADR 0017](decisions/0017-tarot-reading-schema-and-provider-strategy.md)) |
+
+---
+
+## 13. MCP 서버 (`/api/mcp`)
+
+### POST /api/mcp
+
+MCP 서버(Streamable HTTP, stateless, 인증 없음·읽기 전용). JSON-RPC 요청, `Accept: application/json, text/event-stream`. GET/DELETE는 `405`.
+도구: `list_scraps`, `get_scraps`, `get_source`, `get_portfolio`, `read_dev_notes` — 정의는 `server/src/services/knowledge/`. 섹션: `ai-tools`·`columns`·`game-dev`·`links`. 사용법: [mcp-guide.md](mcp-guide.md), 설계: [ADR 0028](decisions/0028-site-knowledge-mcp.md).
+
+---
+
+## 14. 참고
 
 - 설계: `docs/plans/2026-03-03-links-admin-design.md`
 - 구현 계획: `docs/plans/2026-03-03-links-admin-implementation-plan.md`

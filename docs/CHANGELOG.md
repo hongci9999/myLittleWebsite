@@ -6,15 +6,21 @@
 
 ### Added
 
-- **사이트 지식 MCP 서버** — `POST /api/mcp`(Streamable HTTP, 인증 없음·읽기 전용). Claude·ChatGPT 등이 저장 자료(AI 도구·칼럼·게임 개발), 원문(유튜브 자막·README·페이지), 포트폴리오(about·프로젝트), 개발 기록(ADR·학습 노트)을 읽어 답변·자소서에 쓴다. 원문 캐시 `scrap_sources` + 로컬 `npm run backfill-sources -w server`. 프로젝트 목록 데이터를 `projects.json`으로 분리. [ADR 0028](decisions/0028-site-knowledge-mcp.md).
-- **유튜브 링크 일괄 등록 스크립트** — `npm run bulk-youtube -w server -- prepare <links.txt>` → 미리보기 JSON 검토 → `save`. 중복 확인(세 섹션 메인·추가 링크), AI 섹션 분류, 섹션별 AI 채우기, GitHub 레포 추가 링크. AI 개발 도구 영상은 도구 레포·공식 사이트를 메인 링크로, 영상은 「소개 영상」 추가 링크. [ADR 0027](decisions/0027-bulk-youtube-import-script.md).
+- **MCP 연결 가이드 페이지 (`/mcp`)** — 메인 머릿말 「AI 연결(MCP) →」 진입점. Claude Code·Claude 웹·Cursor·VS Code 연결법, 질문 예시, 도구 목록. 원본 `docs/mcp-guide.md`를 빌드 시 복사해 렌더(패치노트와 같은 방식, 공용 `MarkdownDocPage`).
+- **사이트 지식 MCP 서버** — `POST /api/mcp`(Streamable HTTP, 인증 없음·읽기 전용). Claude·ChatGPT 등이 저장 자료(AI 도구·칼럼·게임 개발·유용한 링크), 원문(유튜브 자막·README·페이지), 포트폴리오(about·프로젝트), 개발 기록(ADR·학습 노트)을 읽어 답변·자소서에 쓴다. 원문 캐시 `scrap_sources` + 로컬 `npm run backfill-sources -w server`. 프로젝트 목록 데이터를 `projects.json`으로 분리. [ADR 0028](decisions/0028-site-knowledge-mcp.md).
+- **유튜브 링크 일괄 등록 스크립트** — `npm run bulk-youtube -w server -- prepare <links.txt>` → 미리보기 JSON 검토 → `save`. 중복 확인(세 섹션 메인·추가 링크), AI 섹션 분류, 섹션별 AI 채우기, GitHub 레포 추가 링크. AI 개발 도구 영상은 도구 레포·공식 사이트를 메인 링크로, 영상은 「소개 영상」 추가 링크. 검토 중 url을 고친 항목만 다시 채우는 `refill`. 첫 실사용으로 23건 저장. [ADR 0027](decisions/0027-bulk-youtube-import-script.md).
 - **Gemini YouTube 직접 분석 점검** — `/ai-smoke-test`에 입력칸, `POST /api/ai-smoke/gemini-youtube`(로그인 필요).
 
 ### Changed
 
 - **유튜브 AI 채우기 — 자막 fetch 실패 시 Gemini 영상 직접 분석 폴백** — 배포 서버(Vercel) IP에서 유튜브 자막이 막혀 자막 있는 영상도 AI 채우기가 실패하던 문제. 자막을 못 받으면 Gemini가 영상 URL을 직접 보고 자막 대체 텍스트를 만들어 기존 섹션별 AI 정리를 그대로 탄다(Obsidian 클립 붙여넣기 불필요). `maxDuration` 60→300. 게임 개발 도서관 상세에 유튜브 원문 임베드, iframe lazy 로딩. [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md).
+- **About 현행화** — 프로덕션 배포 절을 Vercel 기준으로 다시 쓰고 AWS 절은 「이전 기록」으로 정리. 게임 개발 도서관·MCP 라우트·바로가기·ADR 요약 추가. `mylittlewebsite.p-e.kr`은 현재 사이트에 연결돼 있지 않음을 명시.
 
 ## 2026년 7월
+
+### Added
+
+- **CS 면접대비 학습 섹션** — `/learning/cs-interview`. 운영체제·네트워크·자료구조·DB·언어 면접 Q&A 문서, 학습 config(빌드 스크립트·client/server) 등록.
 
 ### Changed
 
@@ -22,13 +28,15 @@
 
 ### Fixed
 
+- **Vercel 서버리스 함수 크래시** — `youtube-transcript-text.ts`가 모듈 로드 시점에 `require.resolve`로 패키지 경로를 계산해, 번들에 패키지가 없으면 앱 로드 자체가 실패(모든 `/api` 500 `FUNCTION_INVOCATION_FAILED`). resolve·import를 자막 조회 시점으로 지연. 진단용으로 `api/index.ts`가 초기화 오류를 JSON 응답으로 노출.
 - **도메인 만료 알림 — 연장 반영이 +3개월로 계산되던 문제** — 등록/만료 기본값이 3개월 주기(`2026-05-16`~`2026-08-16`)로 남아 있어 「오늘 연장 반영」이 오늘+92일(2026-10-19)로 계산됐다. 실제 도메인(만료 `2027-08-16`, 1년 주기)에 맞춰 등록일을 만료 1년 전(`2026-08-16`)으로 두어 등록~만료 기간을 365일로 정정. client·server config 및 seed SQL 동기화, 기존 DB 행은 `UPDATE`로 현행화. [error-fixes 0007](error-fixes/0007-domain-renew-period-mismatch.md).
 
 ## 2026년 6월
 
 ### Added
 
-- **게임 개발 도서관 (`/game-dev`)** — 게임 개발 정보(방법론·이론·기술·프로그램)를 유튜브·기사·Git 저장소·블로그글·문서 등 **형식**(`mediaKind`)으로 모으고, 그래픽스·물리·AI·게임플레이·엔진·네트워크·사운드·최적화·기타 **분야**(`category`, 1급 필드)별 **좌측 네비**로 구분. 목록(형식 필터·검색)·상세·관리자 CRUD. 새 테이블 `game_dev_resources`(마이그레이션 `plans/2026-06-22-game-dev-resources-migration.sql`), API `/api/game-dev-resources`, 상단 네비·우측 바로가기 노출. AI 채우기는 Phase 2로 보류. [ADR 0024](decisions/0024-game-dev-library.md).
+- **게임 개발 도서관 (`/game-dev`)** — 게임 개발 정보(방법론·이론·기술·프로그램)를 유튜브·기사·Git 저장소·블로그글·문서 등 **형식**(`mediaKind`)으로 모으고, 그래픽스·물리·AI·게임플레이·엔진·네트워크·사운드·최적화·기타 **분야**(`category`, 1급 필드)별 **좌측 네비**로 구분. 목록(형식 필터·검색)·상세·관리자 CRUD. 새 테이블 `game_dev_resources`(마이그레이션 `plans/2026-06-22-game-dev-resources-migration.sql`), API `/api/game-dev-resources`, 상단 네비·우측 바로가기 노출. [ADR 0024](decisions/0024-game-dev-library.md).
+  - 같은 날 후속: **AI 채우기**(칼럼과 같은 URL·Obsidian 유튜브 클립 방식), og:image·클립 썸네일 **표지** 자동 추출, 형식에 **에셋**(`asset`) 추가, 카드 메뉴 클릭 시 상세 이동·배지 겹침 수정.
 
 - **랜딩 페이지 — 셰이더 오로라 배경** — 진입 페이지(`/`)에 three.js GLSL 프래그먼트 셰이더 오로라 배경(`components/ui/animated-shader-background.tsx`) 적용. 슬로건·가치 칩(Reason-First / Always Extensible / For Humans)·시작하기 CTA를 글래스모피즘으로 재구성. `three`·`lucide-react` 의존성 추가, `index.css` `float` 키프레임. [ADR 0023](decisions/0023-animated-shader-landing.md).
 

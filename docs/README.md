@@ -6,6 +6,7 @@
 | ------------------------------ | ------------------------------- |
 | [CHANGELOG.md](./CHANGELOG.md) | 버전별 변경 내역                |
 | [api-spec.md](./api-spec.md)   | REST API 명세                   |
+| [mcp-guide.md](./mcp-guide.md) | MCP 연결 가이드 (사이트 `/mcp`) |
 | [decisions/](./decisions/)     | 의사결정 기록 (ADR)             |
 | [learnings/](./learnings/)     | 학습 내용 (개념·동작 방식 정리) |
 | [error-fixes/](./error-fixes/) | 에러 픽스 기록 (오류·원인·수정) |
@@ -24,7 +25,7 @@
 | 연결 점검 | 클라이언트 `/ai-smoke-test`, API 헬스·Ollama 스모크 — [api-spec §9](./api-spec.md)                                                                                                                                                                                                                            |
 | 서버 코드 | `server/src/services/ai/` ([구조 요약](learnings/0021-server-ai-prompt-provider-layout.md)), 라우트 호환 진입점 `services/ollama.ts`                                                                                                                                                                        |
 | Gemini    | 헤더/API에서 **API 모드** 선택 시. `GEMINI_API_KEY`(또는 `GOOGLE_AI_API_KEY`), 선택 `GEMINI_MODEL` — [decisions 0016](decisions/0016-gemini-youtube-transcript-and-public-meta.md)                                                                                                                             |
-| 유튜브    | InnerTube·caption track으로 메타+자막 추출 → 모든 AI 제공자에 텍스트 입력. 없으면 400 — [ADR 0021](decisions/0021-youtube-transcript-unified-ai-path.md), [0036](learnings/0036-youtube-content-bundle-transcript.md), npm 폴백 [0023](learnings/0023-youtube-transcript-cjs-load.md) |
+| 유튜브    | InnerTube·caption track으로 메타+자막 추출 → 모든 AI 제공자에 텍스트 입력. 자막을 못 받으면(배포 환경 IP 차단) Gemini 영상 직접 분석 폴백 — [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md), [0038](learnings/0038-youtube-cloud-ip-block.md), [ADR 0021](decisions/0021-youtube-transcript-unified-ai-path.md), [0036](learnings/0036-youtube-content-bundle-transcript.md), npm 폴백 [0023](learnings/0023-youtube-transcript-cjs-load.md) |
 | 관련 문서 | [설계](plans/2026-03-13-links-ai-suggest-design.md), [decisions 0012](decisions/0012-ollama-ai-links.md), [0015 구조·교체](decisions/0015-ai-text-provider-abstraction.md), [learnings 0018](learnings/0018-local-ai-ollama-webllm.md), [0021 레이아웃](learnings/0021-server-ai-prompt-provider-layout.md) |
 
 ### 칼럼 스크랩 AI (`POST /api/column-scraps/ai-fill`)
@@ -38,10 +39,17 @@
 | 학습         | [0020](learnings/0020-column-scrap-markdown-youtube.md), [0036 유튜브 자막·메타](learnings/0036-youtube-content-bundle-transcript.md), [0037 Obsidian 클립 붙여넣기](learnings/0037-obsidian-youtube-clip-column-scrap.md) |
 | 마이그레이션 | [column-scraps-migration](plans/2026-03-24-column-scraps-migration.sql), [x kind](plans/2026-03-24-column-scraps-add-x-kind.sql), [extra_links](plans/2026-03-24-column-scraps-extra-links.sql) |
 
+### 사이트 지식 MCP (`POST /api/mcp`)
+
+저장 자료(AI 도구·칼럼·게임 개발·유용한 링크)·원문·포트폴리오·개발 기록을 외부 AI가 읽는 읽기 전용 MCP 서버. 사용법 [mcp-guide.md](./mcp-guide.md), 설계 [ADR 0028](decisions/0028-site-knowledge-mcp.md), API [api-spec §13](api-spec.md), 원문 캐시 [scrap_sources SQL](plans/2026-10-13-scrap-sources.sql).
+
 ### 최근 계획
 
 | 날짜                                                                  | 제목                                         |
 | --------------------------------------------------------------------- | -------------------------------------------- |
+| [2026-10-13](./plans/2026-10-13-next-steps-plan.md)                   | 다음 작업: MCP 마무리·크롬 확장·사이트 대화창 |
+| [2026-10-13](./plans/2026-10-13-scrap-sources.sql)                    | MCP 원문 캐시 테이블 `scrap_sources`          |
+| [2026-07-23](./plans/2026-07-23-vercel-migration.md)                  | AWS → Vercel 단일 호스팅 이전 walkthrough    |
 | [2026-06-22](./plans/2026-06-22-game-dev-library.md)                  | 게임 개발 도서관 구현 계획 (형식·분야 2축)   |
 | [2026-06-22](./plans/2026-06-22-game-dev-resources-migration.sql)     | 게임 개발 도서관 테이블 마이그레이션         |
 | [2026-05-04](./plans/2026-05-04-aws-first-deploy-walkthrough.md)     | 첫 AWS 배포 실습 가이드 (단계별)            |
@@ -89,6 +97,7 @@
 - [0025 Vercel 단일 호스팅으로 이전 (0018 대체)](./decisions/0025-vercel-single-hosting.md)
 - [0026 유튜브 자막 fetch 실패 시 Gemini 영상 직접 분석 폴백](./decisions/0026-youtube-gemini-digest-fallback.md)
 - [0027 유튜브 링크 일괄 등록 로컬 스크립트](./decisions/0027-bulk-youtube-import-script.md)
+- [0028 사이트 지식 MCP 서버](./decisions/0028-site-knowledge-mcp.md)
 
 ### 학습 내용
 
@@ -142,5 +151,8 @@
 | [0002](./error-fixes/0002-main-widget-reload-cache.md) | 메인 위젯 페이지 이동 후 재로딩 문제 |
 | [0003](./error-fixes/0003-aws-eb-cloudfront-cors-deploy.md) | EB Degraded·Mixed Content·CORS (AWS 배포) |
 | [0004](./error-fixes/0004-tarot-deploy-image-paths.md) | 타로 위젯 배포 시 카드 이미지 미표시 |
+| [0005](./error-fixes/0005-learning-production-split-hosting.md) | 학습 기록 프로덕션: 준비 중·목록 순서 깜빡임 |
+| [0006](./error-fixes/0006-github-actions-eb-iam-deploy.md) | GitHub Actions EB 배포 IAM 권한 부족 |
+| [0007](./error-fixes/0007-domain-renew-period-mismatch.md) | 도메인 연장 반영이 +3개월로 계산됨 |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

@@ -35,3 +35,4 @@
 - 코드: `vercel.json`, `api/index.ts`, `server/src/app.ts`, `server/src/config/learning-sections.ts`
 - 트레이드오프: 서버리스 함수 실행 시간 제한(AI·youtube-transcript 느린 호출), 인메모리 캐시 콜드스타트 초기화 — [plans/2026-07-23-vercel-migration.md](../plans/2026-07-23-vercel-migration.md) 참고
 - 대체 대상: [0018-aws-production-split-hosting](0018-aws-production-split-hosting.md)
+- **현황 (2026-10-13)**: 결정의 `mylittlewebsite.p-e.kr` Vercel 연결은 **하지 않은 상태**다. 실제 주소는 `https://my-little-website-client-self.vercel.app`. 운영 중 드러난 제약: Vercel IP에서 유튜브 자막이 차단됨 → [0026](0026-youtube-gemini-digest-fallback.md)(AI 요약 폴백), [0028](0028-site-knowledge-mcp.md)(자막 로컬 백필).

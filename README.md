@@ -16,10 +16,11 @@
 
 | 레이어       | 기술                                       |
 | ------------ | ------------------------------------------ |
-| 프론트엔드   | React + TypeScript (Next.js 또는 Vite)     |
+| 프론트엔드   | React + TypeScript + Vite                  |
 | 백엔드       | Node.js + Express + TypeScript             |
 | 데이터베이스 | PostgreSQL (Supabase)                      |
 | 인증·기타    | Supabase Auth, Storage, Realtime (필요 시) |
+| 배포         | Vercel 단일 호스팅 (정적 + API 서버리스)   |
 
 선택 이유: [docs/decisions/0001-tech-stack.md](docs/decisions/0001-tech-stack.md)
 
@@ -44,7 +45,7 @@
 
 ## 사이트 지식 MCP 서버
 
-사이트에 모은 자료(AI 개발 도구·칼럼·게임 개발)와 포트폴리오를 **Claude·Cursor 등 AI가 직접 읽게** 하는 원격 MCP 서버. 인증 없음·읽기 전용(이미 공개된 정보만).
+사이트에 모은 자료(AI 개발 도구·칼럼·게임 개발·유용한 링크)와 포트폴리오를 **Claude·Cursor 등 AI가 직접 읽게** 하는 원격 MCP 서버. 인증 없음·읽기 전용(이미 공개된 정보만).
 
 ```bash
 claude mcp add --transport http mysite https://my-little-website-client-self.vercel.app/api/mcp
@@ -67,11 +68,15 @@ claude mcp add --transport http mysite https://my-little-website-client-self.ver
 
 ```
 myLittleWebsite/
-├── client/          # 프론트엔드 (React)
-├── server/          # 백엔드 (Express)
+├── client/          # 프론트엔드 (React + Vite)
+├── server/          # 백엔드 (Express) — scripts/: bulk-youtube, backfill-sources
+├── api/             # Vercel 서버리스 진입점 (Express 앱 래핑)
 ├── docs/            # 프로젝트 기록
-│   ├── CHANGELOG.md
+│   ├── CHANGELOG.md # 패치노트 (사이트 /patch-notes)
+│   ├── mcp-guide.md # MCP 연결 가이드 (사이트 /mcp)
 │   ├── decisions/   # 의사결정 기록 (ADR)
+│   ├── learnings/   # 학습 정리
+│   ├── plans/       # 설계·구현 계획
 │   └── journal/     # 개발 로그
 ├── .agents/         # 에이전트 스킬 (UI·프론트 품질)
 └── .cursor/         # Cursor 룰 + Superpowers 스킬
@@ -104,13 +109,23 @@ AI 보조 작업 시 로드할 수 있는 **스킬**을 저장소에 포함해 �
 # 의존성 설치 (루트에서 한 번에)
 npm install
 
-# 동시 실행 (client: 5173, server: 3000)
+# 동시 실행 (client: 5173, server: 5000 — Vite가 /api를 프록시)
 npm run dev
 
 # 또는 각각 별도 터미널에서
 npm run dev:client   # http://localhost:5173
-npm run dev:server   # http://localhost:3000
+npm run dev:server   # http://localhost:3001 (PORT 미설정 시)
 ```
+
+환경 변수는 `server/.env` (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `GEMINI_API_KEY` 등).
+
+---
+
+## 배포
+
+- **Vercel 단일 호스팅** — `main` 브랜치 push 시 자동 빌드·배포. 프론트(`client/dist`)와 API(`api/index.ts` → Express)가 같은 출처라 CORS 설정이 필요 없다. 설정: [vercel.json](vercel.json), 결정: [ADR 0025](docs/decisions/0025-vercel-single-hosting.md)
+- **주소**: https://my-little-website-client-self.vercel.app
+- **제약**: Vercel IP에서 유튜브 자막 요청이 차단된다 → AI 요약은 Gemini 영상 분석 폴백([ADR 0026](docs/decisions/0026-youtube-gemini-digest-fallback.md)), MCP용 자막은 로컬 `npm run backfill-sources -w server`
 
 ---
 
@@ -118,4 +133,6 @@ npm run dev:server   # http://localhost:3000
 
 - [의사결정 기록](docs/decisions/) - 기술·구조 선택 이유
 - [CHANGELOG](docs/CHANGELOG.md) - 변경 내역
+- [API 명세](docs/api-spec.md) - REST API·MCP
+- [MCP 연결 가이드](docs/mcp-guide.md) - 내 AI에 이 사이트 연결
 - [프로젝트 기록 가이드](docs/README.md)

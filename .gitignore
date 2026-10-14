@@ -47,3 +47,6 @@ server/*.zip
 
 # oh-my-claudecode 세션 상태
 .omc/
+
+# 개인용 크롬 확장 (비공개 — 레포에 올리지 않음)
+/extension/

@@ -14,6 +14,7 @@ import techInterviewRoutes from './routes/tech-interview.js'
 import tarotRoutes from './routes/tarot.js'
 import siteDomainRoutes from './routes/site-domain.js'
 import mcpRoutes from './routes/mcp.js'
+import quickSaveRoutes from './routes/quick-save.js'
 import { getAiProviderOptionsMeta } from './services/ai/index.js'
 
 function parseAllowedOrigins(raw: string | undefined): string[] {
@@ -74,5 +75,6 @@ app.use('/api/learning', learningRoutes)
 app.use('/api/tarot', tarotRoutes)
 app.use('/api/site-domain', siteDomainRoutes)
 app.use('/api/mcp', mcpRoutes)
+app.use('/api/quick-save', quickSaveRoutes)
 
 export default app

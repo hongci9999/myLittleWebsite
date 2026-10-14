@@ -238,6 +238,23 @@ function buildFullText(meta: YoutubeVideoMeta, transcript: string, transcriptLan
   return parts.join('\n\n')
 }
 
+/** 밖에서 받아 온 자막 (원클릭 저장 클라이언트가 사용자 브라우저에서 수집) — videoId별 */
+const providedBundles = new Map<string, YoutubeContentBundle>()
+
+/**
+ * `fn` 실행 동안 이 영상의 fetchYoutubeContentBundle이 서버 fetch 대신 주어진 bundle을 쓴다.
+ * suggest*FromUrl 등 깊은 호출부에 인자를 줄줄이 넘기지 않으려는 것.
+ * ponytail: 모듈 전역 Map — 같은 영상을 동시에 두 번 저장하면 먼저 끝난 쪽이 지워 나머지는 서버 fetch로 폴백.
+ */
+export async function withProvidedYoutubeBundle<T>(bundle: YoutubeContentBundle, fn: () => Promise<T>): Promise<T> {
+  providedBundles.set(bundle.meta.videoId, bundle)
+  try {
+    return await fn()
+  } finally {
+    providedBundles.delete(bundle.meta.videoId)
+  }
+}
+
 /**
  * YouTube URL에서 메타데이터 + 자막을 한 번에 가져온다.
  * 자막이 없으면 null.
@@ -248,6 +265,12 @@ export async function fetchYoutubeContentBundle(
 ): Promise<YoutubeContentBundle | null> {
   const videoId = parseYoutubeVideoId(videoUrl.trim())
   if (!videoId) return null
+
+  const provided = providedBundles.get(videoId)
+  if (provided) {
+    const t = provided.transcript
+    return { ...provided, transcript: t.length > maxTranscriptChars ? t.slice(0, maxTranscriptChars) + '...' : t }
+  }
 
   let player =
     (await fetchPlayerResponseViaInnertube(videoId)) ??

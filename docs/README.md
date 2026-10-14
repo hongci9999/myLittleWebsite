@@ -43,6 +43,10 @@
 
 저장 자료(AI 도구·칼럼·게임 개발·유용한 링크)·원문·포트폴리오·개발 기록을 외부 AI가 읽는 읽기 전용 MCP 서버. 사용법 [mcp-guide.md](./mcp-guide.md), 설계 [ADR 0028](decisions/0028-site-knowledge-mcp.md), API [api-spec §13](api-spec.md), 원문 캐시 [scrap_sources SQL](plans/2026-10-13-scrap-sources.sql).
 
+### 원클릭 저장 (`POST /api/quick-save`)
+
+개인 크롬 확장에서 지금 탭을 버튼 하나로 분류·저장. 유튜브 자막은 브라우저에서 받아 보내 `scrap_sources`까지 채운다. 설계 [ADR 0029](decisions/0029-quick-save-pipeline.md), API [api-spec §14](api-spec.md).
+
 ### 최근 계획
 
 | 날짜                                                                  | 제목                                         |
@@ -98,6 +102,7 @@
 - [0026 유튜브 자막 fetch 실패 시 Gemini 영상 직접 분석 폴백](./decisions/0026-youtube-gemini-digest-fallback.md)
 - [0027 유튜브 링크 일괄 등록 로컬 스크립트](./decisions/0027-bulk-youtube-import-script.md)
 - [0028 사이트 지식 MCP 서버](./decisions/0028-site-knowledge-mcp.md)
+- [0029 원클릭 저장 파이프라인 (개인 크롬 확장 + quick-save API)](./decisions/0029-quick-save-pipeline.md)
 
 ### 학습 내용
 

@@ -1,7 +1,7 @@
 # 사이트 지식 MCP 서버 — 저장 자료·포트폴리오를 AI 답변에 쓰기
 
 날짜: 2026-10-13  
-상태: 채택 (`scrap_sources` 테이블 생성·백필 전)
+상태: 채택 (2026-10-14 `scrap_sources` 생성·백필 완료, 배포 URL 실사용 확인)
 
 ## 배경 (왜 이 결정이 필요한가)
 
@@ -36,3 +36,4 @@
 - 남은 일: Supabase에서 [`2026-10-13-scrap-sources.sql`](../plans/2026-10-13-scrap-sources.sql) 실행 → 로컬 백필. 사이트 대화창은 같은 `knowledgeTools`를 Gemini function calling으로 사용(방문자 공개, IP별 제한).
 - **2026-10-13 추가 — 유용한 링크(`links`) 섹션**: 36건. slug·본문이 없어 id는 `links/<uuid>`, siteUrl은 `/links`, 분류값 라벨(+`featured`)을 태그로 넣는다. 섹션마다 공통 행을 돌려주는 구조로 바꿔 스크랩형이 아닌 테이블도 `SECTIONS` 한 줄로 붙는다. 링크는 설명이 비어 있는 경우가 많아 `get_source`(페이지 본문)로 보완한다. 전체 목록은 172건, 약 3.5만 자.
 - 가이드: [docs/mcp-guide.md](../mcp-guide.md) (사이트 `/mcp`)
+- **2026-10-14 추가**: 원클릭 저장([ADR 0029](0029-quick-save-pipeline.md))이 브라우저에서 받은 유튜브 자막을 저장 시점에 `scrap_sources`에 넣는다. 그 경로로 저장한 항목은 백필이 필요 없다.

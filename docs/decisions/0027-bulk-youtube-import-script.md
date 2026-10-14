@@ -31,3 +31,4 @@
 
 - 테스트(미리보기만): Playwright MCP 영상 → 기존 도구 중복 감지, Warp 영상 → `warp.dev`, 오픈소스 비디오 생성 모델 영상 → Open-Sora·Wan2.1·HunyuanVideo 3개 항목, 이미 추가 링크로 쓴 영상 → 중복 감지.
 - 학습: [0038 클라우드 IP 유튜브 차단](../learnings/0038-youtube-cloud-ip-block.md)
+- **2026-10-14**: 분류·레포 찾기·중복 검사·채우기 로직을 `server/src/services/quick-save/`로 옮겨 원클릭 저장 API([ADR 0029](0029-quick-save-pipeline.md))와 공유. 스크립트 사용법은 같다. 분류 프롬프트는 "자료(영상·글·레포)"로 일반화.

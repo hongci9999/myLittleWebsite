@@ -6,7 +6,7 @@
 
 ### Added
 
-- **원클릭 저장 API** — `POST /api/quick-save`(로그인 필요): 링크 하나를 중복 확인·섹션 분류·AI 채우기 후 저장. 유튜브 자막을 같이 받으면 그걸 근거로 쓰고 `scrap_sources`도 바로 채운다(Vercel 자막 차단 우회). 오분류는 `/move`로 섹션 이동. bulk-youtube 로직을 `services/quick-save/`로 옮겨 공유.
+- **원클릭 저장 파이프라인** — 개인용 크롬 확장에서 버튼 하나로 지금 탭을 저장. `POST /api/quick-save`(로그인 필요): 링크 하나를 중복 확인·섹션 분류·AI 채우기 후 저장. 유튜브 자막을 같이 받으면 그걸 근거로 쓰고 `scrap_sources`도 바로 채운다(Vercel 자막 차단 우회). 오분류는 `/move`로 섹션 이동. bulk-youtube 로직을 `services/quick-save/`로 옮겨 공유. 확장 코드는 비공개(레포 제외). [ADR 0029](decisions/0029-quick-save-pipeline.md).
 - **MCP 연결 가이드 페이지 (`/mcp`)** — 메인 머릿말 「AI 연결(MCP) →」 진입점. Claude Code·Codex·Claude 웹·Cursor·VS Code 연결법, 질문 예시, 도구 목록. 원본 `docs/mcp-guide.md`를 빌드 시 복사해 렌더(패치노트와 같은 방식, 공용 `MarkdownDocPage`).
 - **사이트 지식 MCP 서버** — `POST /api/mcp`(Streamable HTTP, 인증 없음·읽기 전용). Claude·ChatGPT 등이 저장 자료(AI 도구·칼럼·게임 개발·유용한 링크), 원문(유튜브 자막·README·페이지), 포트폴리오(about·프로젝트), 개발 기록(ADR·학습 노트)을 읽어 답변·자소서에 쓴다. 원문 캐시 `scrap_sources` + 로컬 `npm run backfill-sources -w server`. 프로젝트 목록 데이터를 `projects.json`으로 분리. [ADR 0028](decisions/0028-site-knowledge-mcp.md).
 - **유튜브 링크 일괄 등록 스크립트** — `npm run bulk-youtube -w server -- prepare <links.txt>` → 미리보기 JSON 검토 → `save`. 중복 확인(세 섹션 메인·추가 링크), AI 섹션 분류, 섹션별 AI 채우기, GitHub 레포 추가 링크. AI 개발 도구 영상은 도구 레포·공식 사이트를 메인 링크로, 영상은 「소개 영상」 추가 링크. 검토 중 url을 고친 항목만 다시 채우는 `refill`. 첫 실사용으로 23건 저장. [ADR 0027](decisions/0027-bulk-youtube-import-script.md).

@@ -679,7 +679,24 @@ MCP 서버(Streamable HTTP, stateless, 인증 없음·읽기 전용). JSON-RPC �
 
 ---
 
-## 14. 참고
+## 14. 원클릭 저장 (`/api/quick-save`)
+
+개인 크롬 확장이 호출. 모두 `Authorization: Bearer` 필요. 설계: [ADR 0029](decisions/0029-quick-save-pipeline.md).
+
+### POST /api/quick-save
+
+`{ url, youtube?: { title, channel, description, transcript, lang? } }` → 중복 확인 · 섹션 분류 · AI 채우기 · 저장(초안 없음).
+`youtube.transcript`가 있으면 서버 자막 fetch 대신 그걸 근거로 쓰고 `scrap_sources`에 upsert.
+
+응답 `{ results: [{ url, section?, id?, slug?, title?, sitePath?, check?, duplicateOf?, error? }] }` — AI 개발 도구 영상은 도구마다 한 건이라 여러 개일 수 있다. `duplicateOf`면 저장 안 함, `check`는 사람 확인 필요(예: 이름 검색으로 찾은 레포).
+
+### POST /api/quick-save/move
+
+`{ id, from, to }` (섹션: `ai-tool`·`column`·`game-dev`) — 내용 그대로 `to`에 만들고 `from`의 행 삭제. 응답 `{ section, id, slug, title, sitePath }`. 삭제는 각 섹션의 기존 `DELETE /:id`.
+
+---
+
+## 15. 참고
 
 - 설계: `docs/plans/2026-03-03-links-admin-design.md`
 - 구현 계획: `docs/plans/2026-03-03-links-admin-implementation-plan.md`

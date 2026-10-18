@@ -685,10 +685,11 @@ MCP 서버(Streamable HTTP, stateless, 인증 없음·읽기 전용). JSON-RPC �
 
 ### POST /api/quick-save
 
-`{ url, youtube?: { title, channel, description, transcript, lang? } }` → 중복 확인 · 섹션 분류 · AI 채우기 · 저장(초안 없음).
-`youtube.transcript`가 있으면 서버 자막 fetch 대신 그걸 근거로 쓰고 `scrap_sources`에 upsert.
+`{ url, youtube?: { title, channel, description, transcript, lang? }, page?: { title, text, image? } }` → 중복 확인 · 섹션 분류 · AI 채우기 · 저장(초안 없음).
+`youtube.transcript`(유튜브) / `page.text`(그 외 — 확장이 렌더링된 탭에서 읽은 본문, SPA·봇 차단 사이트용)가 있으면 서버 fetch 대신 그걸 근거로 쓰고 `scrap_sources`에 upsert.
+요청이 끊기면(확장에서 중단) 아직 저장 안 한 항목은 저장하지 않는다.
 
-응답 `{ results: [{ url, section?, id?, slug?, title?, sitePath?, check?, duplicateOf?, error? }] }` — AI 개발 도구 영상은 도구마다 한 건이라 여러 개일 수 있다. `duplicateOf`면 저장 안 함, `check`는 사람 확인 필요(예: 이름 검색으로 찾은 레포).
+응답 `{ results: [{ url, section?, id?, slug?, title?, sitePath?, check?, duplicateOf?, error? }], log: string[] }` (500이면 `{ error, log }`) — `log`는 단계별 진행(`+경과초 내용`), 확장 「로그 복사」용 — AI 개발 도구로 분류되면 소개된 도구마다 한 건(최대 10개, 병렬 채우기)이라 여러 개일 수 있다. 칼럼·게임 개발은 자료 한 건. 유튜브가 아닌 페이지가 써먹는 사이트 자체면 `section: "link"`(유용한 링크, `POST /api/links/ai-suggest`와 같은 요약·태그, `sitePath: /links`) — 섹션 이동(`/move`) 불가, 삭제는 `DELETE /api/links/:id`. `duplicateOf`면 저장 안 함, `check`는 사람 확인 필요(예: 이름 검색으로 찾은 레포).
 
 ### POST /api/quick-save/move
 

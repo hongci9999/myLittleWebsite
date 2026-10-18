@@ -139,7 +139,7 @@ export async function classify(
   pref: AiRequestPreference,
   ctxText: string,
   { allowLink = false } = {}
-): Promise<{ section: Section; link: boolean; reason: string; tools: ToolHint[]; repos: string[] }> {
+): Promise<{ section: Section; link: boolean; reason: string; tools: ToolHint[]; resources: ToolHint[]; repos: string[] }> {
   const list = [
     ...Object.entries(SECTIONS).map(([k, v]) => `- ${k}: ${v.label} — ${v.desc}`),
     ...(allowLink
@@ -158,10 +158,11 @@ ${allowLink ? '0. 글·영상이 아니라 웹 서비스·사이트의 첫 화�
 
 추가로:
 - tools: section이 ai-tool일 때만, 자료가 **주제로 소개하는** AI 도구·모델·서비스 목록(최대 10개). 다른 섹션이면 빈 배열. 정확한 제품 이름으로 적고(예: "Playwright"가 아니라 "Playwright MCP"), 시연 수단으로만 등장하는 도구(예: MCP를 붙이는 Claude Code)나 배경 기술은 넣지 마세요. 여러 도구를 비교·나열하는 자료면 각각 넣으세요. 각 도구의 GitHub 저장소("owner/repo")와 공식 사이트 URL을 설명란·본문에서 찾을 수 있으면 적고, 모르면 비워 두세요(추측한 URL 금지).
+- resources: section이 ai-tool인 목록 자료(트렌딩·추천 레포 등)에 섞인 **도구가 아닌 학습 자료**(강좌·튜토리얼·가이드·로드맵·자료 모음 레포, 최대 5개) — 칼럼으로 따로 저장합니다. 형식은 tools와 같음. 일반 프레임워크·라이브러리(pytorch, next.js 등)는 tools·resources 둘 다 넣지 마세요. 없으면 빈 배열.
 - repos: 그 외 섹션에서 자료가 소개·설명하는 GitHub 저장소("owner/repo", 설명란 링크나 명확히 언급된 것만).
 
 JSON만 출력:
-{"section":"${allowLink ? 'link|' : ''}column|game-dev|ai-tool","reason":"한 문장","tools":[{"name":"도구 이름","repo":"owner/repo","site":"https://..."}],"repos":["owner/repo"]}
+{"section":"${allowLink ? 'link|' : ''}column|game-dev|ai-tool","reason":"한 문장","tools":[{"name":"도구 이름","repo":"owner/repo","site":"https://..."}],"resources":[{"name":"자료 이름","repo":"owner/repo","site":"https://..."}],"repos":["owner/repo"]}
 
 [자료]
 ${ctxText}`
@@ -170,17 +171,20 @@ ${ctxText}`
   const section = (Object.keys(SECTIONS) as Section[]).includes(j.section as Section)
     ? (j.section as Section)
     : 'column'
-  const tools = (Array.isArray(j.tools) ? j.tools : [])
-    .map((t) => t as Record<string, unknown>)
-    .filter((t) => typeof t?.name === 'string' && t.name.trim())
-    .slice(0, 10)
-    .map((t) => ({
-      name: String(t.name).trim(),
-      repo: typeof t.repo === 'string' && t.repo.trim() ? t.repo.trim() : undefined,
-      site: typeof t.site === 'string' && /^https?:\/\//.test(t.site) ? t.site.trim() : undefined,
-    }))
+  const hints = (v: unknown, max: number): ToolHint[] =>
+    (Array.isArray(v) ? v : [])
+      .map((t) => t as Record<string, unknown>)
+      .filter((t) => typeof t?.name === 'string' && t.name.trim())
+      .slice(0, max)
+      .map((t) => ({
+        name: String(t.name).trim(),
+        repo: typeof t.repo === 'string' && t.repo.trim() ? t.repo.trim() : undefined,
+        site: typeof t.site === 'string' && /^https?:\/\//.test(t.site) ? t.site.trim() : undefined,
+      }))
+  const tools = hints(j.tools, 10)
+  const resources = section === 'ai-tool' ? hints(j.resources, 5) : []
   const repos = Array.isArray(j.repos) ? j.repos.map(String) : []
-  return { section, link: allowLink && j.section === 'link', reason: String(j.reason ?? ''), tools, repos }
+  return { section, link: allowLink && j.section === 'link', reason: String(j.reason ?? ''), tools, resources, repos }
 }
 
 // ---------- GitHub · 사이트 확인 ----------
@@ -371,7 +375,7 @@ export async function quickSave(
     log(`자료 내용 ${ctx.length}자`)
     aborted()
     const c = await classify(pref, ctx, { allowLink: !videoId })
-    log(`분류: ${c.link ? 'link' : c.section} — ${c.reason} / tools=[${c.tools.map((t) => t.name).join(', ')}]`)
+    log(`분류: ${c.link ? 'link' : c.section} — ${c.reason} / tools=[${c.tools.map((t) => t.name).join(', ')}] resources=[${c.resources.map((t) => t.name).join(', ')}]`)
     aborted()
     if (introOf && (c.link || c.section !== 'ai-tool')) return [{ url: main, duplicateOf: introOf }]
     if (c.link) {
@@ -390,6 +394,12 @@ export async function quickSave(
       for (const r of resolved) {
         if (r && !targets.some((t) => linkKey(t.url) === linkKey(r.url)))
           targets.push({ section: 'ai-tool', url: r.url, extra: [...r.extra, { label: introLabel, url: main }], check: r.check })
+      }
+      // 목록에 섞인 강좌·가이드 레포는 칼럼으로 (메인 = 레포, 영상은 소개 링크)
+      const res = await Promise.all(c.resources.map((x) => resolveTool(x, ctx)))
+      for (const r of res) {
+        if (r && !targets.some((t) => linkKey(t.url) === linkKey(r.url)))
+          targets.push({ section: 'column', url: r.url, extra: [...r.extra, { label: introLabel, url: main }], check: r.check })
       }
     }
     // 소개 링크로 이미 쓰인 자료면 영상 자체를 AI 도구로 또 만들지 않는다

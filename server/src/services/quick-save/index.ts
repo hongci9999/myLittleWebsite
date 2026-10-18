@@ -9,6 +9,8 @@ import { supabase, getSupabaseWithAuth } from '../../db/supabase.js'
 import { createColumnScrap } from '../../db/queries/column-scraps.js'
 import { createGameDevResource } from '../../db/queries/game-dev-resources.js'
 import { createAiToolScrap } from '../../db/queries/ai-scraps.js'
+import { createLink, getDimensionsWithValues } from '../../db/queries/links.js'
+import { suggestLinkMeta } from '../ai/suggest-link-meta.js'
 import {
   suggestColumnScrapFromUrl,
   suggestGameDevResourceFromUrl,
@@ -17,7 +19,7 @@ import {
 import { getAiTextProvider, type AiRequestPreference } from '../ai/providers/registry.js'
 import { fetchYoutubeContentBundle, withProvidedYoutubeBundle } from '../youtube-content.js'
 import { parseYoutubeVideoId } from '../youtube-transcript-text.js'
-import { fetchWebsiteContent } from '../fetch-website.js'
+import { fetchWebsiteContent, withProvidedPage, type ProvidedPage } from '../fetch-website.js'
 
 export type Section = 'column' | 'game-dev' | 'ai-tool'
 
@@ -26,23 +28,26 @@ export const SECTIONS: Record<Section, { table: string; path: string; label: str
     table: 'ai_tool_scraps',
     path: 'ai-dev-tools',
     label: 'AI 개발 도구',
-    desc: '특정 AI 도구·모델·서비스를 소개하는 영상 (Claude Code·Cursor 등 AI 코딩 도구, 에이전트 터미널, MCP 서버, 에이전트 skill/rules, AI CLI, AI 이미지·비디오·음성 생성 모델, LLM 모델·API, AI 관련 오픈소스 레포)',
+    desc: '특정 AI 도구·모델·서비스 자체를 소개·리뷰하는 자료 — 「이 도구가 뭐고 어떻게 쓰나」가 주제 (AI 코딩 도구, 에이전트 터미널, MCP 서버, 에이전트 skill/rules, AI CLI, 생성 모델, LLM API, AI 오픈소스 레포)',
   },
   'game-dev': {
     table: 'game_dev_resources',
     path: 'game-dev',
     label: '게임 개발 도서관',
-    desc: '게임 개발 (그래픽스·셰이더, 물리, 게임 AI, 게임플레이, 엔진(Unity/Unreal/Godot), 네트워크, 사운드, 최적화)',
+    desc: '게임 만들기에 관한 모든 것 (그래픽스·셰이더·렌더링, 물리, 게임 AI, 게임플레이·게임 디자인·게임 필, 엔진(Unity/Unreal/Godot), 아트·스프라이트·에셋 제작, 네트워크, 사운드, 최적화, 인디·1인 개발 운영·비즈니스, 게임 개발에 AI 도구 쓰는 법)',
   },
   column: {
     table: 'column_scraps',
     path: 'column',
     label: '칼럼',
-    desc: '특정 도구 소개가 아닌 개발·기술 전반 (강연, 기술 트렌드, AI 활용 팁·생각, 커리어, 아키텍처, 일반 프로그래밍 등)',
+    desc: '게임 외 개발·기술 전반의 생각·설명 (강연·대담, 기술 트렌드, 개념 설명, AI 활용 팁·워크플로우·에이전트 설계론, 커리어, 아키텍처, 일반 프로그래밍)',
   },
 }
 
 export type ExtraLink = { label: string; url: string }
+
+/** 「유용한 링크」(links 테이블) — 세 섹션과 스키마가 달라 SECTIONS 밖. 원클릭 저장에서 웹 페이지만 */
+export const LINK_LABEL = '유용한 링크'
 
 // ---------- 링크 정규화 · 중복 ----------
 
@@ -63,7 +68,7 @@ export function linkKey(url: string): string {
   }
 }
 
-/** 세 섹션의 메인 링크 + 추가 링크 → linkKey 별 저장 위치 */
+/** 세 섹션의 메인 링크 + 추가 링크 + 유용한 링크 → linkKey 별 저장 위치 */
 export async function loadSavedLinks(): Promise<Map<string, string>> {
   const client = supabase.client
   if (!client) throw new Error('SUPABASE_URL / SUPABASE_ANON_KEY 가 server/.env 에 없습니다.')
@@ -74,13 +79,16 @@ export async function loadSavedLinks(): Promise<Map<string, string>> {
     for (const row of data ?? []) {
       const where = `${label} · ${row.title} (/${path}/${row.slug})`
       map.set(linkKey(String(row.url ?? '')), where)
-      // 추가 링크의 영상도 "이미 처리한 영상"으로 본다 (AI 개발 도구의 소개 영상 등)
+      // 추가 링크의 영상·소개 글도 "이미 처리한 자료"로 본다 (AI 개발 도구의 소개 영상 등)
       for (const l of (row.extra_links ?? []) as ExtraLink[]) {
         const k = linkKey(String(l?.url ?? ''))
-        if (k.startsWith('yt:') && !map.has(k)) map.set(k, where)
+        if ((k.startsWith('yt:') || l?.label === '소개 글') && !map.has(k)) map.set(k, where)
       }
     }
   }
+  const { data: links, error } = await client.from('links').select('url, title')
+  if (error) throw error
+  for (const l of links ?? []) map.set(linkKey(String(l.url ?? '')), `${LINK_LABEL} · ${l.title} (/links)`)
   return map
 }
 
@@ -121,24 +129,34 @@ function extractJson(raw: string): Record<string, unknown> | null {
 
 export type ToolHint = { name: string; repo?: string; site?: string }
 
+/** `allowLink`: 웹 페이지면 「유용한 링크」(콘텐츠가 아닌 써먹는 사이트)도 후보. 고르면 `link: true` (section은 무시) */
 export async function classify(
   pref: AiRequestPreference,
-  ctxText: string
-): Promise<{ section: Section; reason: string; tools: ToolHint[]; repos: string[] }> {
-  const list = Object.entries(SECTIONS)
-    .map(([k, v]) => `- ${k}: ${v.label} — ${v.desc}`)
-    .join('\n')
+  ctxText: string,
+  { allowLink = false } = {}
+): Promise<{ section: Section; link: boolean; reason: string; tools: ToolHint[]; repos: string[] }> {
+  const list = [
+    ...Object.entries(SECTIONS).map(([k, v]) => `- ${k}: ${v.label} — ${v.desc}`),
+    ...(allowLink
+      ? [`- link: ${LINK_LABEL} — 글·영상 같은 콘텐츠가 아니라 써먹는 웹 서비스·사이트 자체의 첫 화면 (변환기·생성기 같은 웹 도구, 디자인 리소스·아이콘·폰트 모음, 레퍼런스·문서 사이트, 커뮤니티)`]
+      : []),
+  ].join('\n')
   const prompt = `아래 자료(유튜브 영상·웹 글·GitHub 레포)를 개인 기술 블로그의 어느 섹션에 저장할지 고르세요.
 
 섹션:
 ${list}
 
+판단 순서 (위에서 먼저 맞는 것):
+${allowLink ? '0. 글·영상이 아니라 웹 서비스·사이트의 첫 화면 자체면 link — 단 AI 도구·모델의 공식 사이트면 2번(ai-tool).\n' : ''}1. 게임 개발에 관한 자료면 game-dev — 게임 엔진(Unity/Unreal/Godot) 프로젝트 이야기(AI 코딩·아키텍처 설계가 주제여도 대상이 게임 엔진 프로젝트면 game-dev), 특정 게임의 기획·시스템 디자인 분석, 또는 AI 도구·MCP로 게임 코드·아트·에셋을 만드는 과정·워크플로우. 단 AI 3D·모션·이미지 생성 모델·툴(예: NVIDIA Kimodo, Hi3D)을 소개·분석하는 자료는 게임 실무 활용을 다뤄도 2번.
+2. AI 도구·모델·서비스·레포 자체를 소개하면 ai-tool — 도구 하나의 기능·설치·사용법 소개(에이전트 관리·오케스트레이션 도구 포함), 또는 여러 도구·레포를 하나씩 짚는 목록(추천·트렌딩 레포·「N가지 도구」).
+3. 나머지는 column — AI 도구가 나와도 활용 팁·워크플로우·비교 의견·생각이 주제면 column. 웹 표준·브라우저 API(예: Canvas)는 게임에 쓸 수 있어도 column.
+
 추가로:
-- tools: section이 ai-tool이면 자료가 **주제로 소개하는** 도구·모델·서비스 목록(최대 5개). 정확한 제품 이름으로 적고(예: "Playwright"가 아니라 "Playwright MCP"), 시연 수단으로만 등장하는 도구(예: MCP를 붙이는 Claude Code)나 배경 기술은 넣지 마세요. 여러 도구를 비교·나열하는 자료면 각각 넣으세요. 각 도구의 GitHub 저장소("owner/repo")와 공식 사이트 URL을 설명란·본문에서 찾을 수 있으면 적고, 모르면 비워 두세요(추측한 URL 금지).
+- tools: section이 ai-tool일 때만, 자료가 **주제로 소개하는** AI 도구·모델·서비스 목록(최대 10개). 다른 섹션이면 빈 배열. 정확한 제품 이름으로 적고(예: "Playwright"가 아니라 "Playwright MCP"), 시연 수단으로만 등장하는 도구(예: MCP를 붙이는 Claude Code)나 배경 기술은 넣지 마세요. 여러 도구를 비교·나열하는 자료면 각각 넣으세요. 각 도구의 GitHub 저장소("owner/repo")와 공식 사이트 URL을 설명란·본문에서 찾을 수 있으면 적고, 모르면 비워 두세요(추측한 URL 금지).
 - repos: 그 외 섹션에서 자료가 소개·설명하는 GitHub 저장소("owner/repo", 설명란 링크나 명확히 언급된 것만).
 
 JSON만 출력:
-{"section":"column|game-dev|ai-tool","reason":"한 문장","tools":[{"name":"도구 이름","repo":"owner/repo","site":"https://..."}],"repos":["owner/repo"]}
+{"section":"${allowLink ? 'link|' : ''}column|game-dev|ai-tool","reason":"한 문장","tools":[{"name":"도구 이름","repo":"owner/repo","site":"https://..."}],"repos":["owner/repo"]}
 
 [자료]
 ${ctxText}`
@@ -150,14 +168,14 @@ ${ctxText}`
   const tools = (Array.isArray(j.tools) ? j.tools : [])
     .map((t) => t as Record<string, unknown>)
     .filter((t) => typeof t?.name === 'string' && t.name.trim())
-    .slice(0, 5)
+    .slice(0, 10)
     .map((t) => ({
       name: String(t.name).trim(),
       repo: typeof t.repo === 'string' && t.repo.trim() ? t.repo.trim() : undefined,
       site: typeof t.site === 'string' && /^https?:\/\//.test(t.site) ? t.site.trim() : undefined,
     }))
   const repos = Array.isArray(j.repos) ? j.repos.map(String) : []
-  return { section, reason: String(j.reason ?? ''), tools, repos }
+  return { section, link: allowLink && j.section === 'link', reason: String(j.reason ?? ''), tools, repos }
 }
 
 // ---------- GitHub · 사이트 확인 ----------
@@ -279,12 +297,25 @@ export async function createInSection(token: string, section: Section, url: stri
 
 // ---------- 원클릭 저장 ----------
 
+/** 유용한 링크: 링크 섹션의 AI 추천(사이트 분석 → 제목·설명·분류 태그)을 그대로 써서 저장 */
+async function saveLink(token: string, url: string, pref: AiRequestPreference, aborted: () => void): Promise<QuickSaveResult> {
+  try {
+    const dims = await getDimensionsWithValues().catch(() => [])
+    const m = await suggestLinkMeta(url, '', pref, dims)
+    aborted()
+    const row = await createLink(token, { url, title: m.title, description: m.description, valueIds: m.valueIds, faviconUrl: m.faviconUrl })
+    return { url, section: 'link', id: row.id, title: row.title, sitePath: '/links' }
+  } catch (e) {
+    return { url, section: 'link', error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
 /** 클라이언트가 사용자 브라우저에서 받아 보낸 유튜브 자막 (Vercel IP는 자막 차단) */
 export type ProvidedYoutube = { title: string; channel: string; description: string; transcript: string; lang?: string | null }
 
 export type QuickSaveResult = {
   url: string
-  section?: Section
+  section?: Section | 'link'
   id?: string
   slug?: string
   title?: string
@@ -296,53 +327,98 @@ export type QuickSaveResult = {
 
 /**
  * 링크 하나를 분류해 바로 저장 (초안 없음 — 오분류는 /move·DELETE로 고침).
- * 유튜브 AI 도구 영상은 도구마다 한 건씩이라 결과가 여러 개일 수 있다.
+ * AI 개발 도구 자료면 소개된 도구마다 항목을 따로 만들어 결과가 여러 개일 수 있다.
+ * `signal`이 끊기면(확장에서 중단) 아직 저장 안 한 항목은 저장하지 않는다.
+ * `log`: 단계별 진행(경과 초) — 확장의 「로그 복사」로 문제 보고용.
  */
-export async function quickSave(token: string, rawUrl: string, yt?: ProvidedYoutube): Promise<QuickSaveResult[]> {
+export async function quickSave(
+  token: string,
+  rawUrl: string,
+  opts: { youtube?: ProvidedYoutube; page?: ProvidedPage; signal?: AbortSignal; log?: (line: string) => void } = {}
+): Promise<QuickSaveResult[]> {
+  const { youtube: yt, page, signal } = opts
+  const t0 = Date.now()
+  const log = (m: string) => opts.log?.(`+${((Date.now() - t0) / 1000).toFixed(1)}s ${m}`)
   const videoId = parseYoutubeVideoId(rawUrl)
   const main = videoId ? `https://www.youtube.com/watch?v=${videoId}` : rawUrl.trim()
   const pref: AiRequestPreference = 'api'
+  const aborted = () => {
+    if (signal?.aborted) {
+      log('중단 신호 받음 — 남은 저장 생략')
+      throw new Error('중단됨')
+    }
+  }
 
   const run = async (): Promise<QuickSaveResult[]> => {
     const saved = await loadSavedLinks()
+    log(`저장된 링크 ${saved.size}개 불러옴`)
     const dup = saved.get(linkKey(main))
     if (dup) return [{ url: main, duplicateOf: dup }]
 
     const ctx = await sourceContext(main)
-    const c = await classify(pref, ctx)
+    log(`자료 내용 ${ctx.length}자`)
+    aborted()
+    const c = await classify(pref, ctx, { allowLink: !videoId })
+    log(`분류: ${c.link ? 'link' : c.section} — ${c.reason} / tools=[${c.tools.map((t) => t.name).join(', ')}]`)
+    aborted()
+    if (c.link) {
+      const r = await saveLink(token, main, pref, aborted)
+      log(r.error ? `링크 저장 실패: ${r.error}` : `링크 저장: ${r.title}`)
+      return [r]
+    }
 
-    // 저장할 (섹션, 메인 링크) 목록
+    // 저장할 (섹션, 메인 링크) 목록. 자료 자체가 레포면 도구 찾기 없이 그 레포.
+    const isRepo = linkKey(main).startsWith('gh:')
+    const introLabel = videoId ? '소개 영상' : '소개 글'
     const targets: { section: Section; url: string; extra: ExtraLink[]; check?: string }[] = []
-    if (c.section === 'ai-tool' && videoId) {
-      for (const tool of c.tools) {
-        const r = await resolveTool(tool, ctx)
-        if (r) targets.push({ section: 'ai-tool', url: r.url, extra: [...r.extra, { label: '소개 영상', url: main }], check: r.check })
+    if (c.section !== 'ai-tool' || isRepo) targets.push({ section: c.section, url: main, extra: [] })
+    if (c.section === 'ai-tool' && !isRepo) {
+      const resolved = await Promise.all(c.tools.map((tool) => resolveTool(tool, ctx)))
+      for (const r of resolved) {
+        if (r && !targets.some((t) => linkKey(t.url) === linkKey(r.url)))
+          targets.push({ section: 'ai-tool', url: r.url, extra: [...r.extra, { label: introLabel, url: main }], check: r.check })
       }
-      if (targets.length === 0) {
-        targets.push({ section: 'ai-tool', url: main, extra: [], check: `도구(${c.tools.map((t) => t.name).join(', ') || '?'}) 레포·사이트를 못 찾아 영상을 메인 링크로 저장 — 확인` })
-      }
-    } else {
-      targets.push({ section: c.section, url: main, extra: [] })
     }
+    if (targets.length === 0) {
+      targets.push({ section: 'ai-tool', url: main, extra: [], check: `도구(${c.tools.map((t) => t.name).join(', ') || '?'}) 레포·사이트를 못 찾아 ${introLabel}을 메인 링크로 저장 — 확인` })
+    }
+    log(`저장 대상 ${targets.length}개: ${targets.map((t) => `${t.section} ${t.url}`).join(' | ')}`)
+    aborted()
 
-    const out: QuickSaveResult[] = []
-    for (const t of targets) {
-      const d = saved.get(linkKey(t.url))
-      if (d) {
-        out.push({ url: t.url, section: t.section, duplicateOf: d })
-        continue
-      }
-      try {
-        const data = await fill(t.section, t.url, pref)
-        const repoLinks = t.section === 'ai-tool' ? [] : await findRepoLinks([ctx, data.bodyMd], c.repos)
-        const row = await createInSection(token, t.section, t.url, { ...data, extraLinks: [...t.extra, ...repoLinks] })
-        saved.set(linkKey(t.url), row.slug)
-        out.push({ url: t.url, section: t.section, id: row.id, slug: row.slug, title: row.title, sitePath: `/${SECTIONS[t.section].path}/${row.slug}`, check: t.check })
-      } catch (e) {
-        out.push({ url: t.url, section: t.section, error: e instanceof Error ? e.message : String(e) })
-      }
-    }
-    return out
+    // ponytail: 항목마다 AI 채우기(수십 초)를 병렬로 — 순차면 도구 여럿일 때 Vercel 300초를 넘긴다
+    return Promise.all(
+      targets.map(async (t): Promise<QuickSaveResult> => {
+        const d = saved.get(linkKey(t.url))
+        if (d) return { url: t.url, section: t.section, duplicateOf: d }
+        try {
+          const data = await fill(t.section, t.url, pref)
+          log(`AI 채우기 끝: ${t.url} → ${data.title}`)
+          const repoLinks = t.section === 'ai-tool' ? [] : await findRepoLinks([ctx, data.bodyMd], c.repos)
+          aborted()
+          const row = await createInSection(token, t.section, t.url, { ...data, extraLinks: [...t.extra, ...repoLinks] })
+          log(`저장: ${t.section}/${row.slug}`)
+          return { url: t.url, section: t.section, id: row.id, slug: row.slug, title: row.title, sitePath: `/${SECTIONS[t.section].path}/${row.slug}`, check: t.check }
+        } catch (e) {
+          log(`실패: ${t.url} — ${e instanceof Error ? e.message : String(e)}`)
+          return { url: t.url, section: t.section, error: e instanceof Error ? e.message : String(e) }
+        }
+      })
+    )
+  }
+
+  // MCP get_source용 원문 (백필 없이 바로)
+  const keepSource = async (kind: string, text: string) => {
+    const { error } = await getSupabaseWithAuth(token)!
+      .from('scrap_sources')
+      .upsert({ url: main, kind, text, fetched_at: new Date().toISOString() })
+    if (error) console.error('[quick-save] scrap_sources upsert failed', error.message)
+  }
+
+  log(`시작 ${main} · 자막 ${yt?.transcript.length ?? 0}자 · 페이지 본문 ${page?.text.length ?? 0}자`)
+  if (!videoId && page?.text.trim()) {
+    const results = await withProvidedPage(main, page, run)
+    if (results.some((r) => r.id)) await keepSource('page', page.text)
+    return results
   }
 
   if (!videoId || !yt?.transcript.trim()) return run()
@@ -363,10 +439,6 @@ export async function quickSave(token: string, rawUrl: string, yt?: ProvidedYout
     },
     run
   )
-  // MCP get_source용 원문 (백필 없이 바로)
-  const { error } = await getSupabaseWithAuth(token)!
-    .from('scrap_sources')
-    .upsert({ url: main, kind: 'transcript', text: yt.transcript, fetched_at: new Date().toISOString() })
-  if (error) console.error('[quick-save] scrap_sources upsert failed', error.message)
+  await keepSource('transcript', yt.transcript)
   return results
 }

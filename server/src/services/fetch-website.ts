@@ -167,6 +167,25 @@ ${digest}`,
   }
 }
 
+export type ProvidedPage = { title: string; text: string; image?: string | null }
+
+/** 밖에서 받아 온 페이지 본문 (원클릭 저장 확장이 렌더링된 탭에서 수집 — SPA·봇 차단 사이트용) — URL별 */
+const providedPages = new Map<string, ProvidedPage>()
+
+/**
+ * `fn` 실행 동안 이 URL의 fetchWebsiteContent가 서버 fetch 대신 주어진 본문을 쓴다.
+ * ponytail: 모듈 전역 Map — withProvidedYoutubeBundle과 같은 방식·같은 한계.
+ */
+export async function withProvidedPage<T>(url: string, page: ProvidedPage, fn: () => Promise<T>): Promise<T> {
+  const key = url.trim()
+  providedPages.set(key, page)
+  try {
+    return await fn()
+  } finally {
+    providedPages.delete(key)
+  }
+}
+
 /**
  * URL fetch 후 HTML에서 title, meta description, 본문 텍스트 추출.
  * YouTube는 HTML에 본문이 거의 없어 **자막(transcript)** 이 있으면 그것을 본문으로 넣는다.
@@ -177,6 +196,22 @@ export async function fetchWebsiteContent(
 ): Promise<WebsiteContent | null> {
   const trimmed = url.trim()
   const ytId = parseYoutubeVideoId(trimmed)
+
+  const provided = providedPages.get(trimmed)
+  if (provided) {
+    const bodyText = provided.text.length > maxBodyChars ? provided.text.slice(0, maxBodyChars) + '...' : provided.text
+    return {
+      url: trimmed,
+      title: provided.title,
+      metaDescription: '',
+      bodyText,
+      fullText: `제목: ${provided.title}
+
+본문: ${bodyText}`,
+      faviconUrl: `${new URL(trimmed).origin}/favicon.ico`,
+      ogImageUrl: provided.image ?? null,
+    }
+  }
 
   if (ytId) {
     const bundle = await fetchYoutubeContentBundle(trimmed)

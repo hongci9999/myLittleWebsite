@@ -11,14 +11,15 @@ import {
   type ProvidedYoutube,
   type Section,
 } from '../services/quick-save/index.js'
+import type { ProvidedPage } from '../services/fetch-website.js'
 
 const router = Router()
 
 const isSection = (s: unknown): s is Section => typeof s === 'string' && s in SECTIONS
 
-/** POST /api/quick-save — 원클릭 저장 `{ url, youtube? }` */
+/** POST /api/quick-save — 원클릭 저장 `{ url, youtube?, page? }` */
 router.post('/', requireAuth, async (req, res) => {
-  const { url, youtube } = req.body as { url?: unknown; youtube?: ProvidedYoutube }
+  const { url, youtube, page } = req.body as { url?: unknown; youtube?: ProvidedYoutube; page?: ProvidedPage }
   if (typeof url !== 'string' || !/^https?:\/\//.test(url)) {
     res.status(400).json({ error: 'url is required' })
     return
@@ -33,12 +34,28 @@ router.post('/', requireAuth, async (req, res) => {
           lang: typeof youtube.lang === 'string' ? youtube.lang : null,
         }
       : undefined
+  const pg =
+    page && typeof page.text === 'string'
+      ? { title: String(page.title ?? ''), text: page.text.slice(0, 100_000), image: typeof page.image === 'string' ? page.image : null }
+      : undefined
+  // 확장에서 중단(요청 abort)하면 아직 저장 안 한 항목은 건너뛴다
+  const ac = new AbortController()
+  res.on('close', () => {
+    if (!res.writableEnded) ac.abort()
+  })
+  // 단계 로그 — 응답에 실어 확장 「로그 복사」로 (Vercel 로그에도 남김)
+  const log: string[] = []
+  const push = (line: string) => {
+    log.push(line)
+    console.log('[quick-save]', line)
+  }
   try {
-    const results = await quickSave((req as AuthenticatedRequest).authToken, url, yt)
-    res.json({ results })
+    const results = await quickSave((req as AuthenticatedRequest).authToken, url, { youtube: yt, page: pg, signal: ac.signal, log: push })
+    res.json({ results, log })
   } catch (e) {
     console.error('[quick-save]', e)
-    res.status(500).json({ error: e instanceof Error ? e.message : String(e) })
+    push(`예외: ${e instanceof Error ? (e.stack ?? e.message) : String(e)}`)
+    res.status(500).json({ error: e instanceof Error ? e.message : String(e), log })
   }
 })
 

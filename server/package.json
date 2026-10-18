@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "bulk-youtube": "tsx scripts/bulk-youtube.ts",
-    "backfill-sources": "tsx scripts/backfill-sources.ts"
+    "backfill-sources": "tsx scripts/backfill-sources.ts",
+    "eval-classify": "tsx scripts/eval-classify.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.1",

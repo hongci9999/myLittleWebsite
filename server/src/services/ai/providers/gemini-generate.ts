@@ -25,6 +25,8 @@ export async function geminiGenerateContent(
     body: JSON.stringify({
       contents: [{ role: 'user', parts }],
     }),
+    // 응답 없이 매달리면 원클릭 저장 전체가 Vercel 300초 제한까지 멈춘다
+    signal: AbortSignal.timeout(120_000),
   })
 
   const data = (await res.json()) as GeminiGenerateResponse

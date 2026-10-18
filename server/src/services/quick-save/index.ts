@@ -68,8 +68,12 @@ export function linkKey(url: string): string {
   }
 }
 
-/** 세 섹션의 메인 링크 + 추가 링크 + 유용한 링크 → linkKey 별 저장 위치 */
-export async function loadSavedLinks(): Promise<Map<string, string>> {
+/**
+ * 세 섹션의 메인 링크 + 추가 링크 + 유용한 링크 → linkKey 별 저장 위치.
+ * `introOut`을 주면 추가 링크(소개 영상·글)는 메인 map 대신 거기에 담는다 — 원클릭 저장이
+ * 「도구 몇 개만 저장된 영상」을 다시 처리해 남은 도구를 저장할 수 있게.
+ */
+export async function loadSavedLinks(introOut?: Map<string, string>): Promise<Map<string, string>> {
   const client = supabase.client
   if (!client) throw new Error('SUPABASE_URL / SUPABASE_ANON_KEY 가 server/.env 에 없습니다.')
   const map = new Map<string, string>()
@@ -82,7 +86,8 @@ export async function loadSavedLinks(): Promise<Map<string, string>> {
       // 추가 링크의 영상·소개 글도 "이미 처리한 자료"로 본다 (AI 개발 도구의 소개 영상 등)
       for (const l of (row.extra_links ?? []) as ExtraLink[]) {
         const k = linkKey(String(l?.url ?? ''))
-        if ((k.startsWith('yt:') || l?.label === '소개 글') && !map.has(k)) map.set(k, where)
+        const into = introOut ?? map
+        if ((k.startsWith('yt:') || l?.label === '소개 글') && !into.has(k)) into.set(k, where)
       }
     }
   }
@@ -350,10 +355,17 @@ export async function quickSave(
   }
 
   const run = async (): Promise<QuickSaveResult[]> => {
-    const saved = await loadSavedLinks()
+    const intro = new Map<string, string>()
+    const saved = await loadSavedLinks(intro)
     log(`저장된 링크 ${saved.size}개 불러옴`)
     const dup = saved.get(linkKey(main))
-    if (dup) return [{ url: main, duplicateOf: dup }]
+    if (dup) {
+      log(`이미 메인 링크로 저장됨: ${dup}`)
+      return [{ url: main, duplicateOf: dup }]
+    }
+    // 다른 항목의 소개 영상·글로만 있으면 계속 — 그 자료의 도구 중 아직 안 저장된 것만 저장
+    const introOf = intro.get(linkKey(main))
+    if (introOf) log(`소개 링크로 이미 쓰임(${introOf}) — 남은 도구만 저장`)
 
     const ctx = await sourceContext(main)
     log(`자료 내용 ${ctx.length}자`)
@@ -361,6 +373,7 @@ export async function quickSave(
     const c = await classify(pref, ctx, { allowLink: !videoId })
     log(`분류: ${c.link ? 'link' : c.section} — ${c.reason} / tools=[${c.tools.map((t) => t.name).join(', ')}]`)
     aborted()
+    if (introOf && (c.link || c.section !== 'ai-tool')) return [{ url: main, duplicateOf: introOf }]
     if (c.link) {
       const r = await saveLink(token, main, pref, aborted)
       log(r.error ? `링크 저장 실패: ${r.error}` : `링크 저장: ${r.title}`)
@@ -379,6 +392,8 @@ export async function quickSave(
           targets.push({ section: 'ai-tool', url: r.url, extra: [...r.extra, { label: introLabel, url: main }], check: r.check })
       }
     }
+    // 소개 링크로 이미 쓰인 자료면 영상 자체를 AI 도구로 또 만들지 않는다
+    if (targets.length === 0 && introOf) return [{ url: main, duplicateOf: introOf }]
     if (targets.length === 0) {
       targets.push({ section: 'ai-tool', url: main, extra: [], check: `도구(${c.tools.map((t) => t.name).join(', ') || '?'}) 레포·사이트를 못 찾아 ${introLabel}을 메인 링크로 저장 — 확인` })
     }
@@ -389,7 +404,10 @@ export async function quickSave(
     return Promise.all(
       targets.map(async (t): Promise<QuickSaveResult> => {
         const d = saved.get(linkKey(t.url))
-        if (d) return { url: t.url, section: t.section, duplicateOf: d }
+        if (d) {
+          log(`이미 저장된 도구: ${t.url}`)
+          return { url: t.url, section: t.section, duplicateOf: d }
+        }
         try {
           const data = await fill(t.section, t.url, pref)
           log(`AI 채우기 끝: ${t.url} → ${data.title}`)

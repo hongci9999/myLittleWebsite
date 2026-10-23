@@ -1,0 +1,2 @@
+[mcp_servers.mysite]
+url = "https://my-little-website-client-self.vercel.app/api/mcp"

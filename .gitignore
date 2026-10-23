@@ -50,3 +50,6 @@ server/*.zip
 
 # 개인용 크롬 확장 (비공개 — 레포에 올리지 않음)
 /extension/
+
+# Codex가 설치한 superpowers 복사본 (정본: .cursor/skills/superpowers/)
+.agents/skills/superpowers/

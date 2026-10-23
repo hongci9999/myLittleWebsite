@@ -697,7 +697,16 @@ MCP 서버(Streamable HTTP, stateless, 인증 없음·읽기 전용). JSON-RPC �
 
 ---
 
-## 15. 참고
+## 15. 사이트 대화창 (`/api/chat`)
+
+### POST /api/chat
+
+`{ messages: [{ role: 'user' | 'model', text }] }` (마지막은 `user`, 최근 20개·각 2000자까지 사용) → `{ text }` (Markdown). Gemini가 MCP와 같은 `knowledgeTools`를 불러 답한다.
+`Authorization: Bearer`가 유효하면 무제한, 아니면 IP별 하루 10회 — 넘으면 `429`, 카운터(`chat_hit` RPC) 실패 `503`, 답변 생성 실패 `502`. 설계: [ADR 0030](decisions/0030-site-chat-dock.md).
+
+---
+
+## 16. 참고
 
 - 설계: `docs/plans/2026-03-03-links-admin-design.md`
 - 구현 계획: `docs/plans/2026-03-03-links-admin-implementation-plan.md`

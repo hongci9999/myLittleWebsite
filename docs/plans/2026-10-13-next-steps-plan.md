@@ -1,7 +1,7 @@
 # 다음 작업 계획 — MCP 마무리 · 크롬 확장 원클릭 저장 · 사이트 대화창
 
 날짜: 2026-10-13  
-진행: 2026-10-14 — 0번 완료(백필·배포 MCP 실사용 확인, claude.ai 커넥터 등록만 남음), 1번 완료([ADR 0029](../decisions/0029-quick-save-pipeline.md), 블로그 본문은 서버 fetch 유지). 다음은 2번.  
+진행: 2026-10-14 — 0번 완료(백필·배포 MCP 실사용 확인, claude.ai 커넥터 등록만 남음), 1번 완료([ADR 0029](../decisions/0029-quick-save-pipeline.md), 블로그 본문은 서버 fetch 유지). 2026-10-23 — 2번 구현([ADR 0030](../decisions/0030-site-chat-dock.md)).  
 선행: [ADR 0028 사이트 지식 MCP](../decisions/0028-site-knowledge-mcp.md) (커밋·배포 완료)
 
 ## 0. MCP 마무리 (바로)

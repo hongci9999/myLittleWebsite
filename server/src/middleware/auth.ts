@@ -10,6 +10,14 @@ export type AuthenticatedRequest = Request & {
   authToken: string
 }
 
+/** Bearer 헤더의 토큰이 유효하면 사용자 id, 아니면 null (선택 인증용) */
+export async function getAuthUserId(authHeader: string | undefined): Promise<string | null> {
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null
+  if (!supabase || !token) return null
+  const { data, error } = await supabase.auth.getUser(token)
+  return error ? null : (data.user?.id ?? null)
+}
+
 export async function requireAuth(
   req: Request,
   res: Response,

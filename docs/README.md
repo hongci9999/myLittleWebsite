@@ -47,10 +47,15 @@
 
 개인 크롬 확장에서 지금 탭을 버튼 하나로 분류·저장. 유튜브 자막은 브라우저에서 받아 보내 `scrap_sources`까지 채운다. 설계 [ADR 0029](decisions/0029-quick-save-pipeline.md), API [api-spec §14](api-spec.md).
 
+### 사이트 대화창 (`POST /api/chat`)
+
+화면 중앙 하단 입력창으로 사이트 자료를 자연어 검색. MCP 도구를 Gemini function calling에 재사용, 비로그인은 IP별 하루 10회. 설계 [ADR 0030](decisions/0030-site-chat-dock.md), API [api-spec §15](api-spec.md), 사용량 [chat_usage SQL](plans/2026-10-23-chat-usage.sql).
+
 ### 최근 계획
 
 | 날짜                                                                  | 제목                                         |
 | --------------------------------------------------------------------- | -------------------------------------------- |
+| [2026-10-23](./plans/2026-10-23-chat-usage.sql)                       | 대화창 사용량 테이블 `chat_usage`            |
 | [2026-10-13](./plans/2026-10-13-next-steps-plan.md)                   | 다음 작업: MCP 마무리·크롬 확장·사이트 대화창 |
 | [2026-10-13](./plans/2026-10-13-scrap-sources.sql)                    | MCP 원문 캐시 테이블 `scrap_sources`          |
 | [2026-07-23](./plans/2026-07-23-vercel-migration.md)                  | AWS → Vercel 단일 호스팅 이전 walkthrough    |
@@ -103,6 +108,7 @@
 - [0027 유튜브 링크 일괄 등록 로컬 스크립트](./decisions/0027-bulk-youtube-import-script.md)
 - [0028 사이트 지식 MCP 서버](./decisions/0028-site-knowledge-mcp.md)
 - [0029 원클릭 저장 파이프라인 (개인 크롬 확장 + quick-save API)](./decisions/0029-quick-save-pipeline.md)
+- [0030 사이트 대화창 (하단 입력창 + chat API, MCP 도구 재사용)](./decisions/0030-site-chat-dock.md)
 
 ### 학습 내용
 

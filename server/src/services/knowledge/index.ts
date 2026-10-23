@@ -151,8 +151,8 @@ export const knowledgeTools: KnowledgeTool[] = [
       const t = tag?.toLowerCase()
       return (await loadScraps(section))
         .filter((s) => !t || s.tags.some((x) => x.toLowerCase() === t))
-        // 목록은 고르기용으로 최소화 — url·siteUrl은 get_scraps에서
-        .map(({ id, title, summary, tags }) => ({ id, title, summary, tags }))
+        // 목록은 고르기용으로 최소화 — 원본 url·본문은 get_scraps에서. siteUrl은 목록만으로 출처 다는 답(대화창)용
+        .map(({ id, title, summary, tags, siteUrl }) => ({ id, title, summary, tags, siteUrl }))
     },
   },
   {

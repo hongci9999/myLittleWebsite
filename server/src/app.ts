@@ -15,6 +15,7 @@ import tarotRoutes from './routes/tarot.js'
 import siteDomainRoutes from './routes/site-domain.js'
 import mcpRoutes from './routes/mcp.js'
 import quickSaveRoutes from './routes/quick-save.js'
+import chatRoutes from './routes/chat.js'
 import { getAiProviderOptionsMeta } from './services/ai/index.js'
 
 function parseAllowedOrigins(raw: string | undefined): string[] {
@@ -76,5 +77,6 @@ app.use('/api/tarot', tarotRoutes)
 app.use('/api/site-domain', siteDomainRoutes)
 app.use('/api/mcp', mcpRoutes)
 app.use('/api/quick-save', quickSaveRoutes)
+app.use('/api/chat', chatRoutes)
 
 export default app

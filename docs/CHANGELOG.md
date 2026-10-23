@@ -6,6 +6,8 @@
 
 ### Added
 
+- **사이트 대화창** — 화면 중앙 하단 입력창에 질문하면 입력창 위로 대화가 펼쳐지며 답한다. `POST /api/chat`: Gemini function calling으로 MCP와 같은 도구(`knowledgeTools`)를 불러 저장 자료·포트폴리오·개발 기록을 찾아 사이트 링크와 함께 답변. 로그인 무제한, 비로그인 IP별 하루 10회(`chat_usage` + `chat_hit` RPC). MCP `list_scraps`도 `siteUrl`을 함께 반환. [ADR 0030](decisions/0030-site-chat-dock.md).
+
 - **원클릭 저장 파이프라인** — 개인용 크롬 확장에서 버튼 하나로 지금 탭을 저장. `POST /api/quick-save`(로그인 필요): 링크 하나를 중복 확인·섹션 분류·AI 채우기 후 저장. 유튜브 자막을 같이 받으면 그걸 근거로 쓰고 `scrap_sources`도 바로 채운다(Vercel 자막 차단 우회). 오분류는 `/move`로 섹션 이동. bulk-youtube 로직을 `services/quick-save/`로 옮겨 공유. 확장 코드는 비공개(레포 제외). [ADR 0029](decisions/0029-quick-save-pipeline.md).
 - **MCP 연결 가이드 페이지 (`/mcp`)** — 메인 머릿말 「AI 연결(MCP) →」 진입점. Claude Code·Codex·Claude 웹·Cursor·VS Code 연결법, 질문 예시, 도구 목록. 원본 `docs/mcp-guide.md`를 빌드 시 복사해 렌더(패치노트와 같은 방식, 공용 `MarkdownDocPage`).
 - **사이트 지식 MCP 서버** — `POST /api/mcp`(Streamable HTTP, 인증 없음·읽기 전용). Claude·ChatGPT 등이 저장 자료(AI 도구·칼럼·게임 개발·유용한 링크), 원문(유튜브 자막·README·페이지), 포트폴리오(about·프로젝트), 개발 기록(ADR·학습 노트)을 읽어 답변·자소서에 쓴다. 원문 캐시 `scrap_sources` + 로컬 `npm run backfill-sources -w server`. 프로젝트 목록 데이터를 `projects.json`으로 분리. [ADR 0028](decisions/0028-site-knowledge-mcp.md).

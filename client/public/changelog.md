@@ -6,13 +6,21 @@
 
 ### Added
 
+- **사이트 대화창** — 화면 중앙 하단 입력창에 질문하면 입력창 위로 대화가 펼쳐지며 답한다. `POST /api/chat`: Gemini function calling으로 MCP와 같은 도구(`knowledgeTools`)를 불러 저장 자료·포트폴리오·개발 기록을 찾아 사이트 링크와 함께 답변. 로그인 무제한, 비로그인 IP별 하루 10회(`chat_usage` + `chat_hit` RPC). MCP `list_scraps`도 `siteUrl`을 함께 반환. [ADR 0030](decisions/0030-site-chat-dock.md).
+
+- **원클릭 저장 파이프라인** — 개인용 크롬 확장에서 버튼 하나로 지금 탭을 저장. `POST /api/quick-save`(로그인 필요): 링크 하나를 중복 확인·섹션 분류·AI 채우기 후 저장. 유튜브 자막을 같이 받으면 그걸 근거로 쓰고 `scrap_sources`도 바로 채운다(Vercel 자막 차단 우회). 오분류는 `/move`로 섹션 이동. bulk-youtube 로직을 `services/quick-save/`로 옮겨 공유. 확장 코드는 비공개(레포 제외). [ADR 0029](decisions/0029-quick-save-pipeline.md).
 - **MCP 연결 가이드 페이지 (`/mcp`)** — 메인 머릿말 「AI 연결(MCP) →」 진입점. Claude Code·Codex·Claude 웹·Cursor·VS Code 연결법, 질문 예시, 도구 목록. 원본 `docs/mcp-guide.md`를 빌드 시 복사해 렌더(패치노트와 같은 방식, 공용 `MarkdownDocPage`).
 - **사이트 지식 MCP 서버** — `POST /api/mcp`(Streamable HTTP, 인증 없음·읽기 전용). Claude·ChatGPT 등이 저장 자료(AI 도구·칼럼·게임 개발·유용한 링크), 원문(유튜브 자막·README·페이지), 포트폴리오(about·프로젝트), 개발 기록(ADR·학습 노트)을 읽어 답변·자소서에 쓴다. 원문 캐시 `scrap_sources` + 로컬 `npm run backfill-sources -w server`. 프로젝트 목록 데이터를 `projects.json`으로 분리. [ADR 0028](decisions/0028-site-knowledge-mcp.md).
 - **유튜브 링크 일괄 등록 스크립트** — `npm run bulk-youtube -w server -- prepare <links.txt>` → 미리보기 JSON 검토 → `save`. 중복 확인(세 섹션 메인·추가 링크), AI 섹션 분류, 섹션별 AI 채우기, GitHub 레포 추가 링크. AI 개발 도구 영상은 도구 레포·공식 사이트를 메인 링크로, 영상은 「소개 영상」 추가 링크. 검토 중 url을 고친 항목만 다시 채우는 `refill`. 첫 실사용으로 23건 저장. [ADR 0027](decisions/0027-bulk-youtube-import-script.md).
 - **Gemini YouTube 직접 분석 점검** — `/ai-smoke-test`에 입력칸, `POST /api/ai-smoke/gemini-youtube`(로그인 필요).
 
+### Fixed
+
+- **원클릭 저장 — 도구 일부만 저장된 영상이 통째로 중복 처리되던 문제** — 이전에 도구 5개만 저장된 「트렌딩 Top 10」 영상을 다시 저장하면, 그 영상이 기존 항목의 「소개 영상」 링크라는 이유로 바로 중복 처리됐다. 메인 링크로 저장된 경우만 중복으로 보고, 소개 링크로만 쓰였으면 계속 진행해 아직 없는 도구만 저장한다. 도구 목록 영상에 섞인 강좌·가이드 레포(예: ai-engineering-from-scratch)는 버리지 않고 칼럼으로 저장(메인 = 레포, 영상은 소개 링크).
+
 ### Changed
 
+- **원클릭 저장 보강** — ① 도구 여럿인 자료가 순차 AI 채우기로 Vercel 300초를 넘겨 멈추던 문제: 항목별 병렬 채우기, Gemini 호출 120초 타임아웃. 확장에 「중단」 버튼·290초 타임아웃, 서비스 워커가 죽어 '저장 중'에 갇힌 상태 감지. 중단되면 서버도 남은 항목 저장 생략. ② AI 개발 도구 자료에서 소개된 도구를 최대 10개까지 각각 저장. 분류 프롬프트에 판단 순서(게임 개발 → AI 도구 소개 → 칼럼)를 넣어 AI 도구를 쓰는 게임 개발·활용 팁 자료가 AI 개발 도구로 빨려 들어가던 문제를 고침 — 기존 저장 재분류 시 게임 개발 최근 6건 중 2→6건, 섹션별 12건씩 36건 중 32건 일치, 점검 스크립트 `npm run eval-classify -w server`. ③ 일반 웹 글은 확장이 렌더링된 탭 본문을 보내 SPA(D2 등)·봇 차단 사이트도 처리, AI 도구 소개 글이면 도구 레포를 메인으로·글은 「소개 글」 추가 링크. ④ 웹 페이지가 글이 아니라 써먹는 사이트 자체(웹 도구·리소스 모음·레퍼런스)면 「유용한 링크」로 분류해 링크 섹션 AI 추천(사이트 요약·분류 태그)으로 저장 — 사이트 홈 4·글 2·AI 도구 2건 시험 8/8. AI 3D·모션 생성 툴과 에이전트 관리 도구는 AI 개발 도구, 웹 표준·브라우저 API는 칼럼으로 규칙 추가하고 기존 3건 이동(Kimodo·Buzz → AI 개발 도구, 메인 = 레포 / HTML in Canvas → 칼럼). ⑤ 문제 보고용 「로그 복사」 — 확장·서버 단계 로그(경과 초)와 결과를 한 번에 복사, 멈추면 마지막 단계가 popup에 보인다.
 - **유튜브 AI 채우기 — 자막 fetch 실패 시 Gemini 영상 직접 분석 폴백** — 배포 서버(Vercel) IP에서 유튜브 자막이 막혀 자막 있는 영상도 AI 채우기가 실패하던 문제. 자막을 못 받으면 Gemini가 영상 URL을 직접 보고 자막 대체 텍스트를 만들어 기존 섹션별 AI 정리를 그대로 탄다(Obsidian 클립 붙여넣기 불필요). `maxDuration` 60→300. 게임 개발 도서관 상세에 유튜브 원문 임베드, iframe lazy 로딩. [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md).
 - **About 현행화** — 프로덕션 배포 절을 Vercel 기준으로 다시 쓰고 AWS 절은 「이전 기록」으로 정리. 게임 개발 도서관·MCP 라우트·바로가기·ADR 요약 추가. `mylittlewebsite.p-e.kr`은 현재 사이트에 연결돼 있지 않음을 명시.
 

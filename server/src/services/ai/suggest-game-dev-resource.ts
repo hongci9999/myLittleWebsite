@@ -5,18 +5,10 @@ import {
   type MediaKind,
 } from '../../db/queries/game-dev-resources.js'
 import { fetchWebsiteContent, type WebsiteContent } from '../fetch-website.js'
-import {
-  OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR,
-  parseObsidianYoutubeClip,
-  type ObsidianYoutubeClip,
-} from '../parse-obsidian-youtube-clip.js'
 import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { GameDevResourcePrompts } from './prompts/game-dev-resource.prompts.js'
-import {
-  getAiTextProvider,
-  type AiRequestPreference,
-} from './providers/registry.js'
+import { getAiTextProvider } from './providers/registry.js'
 import type { AiTextProvider } from './providers/types.js'
 import type { GameDevResourceAiFillResult } from './types.js'
 import {
@@ -64,7 +56,6 @@ async function buildGameDevFromSiteAnalysis(params: {
   siteAnalysis: string
   coverImageUrl: string | null
   ai: AiTextProvider
-  clipTranscriptOnly?: boolean
 }): Promise<GameDevResourceAiFillResult> {
   const {
     trimmed,
@@ -73,23 +64,16 @@ async function buildGameDevFromSiteAnalysis(params: {
     siteAnalysis,
     coverImageUrl,
     ai,
-    clipTranscriptOnly = false,
   } = params
 
   const pageTitleLine = content?.title
-    ? clipTranscriptOnly
-      ? `영상 제목(클립 메타, 참고): ${content.title}`
-      : `페이지 제목(HTML): ${content.title}`
+    ? `페이지 제목(HTML): ${content.title}`
     : '페이지 제목을 가져오지 못했습니다.'
-  const urlKindLine = clipTranscriptOnly
-    ? `형식(참고): ${kindHint} — 클립 자막만으로 생성. mediaKind는 youtube 권장.`
-    : `URL 패턴 기준 추정 형식(참고): ${kindHint}. 더 맞으면 mediaKind에 반영.`
+  const urlKindLine = `URL 패턴 기준 추정 형식(참고): ${kindHint}. 더 맞으면 mediaKind에 반영.`
 
   const contextBlock = siteAnalysis
     ? `[심층 분석 노트 — bodyMd "상세 정리"에 반영]\n${siteAnalysis}\n\n`
-    : clipTranscriptOnly
-      ? `[클립 자막만 제공 — URL·페이지 fetch 없음]\n제목(참고): ${content?.title ?? '없음'}\n\n`
-      : `[페이지 본문 없음 또는 fetch 실패]\nURL: ${trimmed}\n\n`
+    : `[페이지 본문 없음 또는 fetch 실패]\nURL: ${trimmed}\n\n`
 
   const metadataPrompt = GameDevResourcePrompts.metadataJson({
     contextBlock,
@@ -116,7 +100,7 @@ async function buildGameDevFromSiteAnalysis(params: {
   } catch {
     const fallbackTitle =
       content?.title?.trim() ||
-      (trimmed ? defaultTitleFromUrl(trimmed) : 'YouTube 스크랩')
+      defaultTitleFromUrl(trimmed)
     return {
       title: fallbackTitle,
       summary: '',
@@ -140,7 +124,7 @@ async function buildGameDevFromSiteAnalysis(params: {
   const resolvedTitle =
     parsed.title?.trim() ||
     content?.title?.trim() ||
-    (trimmed ? defaultTitleFromUrl(trimmed) : 'YouTube 스크랩')
+    defaultTitleFromUrl(trimmed)
 
   let bodyMd = parsed.bodyMd?.trim() ?? ''
   const summaryLine = parsed.summary?.trim() ?? ''
@@ -150,9 +134,7 @@ async function buildGameDevFromSiteAnalysis(params: {
     try {
       const expanded = await ai.complete(
         GameDevResourcePrompts.expandBodyMarkdown({
-          url: clipTranscriptOnly
-            ? '(원문 URL 없음 — 클립 자막만 사용)'
-            : trimmed,
+          url: trimmed,
           title: resolvedTitle,
           summaryLine: summaryForExpand,
           siteAnalysis,
@@ -180,55 +162,18 @@ async function buildGameDevFromSiteAnalysis(params: {
   }
 }
 
-function websiteContentFromObsidianClip(clip: ObsidianYoutubeClip): WebsiteContent {
-  return {
-    url: clip.sourceUrl || '',
-    title: clip.title,
-    metaDescription: clip.description.slice(0, 500),
-    bodyText: clip.transcript,
-    fullText: clip.transcript,
-    faviconUrl: 'https://www.youtube.com/favicon.ico',
-    ogImageUrl: clip.thumbnailUrl,
-    youtubeMissingTranscript: false,
-  }
-}
-
-export type SuggestGameDevResourceOptions = {
-  /** Obsidian Web Clipper raw/youtube 노트 전문 */
-  youtubeClip?: string
-}
-
 /**
- * 게임 개발 도서관 폼용: URL(또는 Obsidian 클립)으로 제목·요약·마크다운·형식·분야·표지·태그 제안
+ * 게임 개발 도서관 폼용: URL로 제목·요약·마크다운·형식·분야·표지·태그 제안
  */
 export async function suggestGameDevResourceFromUrl(
-  url: string,
-  preference: AiRequestPreference,
-  options?: SuggestGameDevResourceOptions
+  url: string
 ): Promise<GameDevResourceAiFillResult> {
-  const ai = getAiTextProvider(preference)
-  const clipRaw = options?.youtubeClip?.trim()
-  const hasClipRequest = Boolean(clipRaw)
-  let trimmed = url.trim()
-  let obsidianClip: ObsidianYoutubeClip | null = null
+  const ai = getAiTextProvider()
+  const trimmed = url.trim()
+  if (!trimmed) throw new Error('원문 URL이 필요합니다.')
 
-  if (hasClipRequest && clipRaw) {
-    obsidianClip = parseObsidianYoutubeClip(clipRaw)
-    if (!obsidianClip) {
-      throw new Error(OBSIDIAN_YOUTUBE_CLIP_PARSE_ERROR)
-    }
-  }
-
-  const clipTranscriptOnly = hasClipRequest && Boolean(obsidianClip)
-
-  if (!hasClipRequest && !trimmed) {
-    throw new Error('원문 URL 또는 Obsidian YouTube 클립이 필요합니다.')
-  }
-
-  const kindHint = clipTranscriptOnly
-    ? 'youtube'
-    : inferGameDevMediaKindFromUrl(trimmed)
-  const skipHtml = !clipTranscriptOnly && isXOrTwitterHost(trimmed)
+  const kindHint = inferGameDevMediaKindFromUrl(trimmed)
+  const skipHtml = isXOrTwitterHost(trimmed)
 
   if (skipHtml) {
     const handle = xStatusHandleFromUrl(trimmed)
@@ -280,30 +225,14 @@ export async function suggestGameDevResourceFromUrl(
     }
   }
 
-  let content: WebsiteContent | null = null
-  let coverImageUrl: string | null = null
-
-  if (clipTranscriptOnly && obsidianClip) {
-    content = websiteContentFromObsidianClip(obsidianClip)
-    coverImageUrl = obsidianClip.thumbnailUrl
-  } else {
-    content = await fetchWebsiteContent(trimmed)
-    assertYoutubeTranscriptForAi(trimmed, content)
-    coverImageUrl = content?.ogImageUrl ?? null
-  }
+  const content = await fetchWebsiteContent(trimmed)
+  assertYoutubeTranscriptForAi(trimmed, content)
+  const coverImageUrl = content?.ogImageUrl ?? null
   let siteAnalysis = ''
 
   if (content && content.fullText.trim().length > 40) {
     try {
-      const analysisPrompt = clipTranscriptOnly
-        ? GameDevResourcePrompts.deepAnalysisNoteObsidianClipTranscript(
-            obsidianClip!.transcript,
-            {
-              title: obsidianClip!.title,
-              channel: obsidianClip!.channel,
-            }
-          )
-        : isYoutubeWatchUrl(trimmed)
+      const analysisPrompt = isYoutubeWatchUrl(trimmed)
           ? GameDevResourcePrompts.deepAnalysisNoteYoutubeTranscript(
               trimmed,
               content.fullText
@@ -315,19 +244,15 @@ export async function suggestGameDevResourceFromUrl(
     }
   }
 
-  const resolvedKind = clipTranscriptOnly
-    ? 'youtube'
-    : isYoutubeWatchUrl(trimmed) && kindHint === 'other'
-      ? 'youtube'
-      : kindHint
+  const resolvedKind =
+    isYoutubeWatchUrl(trimmed) && kindHint === 'other' ? 'youtube' : kindHint
 
   return buildGameDevFromSiteAnalysis({
-    trimmed: clipTranscriptOnly ? '' : trimmed,
+    trimmed,
     kindHint: resolvedKind,
     content,
     siteAnalysis,
     coverImageUrl,
     ai,
-    clipTranscriptOnly,
   })
 }

@@ -139,7 +139,7 @@ myLittleWebsite 서버 REST API 명세. 클라이언트는 이 API만 호출하�
 
 #### POST /api/links/ai-suggest
 
-AI 제목·설명·파비콘 추천. 텍스트 제공자는 `X-AI-Provider: local|api` 헤더와 JSON `aiProvider` 필드로 선택(헤더 우선, 기본 로컬 Ollama).
+AI 제목·설명·파비콘 추천(Gemini).
 
 **인증:** `Authorization: Bearer <jwt>` 필요
 
@@ -150,8 +150,7 @@ AI 제목·설명·파비콘 추천. 텍스트 제공자는 `X-AI-Provider: loca
 ```json
 {
   "url": "https://example.com",
-  "title": "사이트명 (선택, 있으면 AI가 우선 사용)",
-  "aiProvider": "local"
+  "title": "사이트명 (선택, 있으면 AI가 우선 사용)"
 }
 ```
 
@@ -159,7 +158,6 @@ AI 제목·설명·파비콘 추천. 텍스트 제공자는 `X-AI-Provider: loca
 |------|------|------|------|
 | url | string | O | 링크 URL |
 | title | string | - | 제목 (없으면 AI가 URL 기반으로 생성) |
-| aiProvider | string | - | `local` \| `api` (헤더 없을 때 보조) |
 
 **응답 (200 OK)**
 
@@ -181,7 +179,7 @@ AI 제목·설명·파비콘 추천. 텍스트 제공자는 `X-AI-Provider: loca
 **에러**
 
 - `400` - url 없음
-- `503` - Ollama 미실행 또는 연결 실패
+- `503` - Gemini 키 없음 또는 연결 실패
 
 ---
 
@@ -490,28 +488,25 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 ### POST /api/column-scraps/ai-fill
 
-인증 필요. URL(또는 Obsidian 유튜브 클립)로 AI가 `title`, `summary`, `bodyMd`, `sourceKind`, `coverImageUrl`, `tags` 제안. 제공자는 `X-AI-Provider` / `aiProvider`로 선택(기본 로컬).
+인증 필요. URL로 AI가 `title`, `summary`, `bodyMd`, `sourceKind`, `coverImageUrl`, `tags` 제안.
 
 **Body**
 
 ```json
 {
-  "url": "https://www.youtube.com/watch?v=…",
-  "youtubeClip": "---\nsource: …\n---\n…",
-  "aiProvider": "local"
+  "url": "https://www.youtube.com/watch?v=…"
 }
 ```
 
 | 필드 | 필수 | 설명 |
 |------|------|------|
-| `url` | `youtubeClip` 없을 때 | 원문 URL. 클립만 넣을 경우 클립의 `source`로 보완 |
-| `youtubeClip` | `url` 없을 때 | Obsidian Web Clipper `raw/youtube` 노트 전문(frontmatter·JSON 템플릿·`## 트랜스크립트`). 있으면 **서버 YouTube 자막 fetch 생략** — 배포 환경에서 URL-only 실패 시 권장 |
+| `url` | ✅ | 원문 URL. 유튜브면 서버가 자막을 받고, 막히면 Gemini가 영상을 직접 분석 |
 
 **에러**  
-`400` — URL·클립 모두 없음, 클립 형식 인식 실패. (유튜브 자막을 못 받으면 Gemini 영상 직접 분석으로 폴백 — [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md))  
-`503` — Ollama·Gemini 연결 실패 등.
+`400` — URL 없음. (유튜브 자막을 못 받으면 Gemini 영상 직접 분석으로 폴백 — [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md))  
+`503` — Gemini 키 없음·연결 실패 등.
 
-의사결정: [0022](decisions/0022-obsidian-youtube-clip-column-scrap.md)
+의사결정: [0022](decisions/0022-obsidian-youtube-clip-column-scrap.md)(클립 입력은 2026-10 제거), [0026](decisions/0026-youtube-gemini-digest-fallback.md)
 
 ### POST /api/column-scraps
 
@@ -530,7 +525,7 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 ## 8. 공개 메타 (`/api/meta`)
 
-인증 불필요. 클라이언트 헤더 등에서 현재 서버가 노출하는 AI 연결 요약만 반환한다(비밀·전체 호스트 내부값은 포함하지 않음).
+인증 불필요. 공개 기능 플래그 요약. (헤더 AI 전광판·`ai` 필드는 2026-10 제거)
 
 ### GET /api/meta
 
@@ -538,16 +533,6 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 ```json
 {
-  "ai": {
-    "local": {
-      "mode": "local",
-      "label": "Ollama · gemma4 @ localhost:11434"
-    },
-    "api": {
-      "mode": "api",
-      "label": "Gemini · gemini-3.1-flash-lite-preview"
-    }
-  },
   "features": {
     "columnScrapYoutubeTranscript": true
   }
@@ -556,7 +541,6 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 | 필드 | 설명 |
 |------|------|
-| `ai.local` / `ai.api` | 각각 로컬(Ollama)·API(Gemini) 경로의 `mode` + `label`(모델·호스트 힌트, 환경 변수 기준) |
 | `features.columnScrapYoutubeTranscript` | 유튜브 칼럼 스크랩 AI가 자막·메타데이터 추출 경로를 쓰는지(현재 항상 `true`). [ADR 0021](decisions/0021-youtube-transcript-unified-ai-path.md) |
 
 ---
@@ -626,10 +610,6 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 개발 시 Vite가 `/api`만 프록시하므로, 브라우저에서 API 가동 여부 확인용으로 동일 `{ "status": "ok" }` 반환.
 
-### GET /api/ai-smoke/local
-
-로컬 Ollama 연결 점검(인증 없음). `OLLAMA_HOST`의 `/api/tags` 후, 설정 모델로 `/api/generate` 1회. 성공 시 `ok: true`, `generateResponsePreview` 등. 클라이언트 점검 페이지: `/ai-smoke-test`.
-
 ### POST /api/ai-smoke/gemini-youtube
 
 인증 필요. Gemini가 유튜브 영상을 직접 분석하는지 점검(배포 환경 자막 차단 대응 경로, [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md)).
@@ -651,7 +631,7 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 ### POST /api/game-dev-resources/ai-fill
 
-인증 필요. Body `{ url?, youtubeClip?, aiProvider? }` — 둘 중 하나 필수. 칼럼 `ai-fill`과 같은 방식으로 제목·요약·본문·형식·분야·표지·태그 제안.
+인증 필요. Body `{ url }`. 칼럼 `ai-fill`과 같은 방식으로 제목·요약·본문·형식·분야·표지·태그 제안.
 
 ### POST /api/game-dev-resources · PATCH /:id · DELETE /:id
 
@@ -666,7 +646,7 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 | `GET /api/geeknews/latest?limit=5` | GeekNews RSS 최신글. `limit` 범위 밖이면 `400`, RSS 실패 `503` |
 | `GET /api/d2-helloworld/latest` | `{ d2Video, blogs }` — NAVER D2 Hello world 최신 영상 + 기술 블로그 RSS 최신글 |
 | `GET /api/tech-interview/random` | gyoogle/tech-interview-for-developer 무작위 문서 1건. GitHub 실패 `503` |
-| `POST /api/tarot/reading` | Body `{ cards: [{ slot: past\|present\|advice, majorId, orientation: upright\|reversed }] ×3, aiProvider? }` → AI 해석. 형식 오류 `400`, AI 연결 실패 `503` ([ADR 0017](decisions/0017-tarot-reading-schema-and-provider-strategy.md)) |
+| `POST /api/tarot/reading` | Body `{ cards: [{ slot: past\|present\|advice, majorId, orientation: upright\|reversed }] ×3 }` → AI 해석. 형식 오류 `400`, AI 연결 실패 `503` ([ADR 0017](decisions/0017-tarot-reading-schema-and-provider-strategy.md)) |
 
 ---
 

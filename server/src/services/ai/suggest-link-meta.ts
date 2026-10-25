@@ -3,7 +3,7 @@ import { fetchWebsiteContent } from '../fetch-website.js'
 import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { LinkMetaPrompts } from './prompts/link-meta.prompts.js'
-import { getAiTextProvider, type AiRequestPreference } from './providers/registry.js'
+import { getAiTextProvider } from './providers/registry.js'
 import type { AiSuggestResult } from './types.js'
 
 function walkClassificationValues(
@@ -84,10 +84,9 @@ function normalizeSuggestedValueIds(
 export async function suggestLinkMeta(
   url: string,
   title: string,
-  preference: AiRequestPreference,
   dimensions: DimensionWithValues[] = []
 ): Promise<AiSuggestResult> {
-  const ai = getAiTextProvider(preference)
+  const ai = getAiTextProvider()
   const { allowedIds, labelToId } = buildAllowedValueIndex(dimensions)
   const classificationCatalog = buildLinkClassificationCatalogForPrompt(dimensions)
   const content = await fetchWebsiteContent(url)

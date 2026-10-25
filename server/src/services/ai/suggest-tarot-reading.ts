@@ -2,11 +2,7 @@ import { stripMarkdownCodeFence } from './json-from-model.js'
 import { TarotReadingPrompts } from './prompts/tarot-reading.prompts.js'
 import { type TarotInputCard, type TarotReadingResponse } from '../tarot/tarot-local-interpreter.js'
 import { getMeaningById } from '../tarot/tarot-major-meanings.js'
-import {
-  getAiTextProvider,
-  type AiRequestPreference,
-  parseAiRequestPreference,
-} from './providers/registry.js'
+import { getAiTextProvider } from './providers/registry.js'
 
 function isSlot(v: unknown): v is TarotInputCard['slot'] {
   return v === 'past' || v === 'present' || v === 'advice'
@@ -32,7 +28,6 @@ export function normalizeTarotCards(raw: unknown): TarotInputCard[] | null {
 function normalizeAiResponse(
   cards: TarotInputCard[],
   raw: unknown,
-  provider: AiRequestPreference,
   modelLabel: string
 ): TarotReadingResponse {
   const parsed = raw as Partial<TarotReadingResponse>
@@ -70,7 +65,7 @@ function normalizeAiResponse(
       actionTip,
     },
     meta: {
-      provider,
+      provider: 'api',
       modelLabel,
       generatedAt: new Date().toISOString(),
       schemaVersion: 'v1',
@@ -79,22 +74,17 @@ function normalizeAiResponse(
 }
 
 export async function suggestTarotReading(
-  cards: TarotInputCard[],
-  preference: AiRequestPreference
+  cards: TarotInputCard[]
 ): Promise<TarotReadingResponse> {
-  const ai = getAiTextProvider(preference)
+  const ai = getAiTextProvider()
   const raw = await ai.complete(TarotReadingPrompts.build(cards))
   const clean = stripMarkdownCodeFence(raw)
 
   try {
     const parsed = JSON.parse(clean)
-    const modelLabel =
-      preference === 'local' ? 'ollama-text-provider' : 'api-text-provider'
-    return normalizeAiResponse(cards, parsed, preference, modelLabel)
+    return normalizeAiResponse(cards, parsed, 'api-text-provider')
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'unknown parse error'
     throw new Error(`AI tarot parsing failed: ${msg}`)
   }
 }
-
-export { parseAiRequestPreference }

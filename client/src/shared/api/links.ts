@@ -1,8 +1,4 @@
 ﻿import {
-  aiProviderBodyField,
-  aiProviderRequestHeaders,
-} from '@/shared/lib/ai-provider-preference'
-import {
   fetchWithResourceCache,
   getCachedResource,
 } from '@/shared/lib/resource-cache'
@@ -161,9 +157,8 @@ export async function suggestLinkMeta(
       headers: {
         'Content-Type': 'application/json',
         ...authHeaders(token),
-        ...aiProviderRequestHeaders(),
       },
-      body: JSON.stringify({ url, title: title ?? '', ...aiProviderBodyField() }),
+      body: JSON.stringify({ url, title: title ?? '' }),
     })
   } catch {
     throw new Error(
@@ -198,7 +193,7 @@ export async function suggestLinkMeta(
     if (res.status === 503) {
       throw new Error(
         serverError ||
-          'AI를 사용할 수 없습니다. 로컬 모드면 Ollama 실행·모델(`OLLAMA_MODEL`)을, API 모드면 서버의 Gemini 키 설정을 확인하세요.'
+          'AI를 사용할 수 없습니다. 서버의 Gemini 키 설정을 확인하세요.'
       )
     }
     throw new Error(serverError || `AI 추천 요청 실패 (${res.status})`)

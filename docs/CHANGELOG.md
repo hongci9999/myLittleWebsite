@@ -24,6 +24,11 @@
 - **유튜브 AI 채우기 — 자막 fetch 실패 시 Gemini 영상 직접 분석 폴백** — 배포 서버(Vercel) IP에서 유튜브 자막이 막혀 자막 있는 영상도 AI 채우기가 실패하던 문제. 자막을 못 받으면 Gemini가 영상 URL을 직접 보고 자막 대체 텍스트를 만들어 기존 섹션별 AI 정리를 그대로 탄다(Obsidian 클립 붙여넣기 불필요). `maxDuration` 60→300. 게임 개발 도서관 상세에 유튜브 원문 임베드, iframe lazy 로딩. [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md).
 - **About 현행화** — 프로덕션 배포 절을 Vercel 기준으로 다시 쓰고 AWS 절은 「이전 기록」으로 정리. 게임 개발 도서관·MCP 라우트·바로가기·ADR 요약 추가. `mylittlewebsite.p-e.kr`은 현재 사이트에 연결돼 있지 않음을 명시.
 
+### Removed
+
+- **로컬 AI(Ollama) 선택지 제거** — AI 제안은 전부 Gemini. 헤더 AI 전광판(로컬/API 전환)·`X-AI-Provider` 헤더·`aiProvider` 필드·`/api/meta`의 `ai`·`/api/ai-smoke/local`·`ollama-text-provider`·bulk-youtube `--local` 삭제.
+- **칼럼·게임 개발 AI 채우기 — Obsidian 클립 입력 제거** — 유튜브도 URL만 넣으면 요약(서버 자막 → 실패 시 Gemini 영상 직접 분석, ADR 0026). 클립 붙여넣기 UI·`youtubeClip` 필드·`parse-obsidian-youtube-clip` 삭제.
+
 ## 2026년 7월
 
 ### Added

@@ -17,7 +17,6 @@
 import 'dotenv/config'
 import { readFileSync, writeFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
-import type { AiRequestPreference } from '../src/services/ai/providers/registry.js'
 import { parseYoutubeVideoId } from '../src/services/youtube-transcript-text.js'
 import {
   SECTIONS,
@@ -56,7 +55,7 @@ type PreviewEntry = {
 
 // ---------- 명령 ----------
 
-async function prepare(linksPath: string, pref: AiRequestPreference) {
+async function prepare(linksPath: string) {
   const urls = readFileSync(linksPath, 'utf8')
     .split(/\r?\n/)
     .map((l) => l.trim())
@@ -92,10 +91,10 @@ async function prepare(linksPath: string, pref: AiRequestPreference) {
 
     try {
       const ctx = await videoContext(videoUrl)
-      const c = await classify(pref, ctx)
+      const c = await classify(ctx)
 
       if (c.section !== 'ai-tool') {
-        const data = await fill(c.section, videoUrl, pref)
+        const data = await fill(c.section, videoUrl)
         const extraLinks = await findRepoLinks([ctx, data.bodyMd], c.repos)
         out.push({ ...base, url: videoUrl, include: true, section: c.section, reason: c.reason, data: { ...data, extraLinks } })
         const repoNote = extraLinks.length ? ` · 레포 ${extraLinks.map((l) => l.label.replace('GitHub: ', '')).join(', ')}` : ''
@@ -122,7 +121,7 @@ async function prepare(linksPath: string, pref: AiRequestPreference) {
           continue
         }
         seen.add(key)
-        const data = await fill('ai-tool', resolved.url, pref)
+        const data = await fill('ai-tool', resolved.url)
         const extraLinks = [...resolved.extra, { label: '소개 영상', url: videoUrl }]
         out.push({ ...base, url: resolved.url, include: true, section: 'ai-tool', reason: c.reason, toolName: tool.name, check: resolved.check, data: { ...data, extraLinks } })
         console.log(`      ✓ ${data.title} — ${resolved.url}${resolved.check ? '  (확인 필요)' : ''}`)
@@ -144,7 +143,7 @@ async function prepare(linksPath: string, pref: AiRequestPreference) {
 }
 
 /** 검토 중 url을 직접 고친 항목(include: true, data 삭제)만 AI로 다시 채움 */
-async function refill(previewPath: string, pref: AiRequestPreference) {
+async function refill(previewPath: string) {
   const entries = JSON.parse(readFileSync(previewPath, 'utf8')) as PreviewEntry[]
   const saved = await loadSavedLinks()
   for (const e of entries.filter((x) => x.include && !x.data && !x.savedSlug)) {
@@ -155,7 +154,7 @@ async function refill(previewPath: string, pref: AiRequestPreference) {
       continue
     }
     try {
-      const data = await fill(e.section, e.url, pref)
+      const data = await fill(e.section, e.url)
       const extraLinks = e.url === e.videoUrl ? [] : [{ label: '소개 영상', url: e.videoUrl }]
       Object.assign(e, { data: { ...data, extraLinks }, error: undefined, check: undefined })
       console.log(`✓ ${data.title} — ${e.url}`)
@@ -235,13 +234,12 @@ async function save(previewPath: string) {
   }
 }
 
-const [cmd, file, ...flags] = process.argv.slice(2)
-const pref: AiRequestPreference = flags.includes('--local') ? 'local' : 'api'
+const [cmd, file] = process.argv.slice(2)
 ;(async () => {
-  if (cmd === 'prepare' && file) await prepare(file, pref)
-  else if (cmd === 'refill' && file) await refill(file, pref)
+  if (cmd === 'prepare' && file) await prepare(file)
+  else if (cmd === 'refill' && file) await refill(file)
   else if (cmd === 'save' && file) await save(file)
-  else console.log('사용법: prepare <links.txt> [--local]  |  refill <links.preview.json> [--local]  |  save <links.preview.json>')
+  else console.log('사용법: prepare <links.txt>  |  refill <links.preview.json>  |  save <links.preview.json>')
 })().catch((e) => {
   console.error(e instanceof Error ? e.message : e)
   process.exit(1)

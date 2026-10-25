@@ -16,7 +16,7 @@ import {
   suggestGameDevResourceFromUrl,
   suggestAiToolScrapFromUrl,
 } from '../ai/index.js'
-import { getAiTextProvider, type AiRequestPreference } from '../ai/providers/registry.js'
+import { getAiTextProvider } from '../ai/providers/registry.js'
 import { fetchYoutubeContentBundle, withProvidedYoutubeBundle } from '../youtube-content.js'
 import { parseYoutubeVideoId } from '../youtube-transcript-text.js'
 import { fetchWebsiteContent, withProvidedPage, type ProvidedPage } from '../fetch-website.js'
@@ -136,7 +136,6 @@ export type ToolHint = { name: string; repo?: string; site?: string }
 
 /** `allowLink`: 웹 페이지면 「유용한 링크」(콘텐츠가 아닌 써먹는 사이트)도 후보. 고르면 `link: true` (section은 무시) */
 export async function classify(
-  pref: AiRequestPreference,
   ctxText: string,
   { allowLink = false } = {}
 ): Promise<{ section: Section; link: boolean; reason: string; tools: ToolHint[]; resources: ToolHint[]; repos: string[] }> {
@@ -166,7 +165,7 @@ JSON만 출력:
 
 [자료]
 ${ctxText}`
-  const raw = await getAiTextProvider(pref).complete(prompt)
+  const raw = await getAiTextProvider().complete(prompt)
   const j = extractJson(raw) ?? {}
   const section = (Object.keys(SECTIONS) as Section[]).includes(j.section as Section)
     ? (j.section as Section)
@@ -279,16 +278,16 @@ export async function resolveTool(
 
 // ---------- AI 채우기 · 저장 ----------
 
-export async function fill(section: Section, url: string, pref: AiRequestPreference) {
+export async function fill(section: Section, url: string) {
   if (section === 'column') {
-    const r = await suggestColumnScrapFromUrl(url, pref)
+    const r = await suggestColumnScrapFromUrl(url)
     return { title: r.title, summary: r.summary, bodyMd: r.bodyMd, sourceKind: r.sourceKind, coverImageUrl: r.coverImageUrl, tags: r.tags }
   }
   if (section === 'game-dev') {
-    const r = await suggestGameDevResourceFromUrl(url, pref)
+    const r = await suggestGameDevResourceFromUrl(url)
     return { title: r.title, summary: r.summary, bodyMd: r.bodyMd, mediaKind: r.mediaKind, category: r.category, coverImageUrl: r.coverImageUrl, tags: r.tags }
   }
-  const r = await suggestAiToolScrapFromUrl(url, pref)
+  const r = await suggestAiToolScrapFromUrl(url)
   return { title: r.title, summary: r.summary, bodyMd: r.bodyMd, sourceKind: r.sourceKind, tags: r.tags }
 }
 
@@ -307,10 +306,10 @@ export async function createInSection(token: string, section: Section, url: stri
 // ---------- 원클릭 저장 ----------
 
 /** 유용한 링크: 링크 섹션의 AI 추천(사이트 분석 → 제목·설명·분류 태그)을 그대로 써서 저장 */
-async function saveLink(token: string, url: string, pref: AiRequestPreference, aborted: () => void): Promise<QuickSaveResult> {
+async function saveLink(token: string, url: string, aborted: () => void): Promise<QuickSaveResult> {
   try {
     const dims = await getDimensionsWithValues().catch(() => [])
-    const m = await suggestLinkMeta(url, '', pref, dims)
+    const m = await suggestLinkMeta(url, '', dims)
     aborted()
     const row = await createLink(token, { url, title: m.title, description: m.description, valueIds: m.valueIds, faviconUrl: m.faviconUrl })
     return { url, section: 'link', id: row.id, title: row.title, sitePath: '/links' }
@@ -350,7 +349,6 @@ export async function quickSave(
   const log = (m: string) => opts.log?.(`+${((Date.now() - t0) / 1000).toFixed(1)}s ${m}`)
   const videoId = parseYoutubeVideoId(rawUrl)
   const main = videoId ? `https://www.youtube.com/watch?v=${videoId}` : rawUrl.trim()
-  const pref: AiRequestPreference = 'api'
   const aborted = () => {
     if (signal?.aborted) {
       log('중단 신호 받음 — 남은 저장 생략')
@@ -374,12 +372,12 @@ export async function quickSave(
     const ctx = await sourceContext(main)
     log(`자료 내용 ${ctx.length}자`)
     aborted()
-    const c = await classify(pref, ctx, { allowLink: !videoId })
+    const c = await classify(ctx, { allowLink: !videoId })
     log(`분류: ${c.link ? 'link' : c.section} — ${c.reason} / tools=[${c.tools.map((t) => t.name).join(', ')}] resources=[${c.resources.map((t) => t.name).join(', ')}]`)
     aborted()
     if (introOf && (c.link || c.section !== 'ai-tool')) return [{ url: main, duplicateOf: introOf }]
     if (c.link) {
-      const r = await saveLink(token, main, pref, aborted)
+      const r = await saveLink(token, main, aborted)
       log(r.error ? `링크 저장 실패: ${r.error}` : `링크 저장: ${r.title}`)
       return [r]
     }
@@ -419,7 +417,7 @@ export async function quickSave(
           return { url: t.url, section: t.section, duplicateOf: d }
         }
         try {
-          const data = await fill(t.section, t.url, pref)
+          const data = await fill(t.section, t.url)
           log(`AI 채우기 끝: ${t.url} → ${data.title}`)
           const repoLinks = t.section === 'ai-tool' ? [] : await findRepoLinks([ctx, data.bodyMd], c.repos)
           aborted()

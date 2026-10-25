@@ -1,7 +1,3 @@
-import {
-  aiProviderBodyField,
-  aiProviderRequestHeaders,
-} from '@/shared/lib/ai-provider-preference'
 import { apiUrl } from '@/shared/api/base'
 
 export type MediaKind = 'youtube' | 'article' | 'repo' | 'blog' | 'doc' | 'book' | 'asset' | 'other'
@@ -69,7 +65,6 @@ function authHeaders(token: string): HeadersInit {
   return {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
-    ...aiProviderRequestHeaders(),
   }
 }
 
@@ -139,7 +134,7 @@ export async function deleteGameDevResource(token: string, id: string): Promise<
   return res.ok
 }
 
-/** URL 또는 Obsidian 클립으로 제목·요약·본문·형식·분야·표지·태그 제안 */
+/** URL로 제목·요약·본문·형식·분야·표지·태그 제안 */
 export interface GameDevResourceAiFill {
   title: string
   summary: string
@@ -153,12 +148,9 @@ export interface GameDevResourceAiFill {
 
 export async function suggestGameDevResourceAiFill(
   token: string,
-  url: string,
-  options?: { youtubeClip?: string }
+  url: string
 ): Promise<GameDevResourceAiFill> {
-  const body: Record<string, unknown> = { ...aiProviderBodyField() }
-  if (url.trim()) body.url = url.trim()
-  if (options?.youtubeClip?.trim()) body.youtubeClip = options.youtubeClip.trim()
+  const body = { url: url.trim() }
 
   const res = await fetch(`${API_BASE}/ai-fill`, {
     method: 'POST',

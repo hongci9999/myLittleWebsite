@@ -11,7 +11,6 @@ import { useTheme } from '@/shared/context/ThemeContext'
 import { THEME_OPTIONS } from '@/shared/config/themes'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { AiStatusTicker } from './AiStatusTicker'
 
 type BreadcrumbItem = { label: string; href?: string }
 
@@ -197,9 +196,6 @@ export default function Header() {
               ))}
             </nav>
           </div>
-
-          {/* 헤더 중앙: AI 연결 상태 전광판(문구는 /api/meta, 구현은 AiStatusTicker.tsx) */}
-          <AiStatusTicker />
 
           <div className="flex shrink-0 items-center gap-3">
             <Button variant="outline" size="sm" asChild>

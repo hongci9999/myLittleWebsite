@@ -16,7 +16,6 @@ import siteDomainRoutes from './routes/site-domain.js'
 import mcpRoutes from './routes/mcp.js'
 import quickSaveRoutes from './routes/quick-save.js'
 import chatRoutes from './routes/chat.js'
-import { getAiProviderOptionsMeta } from './services/ai/index.js'
 
 function parseAllowedOrigins(raw: string | undefined): string[] {
   return (raw ?? '')
@@ -39,7 +38,7 @@ app.use(
       if (allowedOrigins.includes(origin)) return cb(null, true)
       return cb(new Error(`CORS blocked origin: ${origin}`))
     },
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-AI-Provider'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 )
 
@@ -52,10 +51,9 @@ app.get('/api/health', (_, res) => {
   res.json({ status: 'ok' })
 })
 
-/** 공개 설정 요약. `ai` → 헤더 전광판(AiStatusTicker) 표시 문자열의 출처 */
+/** 공개 설정 요약 */
 app.get('/api/meta', (_, res) => {
   res.json({
-    ai: getAiProviderOptionsMeta(),
     features: {
       columnScrapYoutubeTranscript: true,
     },

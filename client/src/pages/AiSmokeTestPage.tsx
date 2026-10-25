@@ -44,7 +44,7 @@ async function fetchJsonBlock(
 }
 
 /**
- * 사이트(API 프록시)와 로컬 Ollama 연동을 한 화면에서 확인 (개발·점검용).
+ * 사이트(API 프록시)·Gemini 연동을 한 화면에서 확인 (개발·점검용).
  */
 export default function AiSmokeTestPage() {
   const [running, setRunning] = useState(false)
@@ -93,12 +93,11 @@ export default function AiSmokeTestPage() {
     setRunning(true)
     setBlocks(null)
     try {
-      const [health, meta, local] = await Promise.all([
+      const [health, meta] = await Promise.all([
         fetchJsonBlock('백엔드 API', apiUrl('/api/health')),
         fetchJsonBlock('공개 메타 (/api/meta)', apiUrl('/api/meta')),
-        fetchJsonBlock('로컬 Ollama 스모크', apiUrl('/api/ai-smoke/local')),
       ])
-      setBlocks([health, meta, local])
+      setBlocks([health, meta])
     } finally {
       setRunning(false)
     }
@@ -109,8 +108,7 @@ export default function AiSmokeTestPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-semibold tracking-tight">연결 테스트</h1>
         <p className="mt-2 text-muted-foreground">
-          브라우저 → Express(`/api` 프록시) → 필요 시 Ollama까지 응답이 오는지
-          확인합니다. 서버와 Ollama를 켠 뒤 아래 버튼을 누르세요.
+          브라우저 → Express(`/api` 프록시) 응답이 오는지 확인합니다.
         </p>
         <Button className="mt-4" onClick={run} disabled={running}>
           {running ? '확인 중…' : '테스트 실행'}

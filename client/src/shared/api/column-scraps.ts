@@ -1,7 +1,3 @@
-import {
-  aiProviderBodyField,
-  aiProviderRequestHeaders,
-} from '@/shared/lib/ai-provider-preference'
 import { apiUrl } from '@/shared/api/base'
 
 export type ColumnSourceKind = 'blog' | 'article' | 'readme' | 'youtube' | 'x' | 'other'
@@ -45,7 +41,6 @@ function authHeaders(token: string): HeadersInit {
   return {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
-    ...aiProviderRequestHeaders(),
   }
 }
 
@@ -176,7 +171,7 @@ export async function deleteColumnScrap(token: string, id: string): Promise<bool
   return res.ok
 }
 
-/** 로컬 Ollama: URL만으로 제목·요약·본문 메모·형식·표지·태그 제안 */
+/** URL만으로 제목·요약·본문 메모·형식·표지·태그 제안 */
 export interface ColumnScrapAiFill {
   title: string
   summary: string
@@ -189,18 +184,13 @@ export interface ColumnScrapAiFill {
 
 export async function suggestColumnScrapAiFill(
   token: string,
-  url: string,
-  options?: { youtubeClip?: string }
+  url: string
 ): Promise<ColumnScrapAiFill> {
   const res = await fetch(`${API_BASE}/ai-fill`, {
     method: 'POST',
     headers: authHeaders(token),
     body: JSON.stringify({
-      ...(url.trim() ? { url: url.trim() } : {}),
-      ...(options?.youtubeClip?.trim()
-        ? { youtubeClip: options.youtubeClip.trim() }
-        : {}),
-      ...aiProviderBodyField(),
+      url: url.trim(),
     }),
   })
   const errJson = await res.json().catch(() => ({}))

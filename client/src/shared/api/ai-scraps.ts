@@ -1,8 +1,4 @@
-﻿import {
-  aiProviderBodyField,
-  aiProviderRequestHeaders,
-} from '@/shared/lib/ai-provider-preference'
-import { apiUrl } from '@/shared/api/base'
+﻿import { apiUrl } from '@/shared/api/base'
 
 export type SourceKind =
   | 'mcp'
@@ -33,7 +29,6 @@ function authHeaders(token: string): HeadersInit {
   return {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',
-    ...aiProviderRequestHeaders(),
   }
 }
 
@@ -122,7 +117,7 @@ export async function deleteAiScrap(token: string, id: string): Promise<boolean>
   return res.ok
 }
 
-/** 로컬 Ollama: URL만으로 제목·요약·본문·종류·태그 제안 */
+/** URL만으로 제목·요약·본문·종류·태그 제안 */
 export interface AiToolScrapAiFill {
   title: string
   summary: string
@@ -139,7 +134,7 @@ export async function suggestAiToolScrapAiFill(
   const res = await fetch(`${API_BASE}/ai-fill`, {
     method: 'POST',
     headers: authHeaders(token),
-    body: JSON.stringify({ url, ...aiProviderBodyField() }),
+    body: JSON.stringify({ url }),
   })
   const errJson = await res.json().catch(() => ({}))
   if (!res.ok) {

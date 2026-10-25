@@ -74,7 +74,7 @@
 | 백엔드       | Node.js + Express + TypeScript                   |
 | 데이터베이스 | PostgreSQL (Supabase)                            |
 | 인증·기타    | Supabase Auth / Storage / Realtime (필요 시)     |
-| AI (일부)    | Ollama(로컬), Gemini 등 — 기능별 provider 추상화 |
+| AI (일부)    | Gemini API |
 
 ## 프로젝트 구조
 
@@ -124,7 +124,7 @@ Supabase·DB 접근은 **server**에서만 합니다. client는 API를 호출합
             └─ Server (Express + TS)
                  ├─ PostgreSQL (Supabase)
                  ├─ Auth / Storage / Realtime (필요 시)
-                 └─ AI provider (Ollama, Gemini 등 — 기능별)
+                 └─ AI provider (Gemini)
 외부 AI(Claude·Cursor 등)
   └─ MCP (POST /api/mcp) ── 같은 Server가 저장 자료·포트폴리오를 읽기 전용으로 제공
 ```

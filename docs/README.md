@@ -15,22 +15,19 @@
 
 ### 디바이스 AI (링크 자동 설명·분류)
 
-유용한 링크 등록 시 로컬/서버 AI가 제목·설명·태그를 자동 추천한다.
+유용한 링크·스크랩 등록 시 Gemini API가 제목·설명·태그를 자동 추천한다. (로컬 Ollama 선택지는 2026-10 제거)
 
 | 항목      | 내용                                                                                                                                                                                                                                                                                                        |
 | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 실행 환경 | [Ollama](https://ollama.com) (`localhost:11434`)                                                                                                                                                                                                                                                            |
-| 모델      | 기본 **`gemma4`** (`OLLAMA_MODEL`, 코드 기본값 `DEFAULT_OLLAMA_MODEL`)                                                                                                                                                                                                                                      |
-| 모델 설명 | Ollama에 등록한 태그 사용. 미설정 시 서버 기본 태그는 `gemma4`                                                                                                                                                                                                                                              |
-| 연결 점검 | 클라이언트 `/ai-smoke-test`, API 헬스·Ollama 스모크 — [api-spec §9](./api-spec.md)                                                                                                                                                                                                                            |
-| 서버 코드 | `server/src/services/ai/` ([구조 요약](learnings/0021-server-ai-prompt-provider-layout.md)), 라우트 호환 진입점 `services/ollama.ts`                                                                                                                                                                        |
-| Gemini    | 헤더/API에서 **API 모드** 선택 시. `GEMINI_API_KEY`(또는 `GOOGLE_AI_API_KEY`), 선택 `GEMINI_MODEL` — [decisions 0016](decisions/0016-gemini-youtube-transcript-and-public-meta.md)                                                                                                                             |
-| 유튜브    | InnerTube·caption track으로 메타+자막 추출 → 모든 AI 제공자에 텍스트 입력. 자막을 못 받으면(배포 환경 IP 차단) Gemini 영상 직접 분석 폴백 — [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md), [0038](learnings/0038-youtube-cloud-ip-block.md), [ADR 0021](decisions/0021-youtube-transcript-unified-ai-path.md), [0036](learnings/0036-youtube-content-bundle-transcript.md), npm 폴백 [0023](learnings/0023-youtube-transcript-cjs-load.md) |
+| 연결 점검 | 클라이언트 `/ai-smoke-test`, API 헬스·Gemini YouTube 스모크 — [api-spec §9](./api-spec.md)                                                                                                                                                                                                                            |
+| 서버 코드 | `server/src/services/ai/` ([구조 요약](learnings/0021-server-ai-prompt-provider-layout.md))                                                                                                                                                                        |
+| Gemini    | 유일한 텍스트 제공자. `GEMINI_API_KEY`(또는 `GOOGLE_AI_API_KEY`), 선택 `GEMINI_MODEL` — [decisions 0016](decisions/0016-gemini-youtube-transcript-and-public-meta.md)                                                                                                                             |
+| 유튜브    | InnerTube·caption track으로 메타+자막 추출 → AI에 텍스트 입력. 자막을 못 받으면(배포 환경 IP 차단) Gemini 영상 직접 분석 폴백 — [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md), [0038](learnings/0038-youtube-cloud-ip-block.md), [ADR 0021](decisions/0021-youtube-transcript-unified-ai-path.md), [0036](learnings/0036-youtube-content-bundle-transcript.md), npm 폴백 [0023](learnings/0023-youtube-transcript-cjs-load.md) |
 | 관련 문서 | [설계](plans/2026-03-13-links-ai-suggest-design.md), [decisions 0012](decisions/0012-ollama-ai-links.md), [0015 구조·교체](decisions/0015-ai-text-provider-abstraction.md), [learnings 0018](learnings/0018-local-ai-ollama-webllm.md), [0021 레이아웃](learnings/0021-server-ai-prompt-provider-layout.md) |
 
 ### 칼럼 스크랩 AI (`POST /api/column-scraps/ai-fill`)
 
-칼럼 스크랩 추가·편집 다이얼로그에서 **로컬 AI로 채우기** 시 호출. URL 기준으로 페이지 fetch(단, X/Twitter는 제외) 후 Ollama로 제목·한 줄 요약·마크다운 본문·형식·표지(og:image)·태그를 채운다. 본문은 `## 요약` / `## 상세 정리` 구조와 다단계 프롬프트로 품질을 맞춘다.
+칼럼 스크랩 추가·편집 다이얼로그에서 **AI 채우기** 시 호출. URL 기준으로 페이지 fetch(단, X/Twitter는 제외) 후 Gemini로 제목·한 줄 요약·마크다운 본문·형식·표지(og:image)·태그를 채운다. 본문은 `## 요약` / `## 상세 정리` 구조와 다단계 프롬프트로 품질을 맞춘다.
 
 | 항목         | 내용                                                                                                                                                                                            |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

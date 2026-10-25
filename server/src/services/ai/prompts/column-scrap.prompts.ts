@@ -26,45 +26,6 @@ JSON만 출력 (코드펜스 금지). bodyMd는 반드시 아래 구조의 마�
 {"title":"","summary":"","bodyMd":"","sourceKind":"x","tags":[]}`
   },
 
-  /** Obsidian 클립 — 동영상 자막(스크립트) 텍스트만 분석 (URL·fetch 없음) */
-  deepAnalysisNoteObsidianClipTranscript(
-    transcript: string,
-    context?: { title?: string; channel?: string }
-  ): string {
-    const metaLines: string[] = []
-    if (context?.title?.trim()) {
-      metaLines.push(`참고 제목(자막 외 보조, 추론에만 사용): ${context.title.trim()}`)
-    }
-    if (context?.channel?.trim()) {
-      metaLines.push(`참고 채널(보조): ${context.channel.trim()}`)
-    }
-    const metaBlock =
-      metaLines.length > 0 ? `${metaLines.join('\n')}\n\n` : ''
-
-    return `역할: 웹 스크랩용 **심층 분석 노트** 작성. 아래는 Obsidian Web Clipper에서 추출한 **동영상 자막(스크립트) 텍스트만** 입니다. 한국어로만 답하세요.
-
-**반드시 지킬 것**
-- 아래 **자막 텍스트만** 분석 근거로 사용하세요. URL·영상·음성·외부 페이지에 접근하지 않았습니다.
-- 영상을 직접 본다고 가정하지 마세요. 외부 검색·일반 지식으로 내용을 채우지 마세요.
-- 자막에 없는 내용은 쓰지 말고, 불가피하면 [추측]으로만 표시하세요.
-
-다음을 빠짐없이 채우세요. 총 분량 **800~1800자** 권장(짧게 끊지 말 것).
-
-1) **주제 한 줄**: 자막 기준 이 영상이 무엇에 대한 것인지
-2) **핵심 내용**: 자막에 나온 주장, 절차, 설정값, 버전, 수치, 인용 등 **구체적 사실**
-3) **구조**: 자막이 어떤 순서로 전개되는지(섹션·단계)
-4) **대상**: 누가 보면 좋은지(자막 근거 범위 안에서)
-5) **활용**: 실무·학습에서 어떻게 쓸 수 있는지
-6) **전제·한계**: 자막만으로 확인 불가한 부분
-
-자막이 비어 있거나 의미 없으면 그 사실을 명시하세요.
-
-${metaBlock}---
-${transcript}
----
-`
-  },
-
   /** YouTube 자막(transcript) + 메타데이터 기반 심층 분석 (서버 fetch 경로) */
   deepAnalysisNoteYoutubeTranscript(url: string, fullText: string): string {
     return `역할: 웹 스크랩용 **심층 분석 노트** 작성. 아래는 YouTube 영상에서 추출한 **메타데이터·자막(transcript)** 입니다. 한국어로만 답하세요.

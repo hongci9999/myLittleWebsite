@@ -9,8 +9,7 @@ import {
   isSourceKind,
   type SourceKind,
 } from '../db/queries/ai-scraps.js'
-import { parseAiRequestPreference } from '../services/ai/index.js'
-import { suggestAiToolScrapFromUrl } from '../services/ollama.js'
+import { suggestAiToolScrapFromUrl } from '../services/ai/index.js'
 import { YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE } from '../services/youtube-transcript-text.js'
 
 const router = Router()
@@ -91,7 +90,7 @@ router.get('/by-slug/:slug', async (req, res) => {
   }
 })
 
-/** POST /api/ai-scraps/ai-fill — 로컬 Ollama로 URL 기준 폼 필드 제안 (인증 필요) */
+/** POST /api/ai-scraps/ai-fill — URL 기준 폼 필드 제안 (인증 필요) */
 router.post('/ai-fill', requireAuth, async (req, res) => {
   try {
     const url = (req.body as { url?: string })?.url?.trim()
@@ -99,8 +98,7 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
       res.status(400).json({ error: 'url is required' })
       return
     }
-    const pref = parseAiRequestPreference(req.headers, req.body)
-    const result = await suggestAiToolScrapFromUrl(url, pref)
+    const result = await suggestAiToolScrapFromUrl(url)
     res.json({
       title: result.title,
       summary: result.summary,
@@ -117,13 +115,7 @@ router.post('/ai-fill', requireAuth, async (req, res) => {
     }
     if (msg.includes('GEMINI_API_KEY') || msg.includes('GOOGLE_AI_API_KEY')) {
       res.status(503).json({
-        error: 'API 모드에는 서버에 GEMINI_API_KEY(또는 GOOGLE_AI_API_KEY)가 필요합니다.',
-      })
-      return
-    }
-    if (msg.includes('Ollama') || msg.includes('fetch')) {
-      res.status(503).json({
-        error: 'Ollama를 실행 중인지 확인하세요. (ollama run gemma4)',
+        error: '서버에 GEMINI_API_KEY(또는 GOOGLE_AI_API_KEY)가 필요합니다.',
       })
       return
     }

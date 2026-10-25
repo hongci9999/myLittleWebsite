@@ -14,8 +14,7 @@ import {
   getDimensionIdBySlug,
   getLinkUrl,
 } from '../db/queries/links.js'
-import { parseAiRequestPreference } from '../services/ai/index.js'
-import { suggestLinkMeta } from '../services/ollama.js'
+import { suggestLinkMeta } from '../services/ai/index.js'
 import { YOUTUBE_AI_REQUIRES_TRANSCRIPT_MESSAGE } from '../services/youtube-transcript-text.js'
 import { fetchWebsiteContent } from '../services/fetch-website.js'
 
@@ -95,11 +94,9 @@ router.post('/ai-suggest', requireAuth, async (req, res) => {
     } catch {
       /* 분류 조회 실패 시에도 제목·설명 AI는 동작 */
     }
-    const pref = parseAiRequestPreference(req.headers, req.body)
     const { title, description, rawResponse, faviconUrl, valueIds } = await suggestLinkMeta(
       body.url.trim(),
       body.title?.trim() ?? '',
-      pref,
       dimensions
     )
 
@@ -118,13 +115,7 @@ router.post('/ai-suggest', requireAuth, async (req, res) => {
     }
     if (msg.includes('GEMINI_API_KEY') || msg.includes('GOOGLE_AI_API_KEY')) {
       res.status(503).json({
-        error: 'API 모드에는 서버에 GEMINI_API_KEY(또는 GOOGLE_AI_API_KEY)가 필요합니다.',
-      })
-      return
-    }
-    if (msg.includes('Ollama') || msg.includes('fetch')) {
-      res.status(503).json({
-        error: 'Ollama를 실행 중인지 확인하세요. (ollama run gemma4)',
+        error: '서버에 GEMINI_API_KEY(또는 GOOGLE_AI_API_KEY)가 필요합니다.',
       })
       return
     }

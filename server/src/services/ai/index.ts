@@ -1,22 +1,11 @@
 /**
  * 도메인 AI 제안(링크 메타, 칼럼·도구 스크랩 채우기).
- * 텍스트 생성은 AiTextProvider — 기본 구현은 Ollama, 교체 시 registry만 확장하면 된다.
+ * 텍스트 생성은 AiTextProvider(Gemini) — registry 참고.
  */
 export type { AiTextProvider } from './providers/types.js'
 export { createGeminiTextProvider } from './providers/gemini-text-provider.js'
 export type { GeminiTextProviderOptions } from './providers/gemini-text-provider.js'
-export {
-  createOllamaTextProvider,
-  DEFAULT_OLLAMA_MODEL,
-} from './providers/ollama-text-provider.js'
-export type { OllamaTextProviderOptions } from './providers/ollama-text-provider.js'
-export {
-  getAiTextProvider,
-  getAiProviderOptionsMeta,
-  parseAiRequestPreference,
-  type AiRequestPreference,
-  type AiProviderPublicInfo,
-} from './providers/registry.js'
+export { getAiTextProvider } from './providers/registry.js'
 
 export type {
   AiSuggestResult,

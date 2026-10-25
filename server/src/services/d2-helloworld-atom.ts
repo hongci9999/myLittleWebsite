@@ -86,11 +86,13 @@ function extractSummary(contentHtml: string): string {
 
   if (summary) return summary
 
-  return $('p')
-    .first()
-    .text()
-    .replace(/\s+/g, ' ')
-    .trim()
+  // 텍스트 기사는 첫 <p>가 이미지만 감싸 비어 있는 경우가 많음 — 첫 비어있지 않은 문단
+  return (
+    $('p')
+      .toArray()
+      .map((el) => $(el).text().replace(/\s+/g, ' ').trim())
+      .find(Boolean) ?? ''
+  )
 }
 
 async function fetchNaverTvThumbnail(clipId: string): Promise<string> {

@@ -25,7 +25,10 @@ function TechFeedSkeleton() {
   return (
     <div className="mt-4 space-y-2">
       {Array.from({ length: 5 }).map((_, index) => (
-        <div key={index} className="h-20 animate-pulse rounded-xl bg-muted/40" />
+        <div
+          key={index}
+          className="h-20 animate-pulse rounded-xl bg-muted/40"
+        />
       ))}
     </div>
   )
@@ -49,23 +52,25 @@ function D2VideoCard({ item }: { item: D2HelloWorldVideo }) {
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-muted/60 text-xs text-muted-foreground">
-            NAVER TV
+            {item.videoClipId ? 'NAVER TV' : 'D2'}
           </div>
         )}
-        <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-foreground/10">
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden
-            >
-              <path d="M8 5v14l11-7z" />
-            </svg>
+        {item.videoClipId ? (
+          <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-foreground/10">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </span>
           </span>
-        </span>
+        ) : null}
       </div>
 
       <div className="min-w-0 flex-1">
@@ -162,7 +167,9 @@ export default function D2HelloWorldWidget() {
       {loading ? (
         <TechFeedSkeleton />
       ) : error ? (
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{error}</p>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          {error}
+        </p>
       ) : !hasContent ? (
         <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
           표시할 콘텐츠가 없습니다

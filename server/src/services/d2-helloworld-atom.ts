@@ -67,6 +67,12 @@ function extractVideoClipId(contentHtml: string): string {
   return match?.[1] ?? ''
 }
 
+/** 영상 없는 글(텍스트 기사)용 썸네일 — 본문 첫 이미지 */
+function extractFirstImage(contentHtml: string): string {
+  const $ = cheerio.load(contentHtml)
+  return asAbsoluteHttpUrl($('img').first().attr('src'))
+}
+
 function extractSummary(contentHtml: string): string {
   const $ = cheerio.load(contentHtml)
   let summary = ''
@@ -143,7 +149,8 @@ async function fetchHelloWorldVideosFromAtom(): Promise<D2HelloWorldVideo[]> {
     )
     const contentHtml = node.find('content').first().text().trim()
     const videoClipId = extractVideoClipId(contentHtml)
-    if (!title || !url || !videoClipId || unique.has(url)) return
+    // 영상(네이버TV) 없는 텍스트 기사도 포함 — 최근 Hello world 글은 대부분 텍스트
+    if (!title || !url || unique.has(url)) return
 
     unique.add(url)
     items.push({
@@ -151,9 +158,9 @@ async function fetchHelloWorldVideosFromAtom(): Promise<D2HelloWorldVideo[]> {
       url,
       publishedAt: normalizeDate(node.find('updated').first().text()),
       summary: extractSummary(contentHtml),
-      videoEmbedUrl: `https://tv.naver.com/embed/${videoClipId}`,
+      videoEmbedUrl: videoClipId ? `https://tv.naver.com/embed/${videoClipId}` : '',
       videoClipId,
-      thumbnailUrl: '',
+      thumbnailUrl: videoClipId ? '' : extractFirstImage(contentHtml),
       source: 'd2-helloworld',
     })
   })
@@ -164,7 +171,7 @@ async function fetchHelloWorldVideosFromAtom(): Promise<D2HelloWorldVideo[]> {
     return (Number.isNaN(bTime) ? 0 : bTime) - (Number.isNaN(aTime) ? 0 : aTime)
   })
 
-  if (items.length > 0) {
+  if (items[0]?.videoClipId) {
     items[0].thumbnailUrl = await fetchNaverTvThumbnail(items[0].videoClipId)
   }
 

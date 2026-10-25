@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/shared/context/AuthContext'
+import { useAiFillProgress } from '@/shared/ui/AiFillProgress'
 import {
   createAiScrap,
   fetchAiScrapBySlug,
@@ -56,6 +57,7 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [aiFillLoading, setAiFillLoading] = useState(false)
+  const aiProgress = useAiFillProgress()
 
   useEffect(() => {
     if (!open) {
@@ -108,8 +110,9 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
   async function handleAiFill() {
     if (!token || !form.url.trim()) return
     setAiFillLoading(true)
+    aiProgress.start()
     try {
-      const r = await suggestAiToolScrapAiFill(token, form.url.trim())
+      const r = await suggestAiToolScrapAiFill(token, form.url.trim(), aiProgress.onProgress)
       setForm((f) => ({
         ...f,
         title: r.title || f.title,
@@ -122,6 +125,7 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
       window.alert(err instanceof Error ? err.message : 'AI 채우기 실패')
     } finally {
       setAiFillLoading(false)
+      aiProgress.stop()
     }
   }
 
@@ -267,6 +271,7 @@ export function AiToolScrapAdminDialog({ open, onOpenChange, initialSlug }: Prop
                       className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm"
                     />
                   </label>
+                  {aiProgress.panel ? <div className="sm:col-span-2">{aiProgress.panel}</div> : null}
                   <label className="block">
                     <span className="text-xs font-medium text-muted-foreground">종류 *</span>
                     <select

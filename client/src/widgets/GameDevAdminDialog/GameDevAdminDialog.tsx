@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/shared/context/AuthContext'
+import { useAiFillProgress } from '@/shared/ui/AiFillProgress'
 import {
   createGameDevResource,
   fetchGameDevResourceBySlug,
@@ -60,6 +61,7 @@ export function GameDevAdminDialog({ open, onOpenChange, initialSlug }: Props) {
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [aiFillLoading, setAiFillLoading] = useState(false)
+  const aiProgress = useAiFillProgress()
 
   useEffect(() => {
     if (!open) {
@@ -115,8 +117,9 @@ export function GameDevAdminDialog({ open, onOpenChange, initialSlug }: Props) {
     const urlForAi = form.url.trim()
     if (!token || !urlForAi) return
     setAiFillLoading(true)
+    aiProgress.start()
     try {
-      const r = await suggestGameDevResourceAiFill(token, urlForAi)
+      const r = await suggestGameDevResourceAiFill(token, urlForAi, aiProgress.onProgress)
       setForm((f) => ({
         ...f,
         title: r.title || f.title,
@@ -131,6 +134,7 @@ export function GameDevAdminDialog({ open, onOpenChange, initialSlug }: Props) {
       window.alert(err instanceof Error ? err.message : 'AI 채우기 실패')
     } finally {
       setAiFillLoading(false)
+      aiProgress.stop()
     }
   }
 
@@ -280,6 +284,7 @@ export function GameDevAdminDialog({ open, onOpenChange, initialSlug }: Props) {
                       className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm"
                     />
                   </label>
+                  {aiProgress.panel ? <div className="sm:col-span-2">{aiProgress.panel}</div> : null}
                   <label className="block">
                     <span className="text-xs font-medium text-muted-foreground">종류 *</span>
                     <select

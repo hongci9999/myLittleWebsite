@@ -1,3 +1,4 @@
+import { postAiFill, type AiProgressEvent } from '@/shared/api/ai-fill-stream'
 import { apiUrl } from '@/shared/api/base'
 
 export type ColumnSourceKind = 'blog' | 'article' | 'readme' | 'youtube' | 'x' | 'other'
@@ -184,20 +185,10 @@ export interface ColumnScrapAiFill {
 
 export async function suggestColumnScrapAiFill(
   token: string,
-  url: string
+  url: string,
+  onProgress?: (e: AiProgressEvent) => void
 ): Promise<ColumnScrapAiFill> {
-  const res = await fetch(`${API_BASE}/ai-fill`, {
-    method: 'POST',
-    headers: authHeaders(token),
-    body: JSON.stringify({
-      url: url.trim(),
-    }),
-  })
-  const errJson = await res.json().catch(() => ({}))
-  if (!res.ok) {
-    throw new Error((errJson as { error?: string }).error || 'AI 채우기 실패')
-  }
-  const data = errJson as Record<string, unknown>
+  const data = await postAiFill(`${API_BASE}/ai-fill`, token, { url: url.trim() }, onProgress)
   const tagsRaw = data.tags
   const tags = Array.isArray(tagsRaw)
     ? tagsRaw

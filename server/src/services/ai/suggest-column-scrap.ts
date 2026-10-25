@@ -7,6 +7,7 @@ import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { ColumnScrapPrompts } from './prompts/column-scrap.prompts.js'
 import { getAiTextProvider } from './providers/registry.js'
+import { reportProgress } from '../progress.js'
 import type { AiTextProvider } from './providers/types.js'
 import type { ColumnScrapAiFillResult } from './types.js'
 import {
@@ -77,6 +78,7 @@ async function buildColumnScrapFromSiteAnalysis(params: {
     pageTitleLine,
     urlKindLine,
   })
+  reportProgress('AI 2/3 · 제목·요약·본문 생성')
   const raw = await ai.complete(metadataPrompt)
   const jsonStr = stripMarkdownCodeFence(raw)
 
@@ -126,6 +128,7 @@ async function buildColumnScrapFromSiteAnalysis(params: {
 
   if (siteAnalysis.length >= 400 && bodyMd.length < 550) {
     try {
+      reportProgress('AI 3/3 · 본문 보강 (짧아서 재생성)')
       const expanded = await ai.complete(
         ColumnScrapPrompts.expandBodyMarkdown({
           url: trimmed,
@@ -232,6 +235,7 @@ export async function suggestColumnScrapFromUrl(
                 content.fullText
               )
             : ColumnScrapPrompts.deepAnalysisNote(trimmed, content.fullText)
+      reportProgress('AI 1/3 · 내용 심층 분석')
       siteAnalysis = await ai.complete(analysisPrompt)
     } catch {
       siteAnalysis = ''

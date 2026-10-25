@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '@/shared/context/AuthContext'
+import { useAiFillProgress } from '@/shared/ui/AiFillProgress'
 import {
   createColumnScrap,
   fetchColumnScrapBySlug,
@@ -62,6 +63,7 @@ export function ColumnScrapAdminDialog({
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [aiFillLoading, setAiFillLoading] = useState(false)
+  const aiProgress = useAiFillProgress()
 
   useEffect(() => {
     if (!open) {
@@ -163,8 +165,9 @@ export function ColumnScrapAdminDialog({
     const urlForAi = form.url.trim()
     if (!token || !urlForAi) return
     setAiFillLoading(true)
+    aiProgress.start()
     try {
-      const r = await suggestColumnScrapAiFill(token, urlForAi)
+      const r = await suggestColumnScrapAiFill(token, urlForAi, aiProgress.onProgress)
       setForm((f) => ({
         ...f,
         title: r.title || f.title,
@@ -178,6 +181,7 @@ export function ColumnScrapAdminDialog({
       window.alert(err instanceof Error ? err.message : 'AI 채우기 실패')
     } finally {
       setAiFillLoading(false)
+      aiProgress.stop()
     }
   }
 
@@ -284,6 +288,7 @@ export function ColumnScrapAdminDialog({
                       placeholder="https://…"
                     />
                   </label>
+                  {aiProgress.panel ? <div className="sm:col-span-2">{aiProgress.panel}</div> : null}
                   <label className="block">
                     <span className="text-xs font-medium text-muted-foreground">
                       형식 *

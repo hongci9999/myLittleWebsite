@@ -16,6 +16,10 @@ import siteDomainRoutes from './routes/site-domain.js'
 import mcpRoutes from './routes/mcp.js'
 import quickSaveRoutes from './routes/quick-save.js'
 import chatRoutes from './routes/chat.js'
+import {
+  resolveGeminiTextModel,
+  resolveGeminiYoutubeModel,
+} from './services/ai/providers/gemini-text-provider.js'
 
 function parseAllowedOrigins(raw: string | undefined): string[] {
   return (raw ?? '')
@@ -51,9 +55,14 @@ app.get('/api/health', (_, res) => {
   res.json({ status: 'ok' })
 })
 
-/** 공개 설정 요약 */
+/** 공개 설정 요약. `ai` → 헤더 모델 배지(AiModelBadge) */
 app.get('/api/meta', (_, res) => {
   res.json({
+    ai: {
+      model: resolveGeminiTextModel(),
+      youtubeModel: resolveGeminiYoutubeModel(),
+      keyConfigured: Boolean((process.env.GEMINI_API_KEY ?? process.env.GOOGLE_AI_API_KEY)?.trim()),
+    },
     features: {
       columnScrapYoutubeTranscript: true,
     },

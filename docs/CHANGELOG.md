@@ -6,6 +6,7 @@
 
 ### Added
 
+- **AI 채우기 진행 표시·헤더 모델 배지** — 칼럼·게임 개발·AI 도구 「AI 채우기」 중 실제 단계(자막 받기 → 자막 막히면 Gemini 영상 시청 → AI 1~3단계, 각 Gemini 응답 시간)를 NDJSON 스트림으로 받아 다이얼로그에 표시. 3초 heartbeat로 「서버 살아 있음 / n초째 신호 없음」 구분. 헤더 옛 AI 선택 자리에 사용 중인 Gemini 모델명(툴팁에 영상 분석 모델). `GET /api/meta`에 `ai.model`·`ai.youtubeModel`·`ai.keyConfigured`.
 - **사이트 대화창** — 화면 중앙 하단 입력창에 질문하면 입력창 위로 대화가 펼쳐지며 답한다. `POST /api/chat`: Gemini function calling으로 MCP와 같은 도구(`knowledgeTools`)를 불러 저장 자료·포트폴리오·개발 기록을 찾아 사이트 링크와 함께 답변. 로그인 무제한, 비로그인 IP별 하루 10회(`chat_usage` + `chat_hit` RPC). MCP `list_scraps`도 `siteUrl`을 함께 반환. [ADR 0030](decisions/0030-site-chat-dock.md).
 
 - **원클릭 저장 파이프라인** — 개인용 크롬 확장에서 버튼 하나로 지금 탭을 저장. `POST /api/quick-save`(로그인 필요): 링크 하나를 중복 확인·섹션 분류·AI 채우기 후 저장. 유튜브 자막을 같이 받으면 그걸 근거로 쓰고 `scrap_sources`도 바로 채운다(Vercel 자막 차단 우회). 오분류는 `/move`로 섹션 이동. bulk-youtube 로직을 `services/quick-save/`로 옮겨 공유. 확장 코드는 비공개(레포 제외). [ADR 0029](decisions/0029-quick-save-pipeline.md).

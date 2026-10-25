@@ -1,3 +1,4 @@
+import { reportProgress } from '../../progress.js'
 import { geminiGenerateContent } from './gemini-generate.js'
 import type { AiTextProvider } from './types.js'
 
@@ -18,6 +19,11 @@ export function resolveGeminiYoutubeModel(options?: GeminiTextProviderOptions): 
   )
 }
 
+/** 일반 텍스트 생성 모델 */
+export function resolveGeminiTextModel(): string {
+  return process.env.GEMINI_MODEL?.trim() || 'gemini-3.1-flash-lite'
+}
+
 /**
  * Google AI Studio / Gemini API — generateContent (비스트리밍)
  * @see https://ai.google.dev/api/rest/v1beta/models.generateContent
@@ -31,7 +37,7 @@ export function createGeminiTextProvider(
     process.env.GEMINI_API_KEY ??
     process.env.GOOGLE_AI_API_KEY
   const model =
-    options?.model ?? process.env.GEMINI_MODEL ?? 'gemini-3.1-flash-lite'
+    options?.model ?? resolveGeminiTextModel()
   const youtubeModel = resolveGeminiYoutubeModel(options)
 
   async function completeWithParts(
@@ -41,7 +47,10 @@ export function createGeminiTextProvider(
     if (!apiKey?.trim()) {
       throw new Error('Gemini: GEMINI_API_KEY or GOOGLE_AI_API_KEY is not set')
     }
-    return geminiGenerateContent(apiKey, modelId, parts)
+    const started = Date.now()
+    const text = await geminiGenerateContent(apiKey, modelId, parts)
+    reportProgress(`  ↳ ${modelId} 응답 (${((Date.now() - started) / 1000).toFixed(1)}초)`)
+    return text
   }
 
   return {

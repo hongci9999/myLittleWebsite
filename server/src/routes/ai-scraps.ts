@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { progressStream } from '../services/progress.js'
 import { requireAuth, type AuthenticatedRequest } from '../middleware/auth.js'
 import {
   listAiToolScraps,
@@ -91,7 +92,7 @@ router.get('/by-slug/:slug', async (req, res) => {
 })
 
 /** POST /api/ai-scraps/ai-fill — URL 기준 폼 필드 제안 (인증 필요) */
-router.post('/ai-fill', requireAuth, async (req, res) => {
+router.post('/ai-fill', requireAuth, progressStream, async (req, res) => {
   try {
     const url = (req.body as { url?: string })?.url?.trim()
     if (!url) {

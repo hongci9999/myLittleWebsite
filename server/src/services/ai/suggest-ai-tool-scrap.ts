@@ -4,6 +4,7 @@ import { assertYoutubeTranscriptForAi } from '../youtube-transcript-text.js'
 import { stripMarkdownCodeFence } from './json-from-model.js'
 import { AiToolScrapPrompts } from './prompts/ai-tool-scrap.prompts.js'
 import { getAiTextProvider } from './providers/registry.js'
+import { reportProgress } from '../progress.js'
 import type { AiToolScrapAiFillResult } from './types.js'
 import { inferAiToolSourceKindFromUrl, isXOrTwitterHost, xStatusHandleFromUrl } from './url-hints.js'
 
@@ -89,6 +90,7 @@ export async function suggestAiToolScrapFromUrl(
 
   if (content && content.fullText.trim().length > 40) {
     try {
+      reportProgress('AI 1/3 · 내용 심층 분석')
       siteAnalysis = await ai.complete(AiToolScrapPrompts.deepAnalysisNote(trimmed, content.fullText))
     } catch {
       siteAnalysis = ''
@@ -109,6 +111,7 @@ export async function suggestAiToolScrapFromUrl(
     pageTitleLine,
     urlKindLine,
   })
+  reportProgress('AI 2/3 · 제목·요약·본문 생성')
   const raw = await ai.complete(metadataPrompt)
   const jsonStr = stripMarkdownCodeFence(raw)
 
@@ -169,6 +172,7 @@ export async function suggestAiToolScrapFromUrl(
 
   if (siteAnalysis.length >= 400 && bodyMd.length < 500) {
     try {
+      reportProgress('AI 3/3 · 본문 보강 (짧아서 재생성)')
       const expanded = await ai.complete(
         AiToolScrapPrompts.expandBodyMarkdown({
           url: trimmed,

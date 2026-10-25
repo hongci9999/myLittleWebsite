@@ -11,6 +11,7 @@ import {
 } from './youtube-content.js'
 import { parseYoutubeVideoId, tryFetchYoutubeTranscriptPlain } from './youtube-transcript-text.js'
 import { fetchYoutubeGeminiDigest } from './ai/youtube-ai-path.js'
+import { reportProgress } from './progress.js'
 
 export interface WebsiteContent {
   url: string
@@ -214,8 +215,10 @@ export async function fetchWebsiteContent(
   }
 
   if (ytId) {
+    reportProgress('유튜브 메타·자막 받는 중')
     const bundle = await fetchYoutubeContentBundle(trimmed)
     if (bundle) {
+      reportProgress(bundle.transcript ? `자막 확보 (${bundle.transcript.length.toLocaleString()}자)` : '메타만 확보 (자막 없음)')
       return websiteContentFromYoutubeBundle(trimmed, bundle)
     }
   }
@@ -223,10 +226,12 @@ export async function fetchWebsiteContent(
   const ytTranscript = ytId ? await tryFetchYoutubeTranscriptPlain(trimmed) : null
 
   if (ytId && !ytTranscript) {
+    reportProgress('자막 못 받음 (서버 IP 차단 추정) → Gemini가 영상 직접 시청 중 — 영상 길이에 따라 30초~2분')
     const digest = await fetchYoutubeGeminiDigest(trimmed)
     if (digest) return websiteContentFromYoutubeGeminiDigest(trimmed, ytId, digest)
   }
 
+  reportProgress('페이지 가져오는 중')
   try {
     const res = await fetch(trimmed, {
       headers: { 'User-Agent': USER_AGENT },

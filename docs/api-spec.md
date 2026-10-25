@@ -506,6 +506,8 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 `400` — URL 없음. (유튜브 자막을 못 받으면 Gemini 영상 직접 분석으로 폴백 — [ADR 0026](decisions/0026-youtube-gemini-digest-fallback.md))  
 `503` — Gemini 키 없음·연결 실패 등.
 
+**진행 스트림** — `Accept: application/x-ndjson`이면 한 줄씩 JSON: `{t, msg}` 진행 단계(자막·Gemini 호출·응답 시간), `{t, beat: true}` 3초 heartbeat, 마지막 `{t, done: true, status, body}`(body는 위 응답/에러와 같음). `t`는 요청 시작 후 ms. 칼럼·게임 개발·AI 도구 `ai-fill` 공통(`services/progress.ts`).
+
 의사결정: [0022](decisions/0022-obsidian-youtube-clip-column-scrap.md)(클립 입력은 2026-10 제거), [0026](decisions/0026-youtube-gemini-digest-fallback.md)
 
 ### POST /api/column-scraps
@@ -525,7 +527,7 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 ## 8. 공개 메타 (`/api/meta`)
 
-인증 불필요. 공개 기능 플래그 요약. (헤더 AI 전광판·`ai` 필드는 2026-10 제거)
+인증 불필요. 헤더 모델 배지용 AI 모델 정보·기능 플래그 요약.
 
 ### GET /api/meta
 
@@ -533,6 +535,11 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 ```json
 {
+  "ai": {
+    "model": "gemini-3.1-flash-lite",
+    "youtubeModel": "gemini-2.5-flash",
+    "keyConfigured": true
+  },
   "features": {
     "columnScrapYoutubeTranscript": true
   }
@@ -541,6 +548,8 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 
 | 필드 | 설명 |
 |------|------|
+| `ai.model` / `ai.youtubeModel` | 텍스트 생성 모델(`GEMINI_MODEL`) / 자막 막힐 때 영상 직접 분석 모델(`GEMINI_YOUTUBE_MODEL`) |
+| `ai.keyConfigured` | 서버에 Gemini 키가 있는지 |
 | `features.columnScrapYoutubeTranscript` | 유튜브 칼럼 스크랩 AI가 자막·메타데이터 추출 경로를 쓰는지(현재 항상 `true`). [ADR 0021](decisions/0021-youtube-transcript-unified-ai-path.md) |
 
 ---

@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { progressStream } from '../services/progress.js'
 import { requireAuth, type AuthenticatedRequest } from '../middleware/auth.js'
 import {
   listGameDevResources,
@@ -86,7 +87,7 @@ router.get('/by-slug/:slug', async (req, res) => {
 })
 
 /** POST /api/game-dev-resources/ai-fill — URL 기준 폼 필드 제안 (인증 필요) */
-router.post('/ai-fill', requireAuth, async (req, res) => {
+router.post('/ai-fill', requireAuth, progressStream, async (req, res) => {
   try {
     const body = req.body as { url?: string }
     const url = body.url?.trim()

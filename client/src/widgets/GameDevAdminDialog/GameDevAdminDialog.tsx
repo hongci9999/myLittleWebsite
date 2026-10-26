@@ -130,6 +130,7 @@ export function GameDevAdminDialog({ open, onOpenChange, initialSlug }: Props) {
         coverImageUrl: r.coverImageUrl ?? f.coverImageUrl,
         tagsStr: r.tags.length ? r.tags.join(', ') : f.tagsStr,
       }))
+      aiProgress.succeed()
     } catch (err) {
       window.alert(err instanceof Error ? err.message : 'AI 채우기 실패')
     } finally {
@@ -271,7 +272,7 @@ export function GameDevAdminDialog({ open, onOpenChange, initialSlug }: Props) {
                         disabled={!form.url.trim() || aiFillLoading || saving}
                         onClick={() => void handleAiFill()}
                       >
-                        {aiFillLoading ? 'AI 분석 중…' : 'AI 채우기'}
+                        {aiFillLoading ? 'AI 분석 중…' : aiProgress.status === 'done' ? '✓ 다시 채우기' : 'AI 채우기'}
                       </Button>
                     </span>
                     <input

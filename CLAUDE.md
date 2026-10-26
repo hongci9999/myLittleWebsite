@@ -15,6 +15,10 @@
 
 제약: 중복 검사는 세 섹션 통합 linkKey 기준 → 같은 URL을 두 섹션에 넣으면 두 번째는 스킵된다. 두 섹션에 다 넣을 땐 한쪽은 영상 URL을 메인으로.
 
+## 부트캠프 기록 갱신 (`server/scripts/import-bootcamp.ts`)
+
+원본은 로컬 폴더(`*.md` + `images/`). 고치거나 문서를 추가하면 `npm run import-bootcamp -w server -- "<폴더>" --dry`로 파싱 확인 → `--dry` 없이 실행(DB `bootcamp_docs` upsert + 본문이 참조하는 이미지만 Storage `bootcamp`에 업로드). 대화창·MCP는 DB를 읽으므로 즉시 반영. 새 프로젝트면 `projects.json`에 카드(`docPath: "/bootcamp/<slug>"`) 추가 후 배포.
+
 ## 섹션 분류 관례
 
 - **AI 개발 도구**: 메인 링크 = 도구의 GitHub 레포(우선) 또는 공식 사이트, 영상은 「소개 영상」 추가 링크. AI 도구·모델을 주제로 소개하는 영상은 칼럼이 아니라 여기.

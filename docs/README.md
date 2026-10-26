@@ -48,6 +48,14 @@
 
 화면 중앙 하단 입력창으로 사이트 자료를 자연어 검색. MCP 도구를 Gemini function calling에 재사용, 비로그인은 IP별 하루 10회. 설계 [ADR 0030](decisions/0030-site-chat-dock.md), API [api-spec §15](api-spec.md), 사용량 [chat_usage SQL](plans/2026-10-23-chat-usage.sql).
 
+### 부트캠프 기록 (`/bootcamp`)
+
+현대오토에버 모빌리티 SW스쿨 팀 프로젝트 5건의 기록. 본문은 DB `bootcamp_docs`, 슬라이드는 Supabase Storage `bootcamp` 버킷. 프로젝트 페이지 카드의 「기록 보기」로 진입하고, 대화창·MCP가 `get_project_record`로 전문을 읽는다. 올리기·갱신: `npm run import-bootcamp -w server -- <폴더>`. 설계 [ADR 0031](decisions/0031-bootcamp-docs.md), API [api-spec §17](api-spec.md), 스키마 [bootcamp SQL](plans/2026-10-26-bootcamp-docs.sql).
+
+### AI 채우기 진행 표시
+
+칼럼·게임 개발·AI 도구 「AI 채우기」 중 서버 단계(자막 → Gemini 영상 시청 → AI 1~3단계, 응답 시간)를 NDJSON 스트림으로 실시간 표시, 3초 heartbeat로 멈춤 구분. 헤더에 사용 중인 Gemini 모델. 설계 [ADR 0032](decisions/0032-ai-fill-progress-stream.md).
+
 ### 최근 계획
 
 | 날짜                                                                  | 제목                                         |
@@ -107,6 +115,7 @@
 - [0029 원클릭 저장 파이프라인 (개인 크롬 확장 + quick-save API)](./decisions/0029-quick-save-pipeline.md)
 - [0030 사이트 대화창 (하단 입력창 + chat API, MCP 도구 재사용)](./decisions/0030-site-chat-dock.md)
 - [0031 현대오토에버 부트캠프 기록 (DB 본문 + Storage 이미지 + /bootcamp)](./decisions/0031-bootcamp-docs.md)
+- [0032 AI 채우기 진행 스트림 (NDJSON + AsyncLocalStorage, 헤더 모델 배지)](./decisions/0032-ai-fill-progress-stream.md)
 
 ### 학습 내용
 
@@ -163,5 +172,6 @@
 | [0005](./error-fixes/0005-learning-production-split-hosting.md) | 학습 기록 프로덕션: 준비 중·목록 순서 깜빡임 |
 | [0006](./error-fixes/0006-github-actions-eb-iam-deploy.md) | GitHub Actions EB 배포 IAM 권한 부족 |
 | [0007](./error-fixes/0007-domain-renew-period-mismatch.md) | 도메인 연장 반영이 +3개월로 계산됨 |
+| [0008](./error-fixes/0008-d2-helloworld-video-only-filter.md) | D2 Hello world 위젯이 최신 텍스트 글 대신 6월 영상 글 표시 |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

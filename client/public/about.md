@@ -1,7 +1,7 @@
 # 이 사이트에 대해
 
 > **한 줄 요약**: 자료 정리, 포트폴리오, 기술 학습을 위해 만들고 **만들면서 기록하는** 개인 웹사이트입니다.  
-> **마지막 갱신**: 2026-10-23 (사이트 대화창 추가)
+> **마지막 갱신**: 2026-10-26 (현대오토에버 부트캠프 기록 추가)
 
 ## 목적
 
@@ -28,6 +28,7 @@
 | 모아둔 도구·문서 링크  | [/links](/links)               |
 | 글·스크랩(칼럼)        | [/column](/column)             |
 | 사이드 프로젝트        | [/project](/project)           |
+| 부트캠프 팀 프로젝트   | [/bootcamp](/bootcamp)         |
 | AI 개발 도구 스크랩    | [/ai-dev-tools](/ai-dev-tools) |
 | 게임 개발 자료         | [/game-dev](/game-dev)         |
 | 내 AI에 이 사이트 연결 | [/mcp](/mcp)                   |
@@ -41,6 +42,7 @@
 - **유용한 링크**: 도구·문서 아카이브 (일부 AI 자동 분류)
 - **칼럼**: 생각·에세이·스크랩
 - **프로젝트**: 사이드 프로젝트 기록
+- **부트캠프 기록**: 현대오토에버 모빌리티 SW스쿨 팀 프로젝트 5건(생산 시뮬레이션·진동 진단·배터리 고장 예측·컴퓨터 비전)의 과정·판단·결과를 발표 슬라이드와 함께 정리
 - **AI 개발 도구**: 도구 스크랩 검색·목록
 - **게임 개발 도서관**: 그래픽스·물리·AI 등 분야별 게임 개발 자료
 - **AI 연결(MCP)**: 위 자료와 포트폴리오를 Claude·Cursor 등 AI가 직접 읽게 하는 MCP 서버
@@ -65,6 +67,8 @@
 | AI 연결         | 원격 MCP 서버 (`/api/mcp`, 읽기 전용)       | 모은 자료를 AI 답변·자소서에 활용      | `0028-site-knowledge-mcp`                        |
 | 자료 수집       | 개인 크롬 확장 → `/api/quick-save`          | 브라우징 중 원클릭 저장, 자막은 브라우저에서 | `0029-quick-save-pipeline`                       |
 | 사이트 대화창   | 하단 입력창 → `/api/chat` (MCP 도구 재사용) | 사이트 안에서 자료 자연어 검색          | `0030-site-chat-dock`                            |
+| 부트캠프 기록   | 본문 DB + 슬라이드 Supabase Storage          | 데이터는 DB에, 폴더 재업로드로 갱신     | `0031-bootcamp-docs`                             |
+| AI 진행 표시    | NDJSON 스트림 + heartbeat                    | 오래 걸리는 AI 채우기의 실제 진행 확인 | `0032-ai-fill-progress-stream`                   |
 
 ## 기술 스택
 
@@ -106,6 +110,7 @@ Supabase·DB 접근은 **server**에서만 합니다. client는 API를 호출합
 | `/links`                               | 유용한 링크              |
 | `/column`, `/column/:slug`             | 칼럼·스크랩              |
 | `/project`                             | 프로젝트                 |
+| `/bootcamp`, `/bootcamp/:slug`         | 부트캠프 기록            |
 | `/ai-dev-tools`, `/ai-dev-tools/:slug` | AI 개발 도구             |
 | `/game-dev`, `/game-dev/:slug`         | 게임 개발 도서관         |
 | `/mcp`                                 | MCP 연결 가이드          |
@@ -293,6 +298,7 @@ flowchart TB
 - [/links](/links) — 유용한 링크
 - [/column](/column) — 칼럼
 - [/project](/project) — 프로젝트
+- [/bootcamp](/bootcamp) — 현대오토에버 부트캠프 기록
 - [/ai-dev-tools](/ai-dev-tools) — AI 개발 도구
 - [/game-dev](/game-dev) — 게임 개발 도서관
 - [/mcp](/mcp) — MCP 연결 가이드

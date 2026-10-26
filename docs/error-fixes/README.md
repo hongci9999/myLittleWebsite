@@ -30,3 +30,5 @@
 | [0004](./0004-tarot-deploy-image-paths.md) | 타로 위젯 배포 환경에서 카드 이미지 미표시 | 2026-05-19 |
 | [0005](./0005-learning-production-split-hosting.md) | 학습 기록 프로덕션: 준비 중·목록 순서 깜빡임 | 2026-05-19 |
 | [0006](./0006-github-actions-eb-iam-deploy.md) | GitHub Actions EB 배포 IAM 권한 부족 (순차 보강) | 2026-06-08 |
+| [0007](./0007-domain-renew-period-mismatch.md) | 도메인 연장 반영이 +1년이 아닌 +3개월로 계산됨 | 2026-07-19 |
+| [0008](./0008-d2-helloworld-video-only-filter.md) | D2 Hello world 위젯이 최신 텍스트 글 대신 6월 영상 글 표시 | 2026-10-25 |

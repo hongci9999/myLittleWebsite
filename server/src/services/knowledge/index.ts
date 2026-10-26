@@ -10,6 +10,7 @@ import { supabase } from '../../db/supabase.js'
 import { listAiToolScraps } from '../../db/queries/ai-scraps.js'
 import { listColumnScraps } from '../../db/queries/column-scraps.js'
 import { listGameDevResources } from '../../db/queries/game-dev-resources.js'
+import { getBootcampDoc, listBootcampDocs } from '../../db/queries/bootcamp.js'
 import { getDimensionsWithValues, getLinks, type ValueTree } from '../../db/queries/links.js'
 import { projectRoot } from '../../config/learning-sections.js'
 import { fetchSourceText } from './source.js'
@@ -182,16 +183,47 @@ export const knowledgeTools: KnowledgeTool[] = [
   {
     name: 'get_portfolio',
     description:
-      '사이트 주인의 자기소개(about.md 원문)와 프로젝트 목록(설명·기술·역할·링크)을 반환한다. ' +
+      '사이트 주인의 자기소개(about.md 원문), 프로젝트 목록(설명·기술·역할·링크), ' +
+      '부트캠프(현대오토에버 모빌리티 SW스쿨) 팀 프로젝트 기록 목록(bootcamp: slug·제목·요약·siteUrl)을 반환한다. ' +
       '자기소개서·이력서·포트폴리오 작성이나 "이 사람이 뭘 해왔나" 질문에 쓴다. ' +
+      '프로젝트 상세(역할·방법·수치·판단 과정)는 get_project_record로 기록 전문을 읽어라. ' +
       '기술 선택 이유·배운 점 같은 근거는 read_dev_notes로 보강하라.',
     inputSchema: {},
-    handler: async () => ({
-      about: fs.readFileSync(path.join(projectRoot, 'client', 'public', 'about.md'), 'utf8'),
-      projects: JSON.parse(
+    handler: async () => {
+      const projects = JSON.parse(
         fs.readFileSync(path.join(projectRoot, 'client', 'src', 'shared', 'config', 'projects.json'), 'utf8')
-      ),
-    }),
+      ) as { docPath?: string }[]
+      return {
+        about: fs.readFileSync(path.join(projectRoot, 'client', 'public', 'about.md'), 'utf8'),
+        // docPath(사이트 안 기록 페이지)가 있으면 답변 링크용 절대 주소
+        projects: projects.map((p) => (p.docPath ? { ...p, siteUrl: `${SITE_URL}${p.docPath}` } : p)),
+        // DB에서 읽으므로 import-bootcamp로 추가한 기록도 바로 보임. DB 꺼져도 나머지는 반환
+        bootcamp: await listBootcampDocs()
+          .then((docs) =>
+            docs.map(({ slug, title, date, summary, tags }) => ({
+              slug,
+              title,
+              date,
+              summary,
+              tags,
+              siteUrl: `${SITE_URL}/bootcamp${slug === 'index' ? '' : `/${slug}`}`,
+            }))
+          )
+          .catch(() => []),
+      }
+    },
+  },
+  {
+    name: 'get_project_record',
+    description:
+      '부트캠프 프로젝트 기록 전문(Markdown)을 반환한다. slug는 get_portfolio의 bootcamp[].slug ' +
+      '(예: cps-simulation, ev-battery, index=과정 소개). 본문의 이미지는 발표 슬라이드다. 답변에는 siteUrl을 출처로 달아라.',
+    inputSchema: { slug: z.string().describe('get_portfolio의 bootcamp[].slug') },
+    handler: async ({ slug }: { slug: string }) => {
+      const doc = await getBootcampDoc(slug)
+      if (!doc) return { error: `기록 없음: ${slug}` }
+      return { ...doc, siteUrl: `${SITE_URL}/bootcamp${slug === 'index' ? '' : `/${slug}`}` }
+    },
   },
   {
     name: 'read_dev_notes',

@@ -664,7 +664,7 @@ AI·개발 도구 링크 스크랩. 응답 필드는 서버에서 camelCase로 �
 ### POST /api/mcp
 
 MCP 서버(Streamable HTTP, stateless, 인증 없음·읽기 전용). JSON-RPC 요청, `Accept: application/json, text/event-stream`. GET/DELETE는 `405`.
-도구: `list_scraps`, `get_scraps`, `get_source`, `get_portfolio`, `read_dev_notes` — 정의는 `server/src/services/knowledge/`. 섹션: `ai-tools`·`columns`·`game-dev`·`links`. 사용법: [mcp-guide.md](mcp-guide.md), 설계: [ADR 0028](decisions/0028-site-knowledge-mcp.md).
+도구: `list_scraps`, `get_scraps`, `get_source`, `get_portfolio`(부트캠프 기록 목록 포함), `get_project_record`(부트캠프 기록 전문), `read_dev_notes` — 정의는 `server/src/services/knowledge/`. 섹션: `ai-tools`·`columns`·`game-dev`·`links`. 사용법: [mcp-guide.md](mcp-guide.md), 설계: [ADR 0028](decisions/0028-site-knowledge-mcp.md).
 
 ---
 

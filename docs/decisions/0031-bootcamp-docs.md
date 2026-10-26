@@ -15,7 +15,8 @@
 3. **올리기 = `npm run import-bootcamp -w server -- <폴더> [--dry]`** — frontmatter 분리, `foo.md` 링크 → `/bootcamp/foo`, slug 기준 upsert라 재실행으로 갱신. `--dry`는 DB 쓰기 없이 파싱 결과만.
 4. **페이지 = `/bootcamp`(과정 소개) · `/bootcamp/:slug`(프로젝트)** — 한 컴포넌트(`BootcampPage`), 프로젝트 문서 아래 이전·다음 이동. 헤더 메뉴 「부트캠프 기록」.
 5. **프로젝트 카드 5개는 `projects.json`** — 새 필드 `docPath`가 있으면 「기록 보기」 버튼(사이트 내부 이동). 표지는 각 문서 첫 슬라이드(Storage URL).
-6. 마크다운 렌더러 공통 개선: `/`로 시작하는 링크는 react-router `Link`(새로고침 없음), 이미지는 `loading="lazy"`.
+6. **대화창·MCP 반영** — `get_portfolio`가 `bootcamp_docs` 목록(slug·요약·siteUrl)을 함께 반환하고, 새 도구 `get_project_record(slug)`로 전문을 읽는다. DB에서 읽으므로 이후 import한 기록도 자동 반영.
+7. 마크다운 렌더러 공통 개선: `/`로 시작하는 링크는 react-router `Link`(새로고침 없음), 이미지는 `loading="lazy"`.
 
 ## 이유 (다른 선택지를 배제한 이유)
 

@@ -19,6 +19,7 @@ https://my-little-website-client-self.vercel.app/api/mcp
 | "온톨로지 칼럼 내용으로 할 만한 사이드 프로젝트 제안해 줘" | `get_scraps` → `get_source` |
 | "그 영상에서 정확히 뭐라고 했는지 스크립트 보고 알려줘" | `get_source` (유튜브 자막) |
 | "CHEESESTORM 프로젝트로 자기소개서 문제해결 경험 문단 써 줘" | `get_portfolio` → `read_dev_notes` |
+| "부트캠프 EV 배터리 프로젝트에서 내 역할과 Recall을 고른 이유" | `get_portfolio` → `get_project_record` |
 | "이 사이트는 왜 Vercel로 옮겼어?" | `read_dev_notes` (기술 결정 기록) |
 
 ---
@@ -91,7 +92,8 @@ CLI, IDE 확장, 데스크톱 앱이 이 설정을 함께 씁니다. 앱이나 �
 | `list_scraps` | `section?`: `ai-tools` / `columns` / `game-dev` / `links`, `tag?` | 저장 자료 전체 목록(id·제목·요약·태그). AI가 여기서 관련 항목을 고릅니다 |
 | `get_scraps` | `ids` (최대 10개) | 고른 항목의 정리 본문, 원본 링크, 추가 링크(소개 영상·레포), 사이트 페이지 링크 |
 | `get_source` | `url`, `offset?` | 원문. 유튜브는 **자막 스크립트**, GitHub 레포는 README, 그 외는 페이지 본문. 4만 자씩 나눠서 줍니다 |
-| `get_portfolio` | 없음 | 자기소개(About)와 프로젝트 목록 |
+| `get_portfolio` | 없음 | 자기소개(About), 프로젝트 목록, 부트캠프 기록 목록 |
+| `get_project_record` | `slug` | 부트캠프 프로젝트 기록 전문 (예: `ev-battery`) |
 | `read_dev_notes` | `path?` | 이 사이트를 만들며 남긴 기술 결정 기록(ADR)·학습 노트. path 없이 부르면 파일 목록 |
 
 **참고**

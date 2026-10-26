@@ -11,4 +11,5 @@ export const MAIN_NAV = [
   { path: '/links', label: '유용한 링크', description: '모아둔 도구 사이트' },
   { path: '/column', label: '칼럼', description: '생각과 에세이' },
   { path: '/project', label: '프로젝트', description: '사이드 프로젝트' },
+  { path: '/bootcamp', label: '부트캠프 기록', description: '현대오토에버 모빌리티 SW스쿨 프로젝트' },
 ] as const;

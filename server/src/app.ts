@@ -16,6 +16,7 @@ import siteDomainRoutes from './routes/site-domain.js'
 import mcpRoutes from './routes/mcp.js'
 import quickSaveRoutes from './routes/quick-save.js'
 import chatRoutes from './routes/chat.js'
+import bootcampRoutes from './routes/bootcamp.js'
 import {
   resolveGeminiTextModel,
   resolveGeminiYoutubeModel,
@@ -73,6 +74,7 @@ app.use('/api/ai-smoke', aiSmokeRoutes)
 
 app.use('/api/auth', authRoutes)
 app.use('/api/links', linksRoutes)
+app.use('/api/bootcamp', bootcampRoutes)
 app.use('/api/geeknews', geekNewsRoutes)
 app.use('/api/d2-helloworld', d2HelloWorldRoutes)
 app.use('/api/tech-interview', techInterviewRoutes)

@@ -23,6 +23,7 @@ import AiDevToolScrapDetailPage from './pages/AiDevToolScrapDetailPage'
 import GameDevLibraryPage from './pages/GameDevLibraryPage'
 import GameDevResourceDetailPage from './pages/GameDevResourceDetailPage'
 import AiSmokeTestPage from './pages/AiSmokeTestPage'
+import BootcampPage from './pages/BootcampPage'
 
 function App() {
   return (
@@ -58,6 +59,8 @@ function App() {
           <Route path="links" element={<LinksPage />} />
           <Route path="skills-intro" element={<ImpeccableSkillsIntroPage />} />
           <Route path="project" element={<ProjectPage />} />
+          <Route path="bootcamp" element={<BootcampPage />} />
+          <Route path="bootcamp/:slug" element={<BootcampPage />} />
           <Route path="ai-smoke-test" element={<AiSmokeTestPage />} />
         </Route>
       </Routes>

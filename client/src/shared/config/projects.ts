@@ -20,6 +20,8 @@ export type ProjectItem = {
   postUrl?: string
   /** 발표·세미나 PDF (선택) */
   pdfUrl?: string
+  /** 이 사이트 안 기록 페이지 (예: /bootcamp/cps-simulation) — 「기록 보기」 버튼 */
+  docPath?: string
   screenshotSrc: string
   screenshotAlt: string
   /** 있으면 카드 상단에 갤러리로 표시 (없으면 screenshotSrc 단일 이미지) */

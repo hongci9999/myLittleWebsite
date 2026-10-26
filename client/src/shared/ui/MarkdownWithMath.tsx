@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import remarkCjkFriendly from 'remark-cjk-friendly'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
@@ -55,6 +57,14 @@ function MarkdownAnchor(
         </>
       )
     }
+  }
+  // 사이트 내부 경로는 SPA 이동 (새로고침 없이)
+  if (href?.startsWith('/') && !href.startsWith('//')) {
+    return (
+      <Link to={href} className={className}>
+        {children}
+      </Link>
+    )
   }
   return (
     <a href={href} className={className} {...rest}>
@@ -151,10 +161,11 @@ export function MarkdownWithMath({
   return (
     <div className={className}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkMath]}
+        remarkPlugins={[[remarkGfm, { singleTilde: false }], remarkCjkFriendly, remarkMath]}
         rehypePlugins={[rehypeKatex]}
         components={{
           a: MarkdownAnchor,
+          img: ({ node: _node, ...props }) => <img loading="lazy" decoding="async" {...props} />,
           ...(changelogHeadings
             ? {
                 h2: (props) => <ChangelogMonthHeading {...props} />,

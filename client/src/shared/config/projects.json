@@ -1,5 +1,85 @@
 [
   {
+    "id": "bootcamp-vision-kitting",
+    "title": "AI 비전 키팅 검사 시스템",
+    "summary": "조립 전 트레이의 나사·못 8종(길이만 다른 것 포함)을 인식해 누락·혼입을 판정하고 추가·제거할 부품까지 안내하는 비전 검사 시스템. 6가지 방식을 비교해 YOLO26s 선정(mAP50 0.963 · 70.77 FPS), HDBSCAN으로 작업 군집을 고른다.",
+    "meta": "현대오토에버 모빌리티 SW스쿨 · 2026.09 · 6인 팀장 · YOLO11n+DINOv2 구현",
+    "docPath": "/bootcamp/vision-kitting",
+    "screenshotSrc": "https://oxyvknvysslhwmqakuow.supabase.co/storage/v1/object/public/bootcamp/vision2/p003.webp",
+    "screenshotAlt": "AI 비전 키팅 검사 시스템 발표 슬라이드",
+    "tags": [
+      "컴퓨터비전",
+      "YOLO",
+      "HDBSCAN",
+      "부트캠프"
+    ],
+    "status": "archived"
+  },
+  {
+    "id": "bootcamp-vision-phone-detection",
+    "title": "운전자 휴대폰 사용 탐지",
+    "summary": "실내 카메라로 운전자가 휴대폰을 손에 쥐었는지 실시간 탐지. 고전 CV부터 YOLO+자세 추정까지 6가지 방법을 비교해 YOLO+Pose+ResNet 선정 — Recall 94.81%, 평균 44 FPS(TensorRT FP16).",
+    "meta": "현대오토에버 모빌리티 SW스쿨 · 2026.09 · 6인 팀장 · 고전 CV 구현",
+    "docPath": "/bootcamp/vision-phone-detection",
+    "screenshotSrc": "https://oxyvknvysslhwmqakuow.supabase.co/storage/v1/object/public/bootcamp/vision1/p003.webp",
+    "screenshotAlt": "운전자 휴대폰 사용 탐지 발표 슬라이드",
+    "tags": [
+      "컴퓨터비전",
+      "YOLO",
+      "자세추정",
+      "부트캠프"
+    ],
+    "status": "archived"
+  },
+  {
+    "id": "bootcamp-ev-battery",
+    "title": "EV 배터리 진단 플랫폼",
+    "summary": "Kaggle 20만 건 센서 데이터로 EV 배터리 고장을 예측하고 충전소·서비스센터 연계까지 묶은 플랫폼. 놓치는 비용을 줄이려 Recall을 목적함수로 LightGBM·임계값 0.2 선택 — AUC 0.9858, Recall 0.978. FastAPI 3계층.",
+    "meta": "현대오토에버 모빌리티 SW스쿨 · 2026.08 · 6인 팀장 · 데이터 분석·모델링",
+    "docPath": "/bootcamp/ev-battery",
+    "screenshotSrc": "https://oxyvknvysslhwmqakuow.supabase.co/storage/v1/object/public/bootcamp/battery/p003.webp",
+    "screenshotAlt": "EV 배터리 진단 플랫폼 발표 슬라이드",
+    "tags": [
+      "머신러닝",
+      "LightGBM",
+      "FastAPI",
+      "부트캠프"
+    ],
+    "status": "archived"
+  },
+  {
+    "id": "bootcamp-phm-diagnostics",
+    "title": "PHM 진동 진단",
+    "summary": "베어링·팬·기어박스 7개 Case의 진동 데이터를 FFT·Envelope·통계적 알람(평균+3σ)으로 분석해 결함 원인을 전부 규명하고 솔루션을 도출. 정상 모터에서도 보이는 성분을 먼저 배제하는 방식.",
+    "meta": "현대오토에버 모빌리티 SW스쿨 · 2026.08 · 5인 · 모터 시계열·FFT 분석",
+    "docPath": "/bootcamp/phm-diagnostics",
+    "screenshotSrc": "https://oxyvknvysslhwmqakuow.supabase.co/storage/v1/object/public/bootcamp/phm/p008.webp",
+    "screenshotAlt": "PHM 진동 진단 발표 슬라이드",
+    "tags": [
+      "PHM",
+      "진동분석",
+      "FFT",
+      "부트캠프"
+    ],
+    "status": "archived"
+  },
+  {
+    "id": "bootcamp-cps-simulation",
+    "title": "CPS 생산라인 시뮬레이션",
+    "summary": "EV3 시트 생산라인의 작업자 병목을 설비 증설이 아닌 다기능 작업자 전환으로 해소한 제안. UPH 1.98 → 11.25(5.72배), 투자 회수 6.3년 → 0.98년, 1명 결원에도 라인 가동 유지.",
+    "meta": "현대오토에버 모빌리티 SW스쿨 · 2026.08 · 5인 · To-Be 모델·레이아웃·ROI",
+    "docPath": "/bootcamp/cps-simulation",
+    "screenshotSrc": "https://oxyvknvysslhwmqakuow.supabase.co/storage/v1/object/public/bootcamp/cps/p005.webp",
+    "screenshotAlt": "CPS 생산라인 시뮬레이션 발표 슬라이드",
+    "tags": [
+      "CPS",
+      "시뮬레이션",
+      "생산관리",
+      "부트캠프"
+    ],
+    "status": "archived"
+  },
+  {
     "id": "cheese-storm",
     "title": "CHEESESTORM",
     "summary": "치지직 스트리머들의 히어로즈 오브 더 스톰(HotS) 내전 전적 기록·티어리스트 서비스. 자동·큐레이션 티어, 경기 입력(OCR), 스트리머 프로필, 치지직 OAuth 권한 체계. 이벤트 기간 집중 운영에 맞춰 Firestore reads를 stats/current·서버 캐시로 최적화한 Next.js 앱.",

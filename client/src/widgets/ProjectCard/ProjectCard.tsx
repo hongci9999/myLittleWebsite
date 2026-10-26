@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { ProjectItem } from '@/shared/config/projects'
 import { cn } from '@/lib/utils'
 
@@ -203,6 +204,14 @@ export default function ProjectCard({ project }: Props) {
           {project.summary}
         </p>
         <div className="mt-5 flex flex-wrap gap-3">
+          {project.docPath ? (
+            <Link
+              to={project.docPath}
+              className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2.5 text-sm font-semibold text-primary no-underline transition-colors hover:border-primary/60 hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              기록 보기 →
+            </Link>
+          ) : null}
           {project.repoUrl ? (
             <a
               href={project.repoUrl}

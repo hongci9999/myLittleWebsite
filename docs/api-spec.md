@@ -695,6 +695,20 @@ MCP 서버(Streamable HTTP, stateless, 인증 없음·읽기 전용). JSON-RPC �
 
 ---
 
+## 17. 부트캠프 기록 (`/api/bootcamp`)
+
+현대오토에버 부트캠프 프로젝트 기록(공개). 데이터는 `bootcamp_docs`(본문) + Storage `bootcamp`(이미지), `npm run import-bootcamp -w server -- <폴더>`로 채운다. [ADR 0031](decisions/0031-bootcamp-docs.md)
+
+### GET /api/bootcamp
+
+목록(본문 제외) — `[{ slug, title, date, summary, tags, sortOrder }]`, `sortOrder` 순. `slug: "index"`는 과정 소개.
+
+### GET /api/bootcamp/:slug
+
+한 건 — 위 필드 + `bodyMd`(이미지 URL·내부 링크 치환된 마크다운). 없으면 `404`.
+
+---
+
 ## 16. 참고
 
 - 설계: `docs/plans/2026-03-03-links-admin-design.md`

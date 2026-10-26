@@ -106,6 +106,7 @@
 - [0028 사이트 지식 MCP 서버](./decisions/0028-site-knowledge-mcp.md)
 - [0029 원클릭 저장 파이프라인 (개인 크롬 확장 + quick-save API)](./decisions/0029-quick-save-pipeline.md)
 - [0030 사이트 대화창 (하단 입력창 + chat API, MCP 도구 재사용)](./decisions/0030-site-chat-dock.md)
+- [0031 현대오토에버 부트캠프 기록 (DB 본문 + Storage 이미지 + /bootcamp)](./decisions/0031-bootcamp-docs.md)
 
 ### 학습 내용
 

@@ -20,6 +20,7 @@ https://my-little-website-client-self.vercel.app/api/mcp
 | "그 영상에서 정확히 뭐라고 했는지 스크립트 보고 알려줘" | `get_source` (유튜브 자막) |
 | "CHEESESTORM 프로젝트로 자기소개서 문제해결 경험 문단 써 줘" | `get_portfolio` → `read_dev_notes` |
 | "부트캠프 EV 배터리 프로젝트에서 내 역할과 Recall을 고른 이유" | `get_portfolio` → `get_project_record` |
+| "CHEESESTORM README 기준으로 Firestore 비용 줄인 방법" | `get_portfolio` → `get_source`(repoUrl) |
 | "이 사이트는 왜 Vercel로 옮겼어?" | `read_dev_notes` (기술 결정 기록) |
 
 ---

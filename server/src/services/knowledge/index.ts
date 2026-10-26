@@ -110,11 +110,21 @@ function listNotes(): string[] {
   )
 }
 
+type ProjectCard = { repoUrl?: string; demoUrl?: string; postUrl?: string; docPath?: string }
+
+function readProjects(): ProjectCard[] {
+  return JSON.parse(
+    fs.readFileSync(path.join(projectRoot, 'client', 'src', 'shared', 'config', 'projects.json'), 'utf8')
+  ) as ProjectCard[]
+}
+
 async function getSource(url: string, offset: number) {
-  // 저장된 스크랩의 링크만 허용 — 공개 엔드포인트가 임의 URL 프록시가 되지 않게
+  // 저장된 스크랩·프로젝트 카드의 링크만 허용 — 공개 엔드포인트가 임의 URL 프록시가 되지 않게
+  const cardLinks = readProjects().flatMap((p) => [p.repoUrl, p.demoUrl, p.postUrl])
   const scraps = await loadScraps()
-  const known = scraps.some((s) => s.url === url || s.extraLinks.some((l) => l.url === url))
-  if (!known) throw new Error('저장된 스크랩의 url 또는 extraLinks url만 조회할 수 있습니다.')
+  const known =
+    cardLinks.includes(url) || scraps.some((s) => s.url === url || s.extraLinks.some((l) => l.url === url))
+  if (!known) throw new Error('저장된 스크랩 url·extraLinks url, 프로젝트 카드의 링크만 조회할 수 있습니다.')
 
   const { data } = (await supabase.client?.from('scrap_sources').select('kind, text').eq('url', url).maybeSingle()) ?? {}
   const src = data ?? (await fetchSourceText(url, { allowAiDigest: true }))
@@ -171,8 +181,9 @@ export const knowledgeTools: KnowledgeTool[] = [
   {
     name: 'get_source',
     description:
-      '스크랩 원문을 반환한다. 유튜브는 자막 스크립트, GitHub 레포는 README, 그 외는 페이지 본문. ' +
-      'url은 스크랩의 url 또는 extraLinks의 url. 길면 nextOffset으로 이어 읽는다. ' +
+      '스크랩·프로젝트 원문을 반환한다. 유튜브는 자막 스크립트, GitHub 레포는 README, 그 외는 페이지 본문. ' +
+      'url은 스크랩의 url·extraLinks의 url, 또는 get_portfolio 프로젝트의 repoUrl·demoUrl·postUrl. 길면 nextOffset으로 이어 읽는다. ' +
+      '앱(SPA) 라이브 사이트는 본문을 못 읽을 수 있으니 repoUrl(README)을 먼저 읽어라. ' +
       'kind가 ai-digest면 자막이 아니라 AI가 영상을 보고 만든 요약이다.',
     inputSchema: {
       url: z.string().url(),
@@ -186,13 +197,12 @@ export const knowledgeTools: KnowledgeTool[] = [
       '사이트 주인의 자기소개(about.md 원문), 프로젝트 목록(설명·기술·역할·링크), ' +
       '부트캠프(현대오토에버 모빌리티 SW스쿨) 팀 프로젝트 기록 목록(bootcamp: slug·제목·요약·siteUrl)을 반환한다. ' +
       '자기소개서·이력서·포트폴리오 작성이나 "이 사람이 뭘 해왔나" 질문에 쓴다. ' +
-      '프로젝트 상세(역할·방법·수치·판단 과정)는 get_project_record로 기록 전문을 읽어라. ' +
+      '프로젝트 상세(역할·방법·수치·판단 과정)는 get_project_record로 기록 전문을, ' +
+      '카드 링크(repoUrl=GitHub README, postUrl=구축 후기, demoUrl=라이브)는 get_source로 원문을 읽어라. ' +
       '기술 선택 이유·배운 점 같은 근거는 read_dev_notes로 보강하라.',
     inputSchema: {},
     handler: async () => {
-      const projects = JSON.parse(
-        fs.readFileSync(path.join(projectRoot, 'client', 'src', 'shared', 'config', 'projects.json'), 'utf8')
-      ) as { docPath?: string }[]
+      const projects = readProjects()
       return {
         about: fs.readFileSync(path.join(projectRoot, 'client', 'public', 'about.md'), 'utf8'),
         // docPath(사이트 안 기록 페이지)가 있으면 답변 링크용 절대 주소

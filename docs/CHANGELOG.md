@@ -6,7 +6,7 @@
 
 ### Added
 
-- **현대오토에버 부트캠프 기록 (`/bootcamp`)** — 모빌리티 SW스쿨 팀 프로젝트 5건(CPS 시뮬레이션·PHM 진동 진단·EV 배터리·비전 휴대폰 탐지·비전 키팅 검사)의 기록 페이지. 본문은 DB `bootcamp_docs`, 슬라이드는 Supabase Storage. 프로젝트 페이지에 카드 5개와 「기록 보기」 버튼(`docPath`). 폴더를 올리는 `import-bootcamp` 스크립트. 마크다운 내부 링크는 새로고침 없이 이동, 이미지 지연 로딩. 대화창·MCP도 기록을 읽는다(`get_portfolio`에 목록, 새 도구 `get_project_record`로 전문). [ADR 0031](decisions/0031-bootcamp-docs.md).
+- **현대오토에버 부트캠프 기록 (`/bootcamp`)** — 모빌리티 SW스쿨 팀 프로젝트 5건(CPS 시뮬레이션·PHM 진동 진단·EV 배터리·비전 휴대폰 탐지·비전 키팅 검사)의 기록 페이지. 본문은 DB `bootcamp_docs`, 슬라이드는 Supabase Storage. 프로젝트 페이지에 카드 5개와 「기록 보기」 버튼(`docPath`). 폴더를 올리는 `import-bootcamp` 스크립트. 마크다운 내부 링크는 새로고침 없이 이동, 이미지 지연 로딩. 대화창·MCP도 기록을 읽는다(`get_portfolio`에 목록, 새 도구 `get_project_record`로 전문). 프로젝트 카드의 링크(GitHub README·구축 후기·라이브)도 `get_source` 허용 목록에 추가 — 그 외 임의 URL은 계속 거부. [ADR 0031](decisions/0031-bootcamp-docs.md).
 - **마크다운 한국어 렌더링 수정 (사이트 전체)** — `**"인용"**는`처럼 굵게가 문장부호로 끝나고 바로 한글이 붙으면 별표가 그대로 보이던 문제를 `remark-cjk-friendly`로 해결. `10~1kHz … 10~2kHz`처럼 범위 표기 `~` 두 개 사이가 취소선으로 묶이던 문제는 GFM `singleTilde: false`(취소선은 `~~`만).
 - **AI 채우기 진행 표시·헤더 모델 배지** — 칼럼·게임 개발·AI 도구 「AI 채우기」 중 실제 단계(자막 받기 → 자막 막히면 Gemini 영상 시청 → AI 1~3단계, 각 Gemini 응답 시간)를 NDJSON 스트림으로 받아 다이얼로그에 표시. 3초 heartbeat로 「서버 살아 있음 / n초째 신호 없음」 구분. 헤더 옛 AI 선택 자리에 사용 중인 Gemini 모델명(툴팁에 영상 분석 모델). `GET /api/meta`에 `ai.model`·`ai.youtubeModel`·`ai.keyConfigured`.
 - **사이트 대화창** — 화면 중앙 하단 입력창에 질문하면 입력창 위로 대화가 펼쳐지며 답한다. `POST /api/chat`: Gemini function calling으로 MCP와 같은 도구(`knowledgeTools`)를 불러 저장 자료·포트폴리오·개발 기록을 찾아 사이트 링크와 함께 답변. 로그인 무제한, 비로그인 IP별 하루 10회(`chat_usage` + `chat_hit` RPC). MCP `list_scraps`도 `siteUrl`을 함께 반환. [ADR 0030](decisions/0030-site-chat-dock.md).

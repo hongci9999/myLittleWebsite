@@ -92,7 +92,7 @@ async function loadScraps(section?: SectionKey): Promise<Scrap[]> {
 }
 
 const DOCS_ROOT = path.join(projectRoot, 'docs')
-const NOTE_DIRS = ['decisions', 'learnings', 'error-fixes']
+const NOTE_DIRS = ['decisions', 'learnings', 'error-fixes', 'journal']
 const SOURCE_CHUNK = 40_000
 
 function readNote(relPath: string): string {
@@ -243,7 +243,7 @@ export const knowledgeTools: KnowledgeTool[] = [
   {
     name: 'read_dev_notes',
     description:
-      '이 웹사이트를 만들며 남긴 개발 기록. decisions/는 기술 결정 기록(ADR: 배경·선택지·결정 이유), learnings/는 학습 노트, error-fixes/는 버그 기록(오류·원인·수정). ' +
+      '이 웹사이트를 만들며 남긴 개발 기록. decisions/는 기술 결정 기록(ADR: 배경·선택지·결정 이유), learnings/는 학습 노트, error-fixes/는 버그 기록(오류·원인·수정), journal/은 월별 개발 일지(YYYY-MM.md: 날짜별 작업·막힌 점·다음 할 일). ' +
       'path 없이 호출하면 파일 목록, path를 주면 원문을 반환한다.',
     inputSchema: { path: z.string().optional().describe('예: decisions/0001-tech-stack.md') },
     handler: async ({ path: p }: { path?: string }) => (p ? { path: p, content: readNote(p) } : listNotes()),

@@ -9,7 +9,7 @@
   "functions": {
     "api/index.ts": {
       "maxDuration": 300,
-      "includeFiles": "{docs/learnings/**,docs/decisions/**,docs/error-fixes/**,client/public/about.md,client/src/shared/config/projects.json}"
+      "includeFiles": "{docs/learnings/**,docs/decisions/**,docs/error-fixes/**,docs/journal/**,client/public/about.md,client/src/shared/config/projects.json}"
     }
   }
 }

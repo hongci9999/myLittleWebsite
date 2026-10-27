@@ -116,6 +116,7 @@
 - [0030 사이트 대화창 (하단 입력창 + chat API, MCP 도구 재사용)](./decisions/0030-site-chat-dock.md)
 - [0031 현대오토에버 부트캠프 기록 (DB 본문 + Storage 이미지 + /bootcamp)](./decisions/0031-bootcamp-docs.md)
 - [0032 AI 채우기 진행 스트림 (NDJSON + AsyncLocalStorage, 헤더 모델 배지)](./decisions/0032-ai-fill-progress-stream.md)
+- [0033 원문 조각 벡터 RAG (pgvector + `search_sources`, 제안)](./decisions/0033-source-chunk-rag.md)
 
 ### 학습 내용
 
@@ -173,5 +174,6 @@
 | [0006](./error-fixes/0006-github-actions-eb-iam-deploy.md) | GitHub Actions EB 배포 IAM 권한 부족 |
 | [0007](./error-fixes/0007-domain-renew-period-mismatch.md) | 도메인 연장 반영이 +3개월로 계산됨 |
 | [0008](./error-fixes/0008-d2-helloworld-video-only-filter.md) | D2 Hello world 위젯이 최신 텍스트 글 대신 6월 영상 글 표시 |
+| [0009](./error-fixes/0009-chat-search-misses.md) | 사이트 대화창이 있는 자료를 못 찾거나 「답변을 만들지 못했어요」 |
 
 **태그 목록** (DB·필터링용): `ai`, `에이전트`, `mcp`, `스킬`, `프론트`, `백엔드`, `알고리즘`, `개발방법론`, `아키텍처`, `도구`, `ux`, `데이터베이스` — 필요 시 확장

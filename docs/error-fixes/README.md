@@ -32,3 +32,4 @@
 | [0006](./0006-github-actions-eb-iam-deploy.md) | GitHub Actions EB 배포 IAM 권한 부족 (순차 보강) | 2026-06-08 |
 | [0007](./0007-domain-renew-period-mismatch.md) | 도메인 연장 반영이 +1년이 아닌 +3개월로 계산됨 | 2026-07-19 |
 | [0008](./0008-d2-helloworld-video-only-filter.md) | D2 Hello world 위젯이 최신 텍스트 글 대신 6월 영상 글 표시 | 2026-10-25 |
+| [0009](./0009-chat-search-misses.md) | 사이트 대화창이 있는 자료를 못 찾거나 「답변을 만들지 못했어요」 | 2026-10-27 |

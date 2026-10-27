@@ -92,7 +92,7 @@ async function loadScraps(section?: SectionKey): Promise<Scrap[]> {
 }
 
 const DOCS_ROOT = path.join(projectRoot, 'docs')
-const NOTE_DIRS = ['decisions', 'learnings']
+const NOTE_DIRS = ['decisions', 'learnings', 'error-fixes']
 const SOURCE_CHUNK = 40_000
 
 function readNote(relPath: string): string {
@@ -156,12 +156,14 @@ export const knowledgeTools: KnowledgeTool[] = [
       '도구 추천, 프로젝트 아이디어, 학습 자료 질문에 답할 때 먼저 이걸로 관련 항목을 고른 뒤 get_scraps로 본문을 읽어라.',
     inputSchema: {
       section: z.enum(SECTION_KEYS).optional().describe('ai-tools | columns | game-dev | links, 생략 시 전체'),
-      tag: z.string().optional().describe('이 태그가 붙은 항목만 (대소문자 무시)'),
+      tag: z.string().optional().describe('이 태그를 포함한 항목만 (대소문자·띄어쓰기 무시, 부분 일치)'),
     },
     handler: async ({ section, tag }: { section?: SectionKey; tag?: string }) => {
-      const t = tag?.toLowerCase()
+      // "루프 엔지니어링" ↔ 태그 "루프엔지니어링"처럼 모델이 띄어쓰기를 다르게 넣어도 잡히게
+      const norm = (x: string) => x.toLowerCase().replace(/\s+/g, '')
+      const t = tag && norm(tag)
       return (await loadScraps(section))
-        .filter((s) => !t || s.tags.some((x) => x.toLowerCase() === t))
+        .filter((s) => !t || s.tags.some((x) => norm(x).includes(t)))
         // 목록은 고르기용으로 최소화 — 원본 url·본문은 get_scraps에서. siteUrl은 목록만으로 출처 다는 답(대화창)용
         .map(({ id, title, summary, tags, siteUrl }) => ({ id, title, summary, tags, siteUrl }))
     },
@@ -172,10 +174,13 @@ export const knowledgeTools: KnowledgeTool[] = [
       'list_scraps로 고른 항목의 정리 본문(bodyMd), 원본 url, 추가 링크(extraLinks: 소개 영상·레포 등)를 반환한다. ' +
       '답변에는 siteUrl(사이트 상세 페이지)을 출처로 달아라. ' +
       '요약만으로 부족하면 get_source로 원문(웹페이지·README·유튜브 자막)을 읽어라.',
-    inputSchema: { ids: z.array(z.string()).min(1).max(10).describe('list_scraps의 id') },
+    inputSchema: {
+      ids: z.array(z.string()).min(1).max(10).describe('list_scraps의 id, 또는 siteUrl(전체 주소·"column/slug" 경로)'),
+    },
     handler: async ({ ids }: { ids: string[] }) => {
-      const want = new Set(ids)
-      return (await loadScraps()).filter((s) => want.has(s.id))
+      // 후속 질문에선 이전 답변의 사이트 링크만 남아 있어서 siteUrl로도 찾게 (슬래시 없는 "links"가 링크 전체에 걸리지 않게 경로형만)
+      const paths = ids.filter((x) => x.includes('/')).map((x) => '/' + x.replace(SITE_URL, '').replace(/^\/+/, ''))
+      return (await loadScraps()).filter((s) => ids.includes(s.id) || paths.some((p) => s.siteUrl.endsWith(p)))
     },
   },
   {
@@ -238,7 +243,7 @@ export const knowledgeTools: KnowledgeTool[] = [
   {
     name: 'read_dev_notes',
     description:
-      '이 웹사이트를 만들며 남긴 개발 기록. decisions/는 기술 결정 기록(ADR: 배경·선택지·결정 이유), learnings/는 학습 노트. ' +
+      '이 웹사이트를 만들며 남긴 개발 기록. decisions/는 기술 결정 기록(ADR: 배경·선택지·결정 이유), learnings/는 학습 노트, error-fixes/는 버그 기록(오류·원인·수정). ' +
       'path 없이 호출하면 파일 목록, path를 주면 원문을 반환한다.',
     inputSchema: { path: z.string().optional().describe('예: decisions/0001-tech-stack.md') },
     handler: async ({ path: p }: { path?: string }) => (p ? { path: p, content: readNote(p) } : listNotes()),

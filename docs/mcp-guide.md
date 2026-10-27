@@ -95,7 +95,7 @@ CLI, IDE 확장, 데스크톱 앱이 이 설정을 함께 씁니다. 앱이나 �
 | `get_source` | `url`, `offset?` | 원문. 유튜브는 **자막 스크립트**, GitHub 레포는 README, 그 외는 페이지 본문. 4만 자씩 나눠서 줍니다 |
 | `get_portfolio` | 없음 | 자기소개(About), 프로젝트 목록, 부트캠프 기록 목록 |
 | `get_project_record` | `slug` | 부트캠프 프로젝트 기록 전문 (예: `ev-battery`) |
-| `read_dev_notes` | `path?` | 이 사이트를 만들며 남긴 기술 결정 기록(ADR)·학습 노트. path 없이 부르면 파일 목록 |
+| `read_dev_notes` | `path?` | 이 사이트를 만들며 남긴 기술 결정 기록(ADR)·학습 노트·버그 수정 기록. path 없이 부르면 파일 목록 |
 
 **참고**
 - `get_source`는 사이트에 저장된 자료의 링크(원본 url 또는 추가 링크)와 프로젝트 카드의 링크(GitHub·라이브·구축 후기)만 조회할 수 있습니다.

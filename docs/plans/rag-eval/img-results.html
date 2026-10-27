@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>results</title>
+<style>
+  :root { --ink:#0f172a; --mute:#64748b; --line:#e2e8f0; --bg:#f8fafc; --before:#94a3b8; --after:#ea580c; --ok:#16a34a; --bad:#b91c1c; }
+  * { box-sizing:border-box; margin:0; }
+  body { width:1080px; height:1350px; background:var(--bg); font-family:"Malgun Gothic","Noto Sans KR",sans-serif; color:var(--ink); padding:56px 60px; position:relative; }
+  h1 { font-size:44px; letter-spacing:-1px; line-height:1.2; }
+  .sub { color:var(--mute); font-size:20px; margin-top:10px; line-height:1.5; }
+  .legend { display:flex; gap:24px; margin-top:22px; font-size:19px; }
+  .legend i { display:inline-block; width:18px; height:18px; border-radius:4px; vertical-align:-3px; margin-right:8px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:20px; padding:26px 30px; margin-top:24px; }
+  .card h2 { font-size:24px; }
+  .card p { color:var(--mute); font-size:17px; margin-top:4px; }
+  .metric { margin-top:20px; }
+  .mname { font-size:18px; font-weight:700; margin-bottom:8px; }
+  .row { display:flex; align-items:center; gap:12px; margin:6px 0; }
+  .lab { width:64px; font-size:16px; color:var(--mute); }
+  .track { flex:1; height:30px; background:#f1f5f9; border-radius:8px; overflow:hidden; }
+  .bar { height:100%; border-radius:8px; }
+  .b { background:var(--before); } .a { background:var(--after); }
+  .val { width:70px; text-align:right; font-size:22px; font-weight:700; }
+  .val.a-t { color:var(--after); }
+  .delta { width:84px; font-size:18px; font-weight:700; text-align:right; }
+  .up { color:var(--ok); } .down { color:var(--bad); }
+  .costs { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:24px; }
+  .cost { background:#fff; border:1px solid var(--line); border-radius:16px; padding:18px 20px; }
+  .cost .k { color:var(--mute); font-size:16px; }
+  .cost .v { font-size:30px; font-weight:700; margin-top:6px; }
+  .cost .v span { font-size:18px; color:var(--mute); font-weight:400; }
+  .cost .d { font-size:16px; margin-top:4px; color:var(--bad); }
+  .foot { position:absolute; bottom:44px; left:60px; right:60px; color:var(--mute); font-size:15px; line-height:1.5; }
+</style></head>
+<body>
+  <h1>결과: 원문 속 질문 정답률<br>33% → 82%</h1>
+  <div class="sub">질문 21개 × 3회 = 63회 측정 · 같은 모델(Gemini 3.1 Flash-Lite)·같은 질문 세트<br>정답 = 답변에 정답 자료 링크가 들어 있는가</div>
+  <div class="legend"><span><i style="background:var(--before)"></i>BEFORE 도구 호출형 RAG</span><span><i style="background:var(--after)"></i>AFTER + 벡터 RAG</span></div>
+
+  <div class="card">
+    <h2>원문 속 세부 질문 11개</h2>
+    <p>예: “pgvector 쓰는 자료 있어?” — 제목·요약·태그엔 없고 자막·README 안에만 있는 내용</p>
+    <div class="metric"><div class="mname">정답 자료를 1개 이상 찾음</div>
+      <div class="row"><span class="lab">BEFORE</span><div class="track"><div class="bar b" style="width:33%"></div></div><span class="val">33%</span><span class="delta"></span></div>
+      <div class="row"><span class="lab">AFTER</span><div class="track"><div class="bar a" style="width:82%"></div></div><span class="val a-t">82%</span><span class="delta up">+49%p</span></div>
+    </div>
+    <div class="metric"><div class="mname">정답 회수율 (정답 자료 중 찾은 비율)</div>
+      <div class="row"><span class="lab">BEFORE</span><div class="track"><div class="bar b" style="width:29%"></div></div><span class="val">29%</span><span class="delta"></span></div>
+      <div class="row"><span class="lab">AFTER</span><div class="track"><div class="bar a" style="width:67%"></div></div><span class="val a-t">67%</span><span class="delta up">+38%p</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>자료 찾기 질문 10개</h2>
+    <p>예: “유니티 관련 뭐 있어?” — 원래 잘 되던 질문이 망가지지 않았는가</p>
+    <div class="metric"><div class="mname">정답 자료를 1개 이상 찾음</div>
+      <div class="row"><span class="lab">BEFORE</span><div class="track"><div class="bar b" style="width:97%"></div></div><span class="val">97%</span><span class="delta"></span></div>
+      <div class="row"><span class="lab">AFTER</span><div class="track"><div class="bar a" style="width:100%"></div></div><span class="val a-t">100%</span><span class="delta up">+3%p</span></div>
+    </div>
+    <div class="metric"><div class="mname">정답 회수율</div>
+      <div class="row"><span class="lab">BEFORE</span><div class="track"><div class="bar b" style="width:94%"></div></div><span class="val">94%</span><span class="delta"></span></div>
+      <div class="row"><span class="lab">AFTER</span><div class="track"><div class="bar a" style="width:87%"></div></div><span class="val a-t">87%</span><span class="delta down">−7%p</span></div>
+    </div>
+  </div>
+
+  <div class="costs">
+    <div class="cost"><div class="k">응답 시간 (중앙값)</div><div class="v">3.8초 <span>← 2.9초</span></div><div class="d">+0.9초</div></div>
+    <div class="cost"><div class="k">입력 토큰 (평균)</div><div class="v">29.4k <span>← 28.7k</span></div><div class="d">+2.5% <span style="color:var(--mute)">(1차 +15%)</span></div></div>
+    <div class="cost"><div class="k">도구 호출 회차</div><div class="v">1회 <span>← 1회</span></div><div class="d" style="color:var(--ok)">같은 회차에 병렬 호출</div></div>
+  </div>
+
+  <div class="foot">대가: 응답 +0.9초, 자료 찾기 회수율 −7%p (조각 내용을 길게 설명하느라 목록 항목을 빠뜨림 — 프롬프트로 83% → 87~89% 회복). 입력 토큰은 1차 +15% → 목록의 반복 주소를 경로로 줄여 +2.5%.<br>한계: 정확한 고유명사(“Tauri”)는 벡터 검색이 약함 → 다음 단계 키워드(BM25) 하이브리드.</div>
+</body></html>

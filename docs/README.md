@@ -48,6 +48,10 @@
 
 화면 중앙 하단 입력창으로 사이트 자료를 자연어 검색. MCP 도구를 Gemini function calling에 재사용, 비로그인은 IP별 하루 10회. 설계 [ADR 0030](decisions/0030-site-chat-dock.md), API [api-spec §15](api-spec.md), 사용량 [chat_usage SQL](plans/2026-10-23-chat-usage.sql).
 
+### 원문 조각 벡터 검색 (`search_sources`)
+
+대화창·MCP가 제목·요약엔 없고 원문(자막·README·웹 글)·정리 본문 속에만 있는 내용을 찾는다. 1,000자 조각 → Gemini 임베딩 768차원 → Supabase pgvector, Vercel cron이 하루 1회 빠진 원문 수집·바뀐 문서만 재색인(`/api/cron/sources`). 원문 속 질문 정답률 33% → 82%. 설계 [ADR 0033](decisions/0033-source-chunk-rag.md), 측정 [learnings 0039](learnings/0039-agentic-vs-vector-rag-eval.md), API [api-spec §18](api-spec.md), 스키마 [source_chunks SQL](plans/2026-10-27-source-chunks.sql).
+
 ### 부트캠프 기록 (`/bootcamp`)
 
 현대오토에버 모빌리티 SW스쿨 팀 프로젝트 5건의 기록. 본문은 DB `bootcamp_docs`, 슬라이드는 Supabase Storage `bootcamp` 버킷. 프로젝트 페이지 카드의 「기록 보기」로 진입하고, 대화창·MCP가 `get_project_record`로 전문을 읽는다. 올리기·갱신: `npm run import-bootcamp -w server -- <폴더>`. 설계 [ADR 0031](decisions/0031-bootcamp-docs.md), API [api-spec §17](api-spec.md), 스키마 [bootcamp SQL](plans/2026-10-26-bootcamp-docs.sql).
@@ -116,7 +120,7 @@
 - [0030 사이트 대화창 (하단 입력창 + chat API, MCP 도구 재사용)](./decisions/0030-site-chat-dock.md)
 - [0031 현대오토에버 부트캠프 기록 (DB 본문 + Storage 이미지 + /bootcamp)](./decisions/0031-bootcamp-docs.md)
 - [0032 AI 채우기 진행 스트림 (NDJSON + AsyncLocalStorage, 헤더 모델 배지)](./decisions/0032-ai-fill-progress-stream.md)
-- [0033 원문 조각 벡터 RAG (pgvector + `search_sources`, 제안)](./decisions/0033-source-chunk-rag.md)
+- [0033 원문 조각 벡터 RAG (pgvector + `search_sources` + cron 색인)](./decisions/0033-source-chunk-rag.md)
 
 ### 학습 내용
 
@@ -161,6 +165,7 @@
 | [0036](./learnings/0036-youtube-content-bundle-transcript.md) | YouTube 메타·자막 통합 추출 | ai, 백엔드, 도구 |
 | [0037](./learnings/0037-obsidian-youtube-clip-column-scrap.md) | Obsidian 유튜브 클립·배포 AI 요약 | ai, 백엔드, 프론트, 도구 |
 | [0038](./learnings/0038-youtube-cloud-ip-block.md) | 클라우드 IP 유튜브 자막 차단·우회 | ai, 백엔드, 배포, 도구 |
+| [0039](./learnings/0039-agentic-vs-vector-rag-eval.md) | 도구 호출형 RAG + 벡터 RAG 측정 비교 | ai, 백엔드, 데이터베이스, 아키텍처 |
 
 ### 에러 픽스
 

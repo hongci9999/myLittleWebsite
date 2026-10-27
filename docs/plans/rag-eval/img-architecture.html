@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>architecture</title>
+<style>
+  :root { --ink:#0f172a; --mute:#64748b; --line:#cbd5e1; --bg:#f8fafc; --card:#fff; --a:#2563eb; --a-soft:#dbeafe; --b:#ea580c; --b-soft:#ffedd5; --ok:#16a34a; }
+  * { box-sizing:border-box; margin:0; }
+  body { width:1080px; height:1350px; background:var(--bg); font-family:"Malgun Gothic","Noto Sans KR",sans-serif; color:var(--ink); padding:56px 60px; }
+  h1 { font-size:46px; letter-spacing:-1px; line-height:1.2; }
+  .sub { color:var(--mute); font-size:22px; margin-top:10px; }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:20px; padding:26px 30px; margin-top:28px; }
+  .tag { display:inline-block; font-size:17px; font-weight:700; padding:4px 12px; border-radius:999px; }
+  .tA { background:#e2e8f0; color:#334155; } .tB { background:var(--b-soft); color:var(--b); }
+  .ptitle { font-size:26px; font-weight:700; margin:10px 0 18px; }
+  .flow { display:flex; align-items:center; gap:10px; }
+  .box { border:2px solid var(--line); border-radius:14px; padding:12px 14px; font-size:19px; line-height:1.35; text-align:center; background:#fff; }
+  .box b { display:block; font-size:20px; }
+  .box small { color:var(--mute); font-size:15px; }
+  .arrow { color:var(--mute); font-size:26px; flex:none; }
+  .llm { border-color:var(--ink); }
+  .list { border-color:#94a3b8; background:#f1f5f9; }
+  .vec { border-color:var(--b); background:var(--b-soft); }
+  .stack { display:flex; flex-direction:column; gap:10px; }
+  .weak { margin-top:16px; font-size:18px; color:#b91c1c; }
+  .good { margin-top:16px; font-size:18px; color:var(--ok); }
+  .pipe { display:flex; align-items:center; gap:8px; margin-top:14px; }
+  .pipe .box { font-size:16px; padding:10px; }
+  .pipe .box b { font-size:17px; }
+  .cap { font-size:18px; font-weight:700; margin-top:22px; color:var(--b); }
+  .foot { position:absolute; bottom:44px; left:60px; right:60px; display:flex; justify-content:space-between; color:var(--mute); font-size:17px; }
+</style></head>
+<body>
+  <h1>사이트 AI 검색에<br>벡터 RAG를 더했다</h1>
+  <div class="sub">“어느 자료인지”는 LLM이 고르고, “자료 안 어디인지”는 벡터 검색이 찾는다</div>
+
+  <div class="panel">
+    <span class="tag tA">BEFORE · 도구 호출형 (agentic) RAG</span>
+    <div class="ptitle">LLM이 자료 목록을 통째로 보고 고른다</div>
+    <div class="flow">
+      <div class="box">질문</div><div class="arrow">→</div>
+      <div class="box llm"><b>Gemini</b><small>function calling</small></div><div class="arrow">→</div>
+      <div class="box list"><b>list_scraps</b><small>자료 207건 제목·요약·태그<br>약 3만 토큰</small></div><div class="arrow">→</div>
+      <div class="box"><b>골라서 읽기</b><small>get_scraps · get_source</small></div><div class="arrow">→</div>
+      <div class="box">답변</div>
+    </div>
+    <div class="weak">✗ 제목·요약에 없고 원문(자막·README) 속에만 있는 내용은 후보로도 안 잡힌다</div>
+  </div>
+
+  <div class="panel">
+    <span class="tag tB">AFTER · 하이브리드</span>
+    <div class="ptitle">같은 회차에 두 도구를 함께 부른다</div>
+    <div class="flow">
+      <div class="box">질문</div><div class="arrow">→</div>
+      <div class="box llm"><b>Gemini</b><small>function calling</small></div><div class="arrow">→</div>
+      <div class="stack">
+        <div class="box list"><b>list_scraps</b><small>어느 자료인지 — 목록에서 의미로 고르기</small></div>
+        <div class="box vec"><b>search_sources</b><small>자료 안 어디인지 — 질문 임베딩 → 비슷한 조각 top-8</small></div>
+      </div><div class="arrow">→</div>
+      <div class="box">합쳐서<br>답변</div>
+    </div>
+    <div class="good">✓ 원문 속 기술·도구 이름, 설명까지 근거 조각과 소속 자료 링크로 찾는다</div>
+
+    <div class="cap">색인 파이프라인 · Vercel cron 매일 1회 (바뀐 문서만 재임베딩)</div>
+    <div class="pipe">
+      <div class="box"><b>원문</b><small>자막·README·웹 글<br>부트캠프 기록</small></div>
+      <div class="box"><b>+ 정리 본문</b><small>한국어 요약 페이지</small></div>
+      <div class="arrow">→</div>
+      <div class="box"><b>조각</b><small>1,000자<br>150자 겹침</small></div>
+      <div class="arrow">→</div>
+      <div class="box vec"><b>Gemini 임베딩</b><small>768차원</small></div>
+      <div class="arrow">→</div>
+      <div class="box vec"><b>pgvector</b><small>Supabase · HNSW<br>4,326조각</small></div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px">
+    <div class="panel" style="margin:0;padding:18px 22px"><div style="color:var(--mute);font-size:16px">원문 속 질문 정답률</div><div style="font-size:34px;font-weight:700;color:var(--b)">33% → 82%</div></div>
+    <div class="panel" style="margin:0;padding:18px 22px"><div style="color:var(--mute);font-size:16px">자료 찾기 정답률</div><div style="font-size:34px;font-weight:700">97% → 100%</div></div>
+    <div class="panel" style="margin:0;padding:18px 22px"><div style="color:var(--mute);font-size:16px">대가 (응답 · 입력 토큰)</div><div style="font-size:34px;font-weight:700">+0.9초 · +2.5%</div></div>
+  </div>
+
+  <div class="foot"><span>myLittleWebsite · 사이트 대화창 &amp; MCP 서버</span><span>Gemini 3.1 Flash-Lite · Supabase pgvector</span></div>
+</body></html>

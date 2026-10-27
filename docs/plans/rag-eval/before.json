@@ -1,0 +1,1619 @@
+{
+  "label": "before",
+  "model": "gemini-3.1-flash-lite",
+  "date": "2026-10-27T07:35:02.836Z",
+  "reps": 3,
+  "runs": [
+    {
+      "kind": "find",
+      "q": "하네스 엔지니어링 알려줘",
+      "expect": [
+        "column/ai-1",
+        "column/mac-mini-ai",
+        "column/ai-playwright-e2e"
+      ],
+      "rep": 0,
+      "ms": 4762,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 532,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "column/mac-mini-ai",
+        "column/ai-playwright-e2e"
+      ],
+      "recall": 0.6666666666666666,
+      "answer": "'하네스 엔지니어링(Harness Engineering)'은 AI 에이전트(주로 Claude나 Cursor 환경)를 사용하여 소프트웨어를 개발할 때, **개발 효율과 코드 일관성을 극대화하기 위해 프로젝트 규칙, 시스템 프롬프트, 테스트 하네스를 관리하는 방법론 및 도구**를 의미합니다.\n\n사이트 주인은 이를 AI 에이전트가 더 정확하고 안정적으로 작업할 수 있도록 만드는 'AI 엔지니어링의 핵심 체계'로 정의하고 있습니다. 관련 자료는 다음과 같습니다.\n\n*   **[Harness Framework: AI 코딩 최적화 시스템](https://my-little-website-client-self.vercel.app/ai-dev-tools/harness-framework-ai)**\n    *   Claude 및 Cursor 환경에서 AI의 작업 효율과 코드 일관성을 극대화하는 프로젝트 규칙 및 시스템 프롬프트 관리 도구입니다.\n*   **[프롬프트에서 하네스까지: AI 에이전틱 패턴의 진화](https://my-little-website-client-self.vercel.app/column/ai-ai-1)**\n    *   프롬프트 엔지니어링을 넘어 시스템 설계와 인프라의 엄밀함을 강조하는 에이전틱 워크플로우의 진화사를 다룬 칼럼입니다.\n*   **[에이전트 하네스: Mac mini와 AI로 구축하는 원격 자동화](https://my-little-website-client-self.vercel.app/column/mac-mini-ai)**\n    *   반복적인 프롬프트 입력 대신 에이전트에게 제어권을 위임하여 결과물 검증에 집중하는 '휴먼 온 더 루프(Human-in-the-loop)' 운영 체계입니다.\n*   **[AI 에이전트 생산성 극대화: Playwright E2E 테스트 하네스 설계](https://my-little-website-client-self.vercel.app/column/ai-playwright-e2e)**\n    *   AI 에이전트의 코드 생산성을 검증하고 자가 개선 루프를 구현하기 위한 E2E 테스트 하네스 구축 전략입니다.\n\n이 도구와 방법론들은 단순한 AI 보조 도구 사용을 넘어, **시스템화된 환경에서 AI가 일관된 결과물을 내도록 강제**하는 데 목적이 있습니다."
+    },
+    {
+      "kind": "find",
+      "q": "하네스 엔지니어링 알려줘",
+      "expect": [
+        "column/ai-1",
+        "column/mac-mini-ai",
+        "column/ai-playwright-e2e"
+      ],
+      "rep": 1,
+      "ms": 4090,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 531,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "column/mac-mini-ai",
+        "column/ai-playwright-e2e"
+      ],
+      "recall": 0.6666666666666666,
+      "answer": "'하네스 엔지니어링(Harness Engineering)'은 AI 에이전트(특히 Claude 및 Cursor 환경)가 프로젝트 내에서 일관되게 고품질 결과물을 낼 수 있도록, **시스템 프롬프트, 프로젝트 규칙, 그리고 작업 규칙을 관리하는 프레임워크**입니다.\n\n사이트 주인은 이를 통해 AI의 효율을 극대화하고 작업 일관성을 관리하는 전략을 제시하고 있습니다. 관련 자료는 아래와 같습니다.\n\n* **[Harness Framework: AI 코딩 최적화 시스템](https://my-little-website-client-self.vercel.app/ai-dev-tools/harness-framework-ai)**\n  * AI의 작업 효율과 코드 일관성을 극대화하는 프로젝트 규칙 및 시스템 프롬프트 관리 도구입니다.\n* **[프롬프트에서 하네스까지: AI 에이전틱 패턴의 진화](https://my-little-website-client-self.vercel.app/column/ai-ai-1)**\n  * 프롬프트 엔지니어링을 넘어 시스템 설계와 인프라의 엄밀함을 강조하는 '하네스 엔지니어링'의 개념적 진화사를 다룹니다.\n* **[에이전트 하네스: Mac mini와 AI로 구축하는 원격 자동화](https://my-little-website-client-self.vercel.app/column/mac-mini-ai)**\n  * 프롬프트 반복 대신 에이전트에게 제어권을 위임하여, 결과물 검증에만 집중하는 '휴먼 온 더 루프(Human-in-the-loop)' 기반의 운영 체계를 소개합니다.\n* **[AI 에이전트 생산성 극대화: Playwright E2E 테스트 하네스 설계](https://my-little-website-client-self.vercel.app/column/ai-playwright-e2e)**\n  * AI 에이전트의 코드 생산성을 검증하고 자가 개선 루프를 구현하기 위한 E2E(End-to-End) 테스트 하네스 구축 전략을 다룹니다.\n\n요약하자면, 하네스 엔지니어링은 AI 에이전트가 단순히 코드를 작성하는 것을 넘어, **안정적인 시스템 안에서 자율적으로 움직이며 인간이 원하는 수준의 결과물을 생산하게 만드는 엔지니어링 방법론**입니다."
+    },
+    {
+      "kind": "find",
+      "q": "하네스 엔지니어링 알려줘",
+      "expect": [
+        "column/ai-1",
+        "column/mac-mini-ai",
+        "column/ai-playwright-e2e"
+      ],
+      "rep": 2,
+      "ms": 4138,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 498,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "column/ai-1",
+        "column/mac-mini-ai",
+        "column/ai-playwright-e2e"
+      ],
+      "recall": 1,
+      "answer": "'하네스 엔지니어링(Harness Engineering)'은 이 웹사이트 주인이 정의한 개념으로, **AI 에이전트(Claude, Cursor 등)를 활용하여 작업 효율과 코드 일관성을 극대화하기 위한 프로젝트 규칙, 시스템 프롬프트 관리, 그리고 루프 엔지니어링을 포함한 통합 개발 체계**를 의미합니다.\n\n관련된 자료는 다음과 같습니다.\n\n*   **[Harness Framework: AI 코딩 최적화 시스템](https://my-little-website-client-self.vercel.app/ai-dev-tools/harness-framework-ai)**: Claude 및 Cursor 환경에서 AI의 작업 효율과 코드 일관성을 높이는 프로젝트 규칙 및 시스템 프롬프트 관리 도구입니다.\n*   **[에이전트 하네스: Mac mini와 AI로 구축하는 원격 자동화](https://my-little-website-client-self.vercel.app/column/mac-mini-ai)**: 반복적인 프롬프트 입력 대신 에이전트에게 제어권을 위임하여 결과물 검증에 집중하는 '휴먼 온 더 루프(Human-in-the-Loop)' 기반 운영 체계입니다.\n*   **[프롬프트에서 하네스까지: AI 에이전틱 패턴의 진화](https://my-little-website-client-self.vercel.app/column/ai-1)**: 프롬프트 엔지니어링을 넘어, 시스템 설계와 인프라의 엄밀함을 강조하는 에이전틱 워크플로우의 발전 과정을 다룹니다.\n*   **[AI 에이전트 생산성 극대화: Playwright E2E 테스트 하네스 설계](https://my-little-website-client-self.vercel.app/column/ai-playwright-e2e)**: AI 에이전트의 코드 생산성을 검증하고 자가 개선 루프를 구현하기 위한 테스트 하네스 구축 전략을 다룹니다.\n\n요약하자면, 단순히 AI에게 질문을 던지는 수준을 넘어 **AI가 일정한 기준과 구조(하네스) 안에서 스스로 학습하고, 테스트하며, 결과물을 배포하도록 강제하는 엔지니어링 방법론**입니다."
+    },
+    {
+      "kind": "find",
+      "q": "무료 이미지 소스 사이트 있어?",
+      "expect": [
+        "Pexels",
+        "Pixabay"
+      ],
+      "rep": 0,
+      "ms": 2789,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 290,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "Pexels",
+        "Pixabay"
+      ],
+      "recall": 1,
+      "answer": "무료 이미지 소스를 찾으신다면 다음 사이트들을 추천합니다. 저작권 걱정 없이 고화질 이미지와 에셋을 구할 수 있는 곳들입니다.\n\n*   **[Pixabay](https://my-little-website-client-self.vercel.app/links)**: 저작권 걱정 없이 사용할 수 있는 고품질의 무료 스톡 이미지, 영상, 음악, 일러스트 등 다양한 에셋을 제공합니다.\n*   **[Pexels](https://my-little-website-client-self.vercel.app/links)**: 상업적 이용이 가능한 고화질 무료 스톡 사진 및 비디오를 제공하는 방대한 라이브러리입니다.\n*   **[Tinywow](https://my-little-website-client-self.vercel.app/links)**: AI 기반으로 이미지, 비디오 등을 생성하거나 편집할 수 있는 웹 서비스입니다.\n*   **[Kenney.nl](https://my-little-website-client-self.vercel.app/game-dev/kenney-nl)**: 게임 개발용으로 최적화된 CC0(저작권 제약 없음) 라이선스 그래픽 및 사운드 리소스를 제공합니다.\n\n도움이 필요하시면 언제든 말씀해 주세요!"
+    },
+    {
+      "kind": "find",
+      "q": "무료 이미지 소스 사이트 있어?",
+      "expect": [
+        "Pexels",
+        "Pixabay"
+      ],
+      "rep": 1,
+      "ms": 2343,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 179,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "Pexels",
+        "Pixabay"
+      ],
+      "recall": 1,
+      "answer": "무료 이미지 소스 사이트로 다음 플랫폼들을 추천합니다.\n\n*   **[Pixabay](https://my-little-website-client-self.vercel.app/links)**: 저작권 걱정 없이 사용할 수 있는 고품질의 무료 스톡 이미지, 영상, 음악, 일러스트 등을 제공합니다.\n*   **[Pexels](https://my-little-website-client-self.vercel.app/links)**: 상업적 이용이 가능한 고화질 무료 스톡 사진 및 비디오를 제공하는 방대한 라이브러리입니다.\n*   **[Tinywow](https://my-little-website-client-self.vercel.app/links)**: 이미지 생성 외에도 다양한 콘텐츠 생성 및 편집 기능을 제공하는 웹 서비스입니다."
+    },
+    {
+      "kind": "find",
+      "q": "무료 이미지 소스 사이트 있어?",
+      "expect": [
+        "Pexels",
+        "Pixabay"
+      ],
+      "rep": 2,
+      "ms": 2771,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 203,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "Pexels",
+        "Pixabay"
+      ],
+      "recall": 1,
+      "answer": "저장된 자료 중 무료 이미지 소스 및 에셋을 구할 수 있는 사이트는 다음과 같습니다.\n\n*   **[Pixabay](https://my-little-website-client-self.vercel.app/links)**: 저작권 걱정 없이 사용할 수 있는 고품질의 무료 스톡 이미지, 영상, 음악, 일러스트 에셋 제공.\n*   **[Pexels](https://my-little-website-client-self.vercel.app/links)**: 상업적 이용이 가능한 고화질 무료 스톡 사진 및 비디오를 제공하는 라이브러리.\n*   **[Tinywow](https://my-little-website-client-self.vercel.app/links)**: AI 기반으로 이미지, 비디오, 3D 모델 등 다양한 콘텐츠 생성을 지원하는 웹 서비스.\n\n필요하신 목적에 맞는 사이트를 활용해 보세요."
+    },
+    {
+      "kind": "find",
+      "q": "목소리 클론 AI 뭐 있어?",
+      "expect": [
+        "Uberduck",
+        "Supertone"
+      ],
+      "rep": 0,
+      "ms": 2798,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 329,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "Uberduck",
+        "Supertone"
+      ],
+      "recall": 1,
+      "answer": "목소리 클론(Voice Cloning) 및 관련 음성 AI 도구들입니다.\n\n*   **[Fish Audio](https://my-little-website-client-self.vercel.app/ai-dev-tools/fish-audio-tts-api)**: 감정 태그 제어가 가능한 초저지연 TTS 및 음성 복제 기능을 제공하는 개발자 중심 API 플랫폼입니다.\n*   **[VoiceStudio](https://my-little-website-client-self.vercel.app/ai-dev-tools/voicestudio-ai)**: ElevenLabs를 대체할 수 있는 로컬 실행형 오픈소스 음성 합성 및 처리 통합 솔루션입니다.\n*   **[VoxCPM](https://my-little-website-client-self.vercel.app/ai-dev-tools/voxcpm-tts)**: OpenBMB에서 개발한 토크나이저 없는 다국어 음성 합성 및 보이스 클로닝 오픈소스 모델입니다.\n*   **[Supertone](https://my-little-website-client-self.vercel.app/links)**: AI 기반 음성 합성, 실시간 보이스 체인저, 잡음 제거 및 오디오 편집 기술을 제공합니다.\n*   **[Uberduck](https://my-little-website-client-self.vercel.app/links)**: 다양한 목소리 클론 및 콘텐츠 제작을 지원하는 AI 음성·음악 생성 도구입니다."
+    },
+    {
+      "kind": "find",
+      "q": "목소리 클론 AI 뭐 있어?",
+      "expect": [
+        "Uberduck",
+        "Supertone"
+      ],
+      "rep": 1,
+      "ms": 2968,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 334,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "Uberduck",
+        "Supertone"
+      ],
+      "recall": 1,
+      "answer": "목소리 클론(Voice Cloning) 및 관련 음성 AI 도구들입니다.\n\n*   **[Fish Audio](https://my-little-website-client-self.vercel.app/ai-dev-tools/fish-audio-tts-api)**: 감정 태그 제어가 가능한 초저지연 TTS 및 음성 복제 기능을 제공하는 개발자 중심의 음성 AI API 플랫폼입니다.\n*   **[VoiceStudio](https://my-little-website-client-self.vercel.app/ai-dev-tools/voicestudio-ai)**: ElevenLabs를 대체할 수 있는 로컬 실행형 오픈소스 음성 합성 및 처리 통합 솔루션입니다.\n*   **[VoxCPM](https://my-little-website-client-self.vercel.app/ai-dev-tools/voxcpm-tts)**: OpenBMB에서 개발한 토크나이저 없는 다국어 음성 합성 및 보이스 클로닝 오픈소스 모델입니다.\n*   **[Supertone](https://my-little-website-client-self.vercel.app/links)**: AI 기반 음성 합성, 실시간 보이스 체인저, 잡음 제거 및 오디오 편집 기술을 제공합니다.\n*   **[Uberduck](https://my-little-website-client-self.vercel.app/links)**: AI 음성·음악 생성 및 변환 도구로, 다양한 목소리와 콘텐츠 제작을 지원합니다."
+    },
+    {
+      "kind": "find",
+      "q": "목소리 클론 AI 뭐 있어?",
+      "expect": [
+        "Uberduck",
+        "Supertone"
+      ],
+      "rep": 2,
+      "ms": 2497,
+      "rounds": 2,
+      "promptTokens": 13094,
+      "outputTokens": 328,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {
+            "section": "ai-tools"
+          },
+          "resultChars": 23835
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "목소리 클론 및 음성 합성 관련하여 사이트에 등록된 AI 도구들은 다음과 같습니다.\n\n*   **Fish Audio**: 감정 태그 제어가 가능한 초저지연 TTS 및 음성 복제 기능을 제공하는 개발자 중심의 음성 AI API 플랫폼입니다. [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/fish-audio-tts-api)\n*   **VoiceStudio**: ElevenLabs의 기능을 대체하는 완전 로컬 실행형 오픈소스 음성 합성 및 처리 통합 솔루션입니다. [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/voicestudio-ai)\n*   **Tencent-Hunyuan/AuK**: 텐센트에서 공개한 오픈소스 음성 생성 및 편집 기초 모델로, ComfyUI 연동을 지원하는 AI 오디오 프레임워크입니다. [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/tencent-hunyuan-auk)\n*   **VoxCPM**: OpenBMB에서 개발한 토크나이저 없는 다국어 음성 합성 및 보이스 클로닝 오픈소스 모델입니다. [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/voxcpm-tts)"
+    },
+    {
+      "kind": "find",
+      "q": "랙돌 관련 자료",
+      "expect": [
+        "game-dev/ragdoll"
+      ],
+      "rep": 0,
+      "ms": 2626,
+      "rounds": 2,
+      "promptTokens": 30840,
+      "outputTokens": 118,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/ragdoll"
+      ],
+      "recall": 1,
+      "answer": "요청하신 랙돌(Ragdoll) 관련 자료입니다.\n\n*   **유니티 랙돌(Ragdoll) 시스템과 캐릭터 조인트 심층 분석**\n    *   유니티 엔진에서 캐릭터 물리 연산을 통한 자연스러운 쓰러짐 효과를 구현하는 랙돌 시스템과 캐릭터 조인트의 상세 설정을 학습합니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/ragdoll)"
+    },
+    {
+      "kind": "find",
+      "q": "랙돌 관련 자료",
+      "expect": [
+        "game-dev/ragdoll"
+      ],
+      "rep": 1,
+      "ms": 2236,
+      "rounds": 2,
+      "promptTokens": 30840,
+      "outputTokens": 118,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/ragdoll"
+      ],
+      "recall": 1,
+      "answer": "요청하신 랙돌(Ragdoll) 관련 자료입니다.\n\n*   **유니티 랙돌(Ragdoll) 시스템과 캐릭터 조인트 심층 분석**\n    *   유니티 엔진에서 캐릭터 물리 연산을 통한 자연스러운 쓰러짐 효과를 구현하는 랙돌 시스템과 캐릭터 조인트의 상세 설정을 학습합니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/ragdoll)"
+    },
+    {
+      "kind": "find",
+      "q": "랙돌 관련 자료",
+      "expect": [
+        "game-dev/ragdoll"
+      ],
+      "rep": 2,
+      "ms": 2760,
+      "rounds": 2,
+      "promptTokens": 30840,
+      "outputTokens": 127,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/ragdoll"
+      ],
+      "recall": 1,
+      "answer": "찾으시는 '랙돌(Ragdoll)' 관련 자료는 게임 개발 섹션에 정리되어 있습니다.\n\n*   **유니티 랙돌(Ragdoll) 시스템과 캐릭터 조인트 심층 분석**\n    *   유니티 엔진에서 캐릭터 물리 연산을 통한 자연스러운 쓰러짐 효과를 구현하는 랙돌 시스템과 캐릭터 조인트의 상세 설정을 다룹니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/ragdoll)"
+    },
+    {
+      "kind": "find",
+      "q": "AI로 2D 스프라이트 만드는 방법",
+      "expect": [
+        "game-dev/ai-aether-2d",
+        "game-dev/perfectpixel-studio-ai",
+        "game-dev/aldegad-sprite-gen-ai-2d"
+      ],
+      "rep": 0,
+      "ms": 3448,
+      "rounds": 2,
+      "promptTokens": 30852,
+      "outputTokens": 432,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/ai-aether-2d",
+        "game-dev/perfectpixel-studio-ai",
+        "game-dev/aldegad-sprite-gen-ai-2d"
+      ],
+      "recall": 1,
+      "answer": "AI를 사용하여 2D 스프라이트를 제작하고 파이프라인을 자동화하는 구체적인 방법들이 정리되어 있습니다. 다음 자료들을 추천합니다.\n\n### 2D 스프라이트 제작 및 자동화 도구\n*   **[AetherAI](https://my-little-website-client-self.vercel.app/ai-dev-tools/aether-ai)**: 게임 에셋 생산 파이프라인을 자동화하는 클라우드 기반의 엔드 투 엔드 AI SaaS 플랫폼입니다.\n*   **[aldegad/sprite-gen](https://my-little-website-client-self.vercel.app/game-dev/aldegad-sprite-gen-ai-2d)**: 생성형 AI로 제작된 2D 스프라이트를 엔진 최적화용 아틀라스로 변환하는 자동화 도구입니다.\n*   **[PerfectPixel-Studio](https://my-little-website-client-self.vercel.app/game-dev/perfectpixel-studio-ai)**: 텍스트 프롬프트로 8방향 애니메이션 스프라이트 시트를 생성하는 Go/Wails 기반 개발 툴입니다.\n\n### 관련 활용 가이드\n*   **[AI 에테르(Aether) 활용 2D 스프라이트 제작 워크플로우](https://my-little-website-client-self.vercel.app/game-dev/ai-aether-2d)**: 원화 제작부터 애니메이션 스프라이트 시트 제작까지의 실무 과정을 정리한 가이드입니다.\n\n이 외에도 **[ComfyUI](https://my-little-website-client-self.vercel.app/links)**(링크 섹션)를 활용하면 노드 기반으로 이미지와 미디어를 생성하며 워크플로우를 직접 제어할 수 있습니다. 각 사이트 링크를 통해 상세한 사용법과 레포지토리를 확인해 보세요."
+    },
+    {
+      "kind": "find",
+      "q": "AI로 2D 스프라이트 만드는 방법",
+      "expect": [
+        "game-dev/ai-aether-2d",
+        "game-dev/perfectpixel-studio-ai",
+        "game-dev/aldegad-sprite-gen-ai-2d"
+      ],
+      "rep": 1,
+      "ms": 3387,
+      "rounds": 2,
+      "promptTokens": 30852,
+      "outputTokens": 331,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/ai-aether-2d",
+        "game-dev/perfectpixel-studio-ai",
+        "game-dev/aldegad-sprite-gen-ai-2d"
+      ],
+      "recall": 1,
+      "answer": "AI를 활용하여 2D 스프라이트를 제작하고 게임 엔진에 통합하는 방법과 관련된 자료는 다음과 같습니다.\n\n*   **AI 에테르(Aether) 활용 2D 스프라이트 제작 워크플로우**\n    *   생성형 AI '에테르'를 이용해 2D 게임 캐릭터 원화부터 애니메이션 스프라이트 시트까지 효율적으로 제작하는 실무 가이드입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/ai-aether-2d)\n\n*   **PerfectPixel-Studio: AI 기반 스프라이트 자동화 툴**\n    *   텍스트 프롬프트로 8방향 애니메이션 스프라이트 시트를 생성하는 Go/Wails 기반 개발 툴입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/perfectpixel-studio-ai)\n\n*   **aldegad/sprite-gen: AI 기반 2D 스프라이트 자동화 파이프라인**\n    *   생성형 AI로 제작된 2D 스프라이트를 게임 엔진 최적화용 아틀라스로 변환하는 자동화 도구입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/aldegad-sprite-gen-ai-2d)"
+    },
+    {
+      "kind": "find",
+      "q": "AI로 2D 스프라이트 만드는 방법",
+      "expect": [
+        "game-dev/ai-aether-2d",
+        "game-dev/perfectpixel-studio-ai",
+        "game-dev/aldegad-sprite-gen-ai-2d"
+      ],
+      "rep": 2,
+      "ms": 2644,
+      "rounds": 2,
+      "promptTokens": 30852,
+      "outputTokens": 322,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/ai-aether-2d",
+        "game-dev/perfectpixel-studio-ai",
+        "game-dev/aldegad-sprite-gen-ai-2d"
+      ],
+      "recall": 1,
+      "answer": "AI를 활용하여 2D 스프라이트를 제작하고 최적화하는 방법과 관련된 자료입니다.\n\n*   **AI 에테르(Aether) 활용 2D 스프라이트 제작 워크플로우**\n    *   생성형 AI '에테르'를 이용해 캐릭터 원화부터 애니메이션 스프라이트 시트까지 제작하는 실무 가이드입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/ai-aether-2d)\n*   **PerfectPixel-Studio: AI 기반 스프라이트 자동화 툴**\n    *   텍스트 프롬프트로 8방향 애니메이션 스프라이트 시트를 생성하는 Go/Wails 기반 개발 도구입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/perfectpixel-studio-ai)\n*   **aldegad/sprite-gen: AI 기반 2D 스프라이트 자동화 파이프라인**\n    *   AI로 제작된 2D 스프라이트를 게임 엔진 최적화용 아틀라스(Atlas)로 변환하는 자동화 도구입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/aldegad-sprite-gen-ai-2d)"
+    },
+    {
+      "kind": "find",
+      "q": "언리얼 엔진 자료 보여줘",
+      "expect": [
+        "game-dev/5",
+        "game-dev/5-8",
+        "game-dev/warko-3d-1",
+        "game-dev/claude-code-ue5"
+      ],
+      "rep": 0,
+      "ms": 2796,
+      "rounds": 2,
+      "promptTokens": 30846,
+      "outputTokens": 363,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/5",
+        "game-dev/5-8",
+        "game-dev/warko-3d-1",
+        "game-dev/claude-code-ue5"
+      ],
+      "recall": 1,
+      "answer": "언리얼 엔진과 관련된 자료는 다음과 같습니다.\n\n* **Warko 3D와 언리얼 엔진을 활용한 1일 레벨 구축 워크플로우**\n  * Warko 3D와 언리얼 엔진을 연동하여 레벨 디자인을 자동화하고 빠르게 구축하는 프로세스 분석.\n  * [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/warko-3d-1)\n* **언리얼 엔진 5.8 마커리스 모션 캡처 가이드**\n  * 일반 영상만으로 언리얼 엔진 5.8에서 메타휴먼 애니메이션을 추출하고 리타겟팅하는 실무 프로세스 분석.\n  * [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/5-8)\n* **Claude Code로 구현하는 UE5 자동화 게임 개발**\n  * Claude Code와 플러그인을 활용하여 UE5에서 무한 러너 게임을 자동 개발하는 워크플로우 분석.\n  * [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/claude-code-ue5)\n* **언리얼 엔진 5 노르딕 환경 제작 실무 워크플로우**\n  * UE 5.5.4를 사용하여 프로덕션 수준의 게임 배경을 구축하는 전체 공정 가이드.\n  * [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/5)"
+    },
+    {
+      "kind": "find",
+      "q": "언리얼 엔진 자료 보여줘",
+      "expect": [
+        "game-dev/5",
+        "game-dev/5-8",
+        "game-dev/warko-3d-1",
+        "game-dev/claude-code-ue5"
+      ],
+      "rep": 1,
+      "ms": 3051,
+      "rounds": 2,
+      "promptTokens": 30846,
+      "outputTokens": 380,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/5",
+        "game-dev/5-8",
+        "game-dev/warko-3d-1",
+        "game-dev/claude-code-ue5"
+      ],
+      "recall": 1,
+      "answer": "저장된 자료 중 언리얼 엔진과 관련된 항목들입니다.\n\n*   **Warko 3D와 언리얼 엔진을 활용한 1일 레벨 구축 워크플로우**\n    *   Warko 3D와 언리얼 엔진을 사용하여 게임 레벨 디자인 파이프라인을 효율화하는 방법입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/warko-3d-1)\n*   **언리얼 엔진 5.8 마커리스 모션 캡처 가이드**\n    *   일반 영상을 사용하여 언리얼 엔진 5.8에서 메타휴먼 애니메이션을 추출하고 리타겟팅하는 실무 프로세스입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/5-8)\n*   **Claude Code로 구현하는 UE5 자동화 게임 개발**\n    *   Claude Code와 플러그인을 활용하여 UE5에서 무한 러너 게임을 자동으로 개발하는 워크플로우 분석입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/claude-code-ue5)\n*   **언리얼 엔진 5 노르딕 환경 제작 실무 워크플로우**\n    *   UE 5.5.4를 사용하여 프로덕션 수준의 게임 배경을 구축하는 전체 공정 가이드입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/5)"
+    },
+    {
+      "kind": "find",
+      "q": "언리얼 엔진 자료 보여줘",
+      "expect": [
+        "game-dev/5",
+        "game-dev/5-8",
+        "game-dev/warko-3d-1",
+        "game-dev/claude-code-ue5"
+      ],
+      "rep": 2,
+      "ms": 2598,
+      "rounds": 2,
+      "promptTokens": 30846,
+      "outputTokens": 379,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/5",
+        "game-dev/5-8",
+        "game-dev/warko-3d-1",
+        "game-dev/claude-code-ue5"
+      ],
+      "recall": 1,
+      "answer": "언리얼 엔진과 관련된 자료들을 정리해 드립니다.\n\n*   **Warko 3D와 언리얼 엔진을 활용한 1일 레벨 구축 워크플로우**\n    *   AI 도구인 Warko 3D를 사용하여 언리얼 엔진까지 이어지는 고속 레벨 디자인 파이프라인 분석\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/warko-3d-1)\n*   **언리얼 엔진 5.8 마커리스 모션 캡처 가이드**\n    *   장비 없이 일반 영상만으로 언리얼 엔진 5.8에서 메타휴먼 애니메이션을 추출하고 리타겟팅하는 실무 프로세스 분석\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/5-8)\n*   **Claude Code로 구현하는 UE5 자동화 게임 개발**\n    *   Claude Code와 플러그인을 활용하여 UE5에서 무한 러너 게임을 자동 개발하는 워크플로우 분석\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/claude-code-ue5)\n*   **언리얼 엔진 5 노르딕 환경 제작 실무 워크플로우**\n    *   UE 5.5.4를 사용하여 프로덕션 수준의 게임 배경을 구축하는 전체 공정을 다룬 가이드\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/5)"
+    },
+    {
+      "kind": "find",
+      "q": "루프 엔지니어링에 대해 알려줘",
+      "expect": [
+        "column/claude-code-2",
+        "column/ai-4"
+      ],
+      "rep": 0,
+      "ms": 3715,
+      "rounds": 2,
+      "promptTokens": 30852,
+      "outputTokens": 538,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "column/claude-code-2",
+        "column/ai-4"
+      ],
+      "recall": 1,
+      "answer": "'루프 엔지니어링(Loop Engineering)'은 **AI 에이전트가 목표를 달성할 때까지 스스로 계획을 세우고, 작업을 수행하며, 결과를 검증하고, 오류가 발생하면 다시 수정하여 반복하는 순환 프로세스**를 설계하고 최적화하는 것을 의미합니다.\n\n단순히 AI에게 질문을 던지는 프롬프트 엔지니어링을 넘어, AI를 자율적인 시스템으로 운영하기 위한 핵심 방법론입니다.\n\n### 루프 엔지니어링의 핵심 개념 및 활용\n*   **자가 개선 루프:** 에이전트가 작업의 성공과 실패를 평가하고, 그 피드백을 바탕으로 시스템 프롬프트나 행동 지침을 수정하여 점진적으로 성능을 향상합니다.\n*   **에이전틱 워크플로우:** 복잡한 문제를 작은 단위로 분해하고, 각 단계마다 AI가 스스로 생각(Thinking)하고 도구를 호출(Tool Use)하여 결과를 도출하게 합니다.\n*   **오류 복구 전략:** 코드 실행 실패나 데이터 부족 시, 에이전트가 중단하지 않고 로그를 분석하여 원인을 찾고 코드를 수정하거나 접근 방식을 바꾸어 다시 시도하도록 구조화합니다.\n*   **생산성 최적화:** 무한 루프에 빠지지 않도록 적절한 중단 지점(Stop condition)을 설정하고, 컨텍스트 비용을 효율적으로 관리하며 반복 횟수를 최적화하는 것이 중요합니다.\n\n### 관련 자료\n관련 내용을 다룬 상세 칼럼들을 참고하실 수 있습니다.\n\n*   [Claude Code의 루프 엔지니어링 가이드](https://my-little-website-client-self.vercel.app/column/claude-code-2)\n*   [AI 에이전트의 완성도를 높이는 루프 엔지니어링 실전 전략](https://my-little-website-client-self.vercel.app/column/ai-4)\n*   [프롬프트에서 하네스까지: AI 에이전틱 패턴의 진화](https://my-little-website-client-self.vercel.app/column/ai-1)\n\n요약하자면, 루프 엔지니어링은 **\"AI가 사람의 개입을 최소화하면서도 복잡한 프로젝트를 끝까지 완수할 수 있도록 관리하는 소프트웨어 아키텍처\"**라고 할 수 있습니다."
+    },
+    {
+      "kind": "find",
+      "q": "루프 엔지니어링에 대해 알려줘",
+      "expect": [
+        "column/claude-code-2",
+        "column/ai-4"
+      ],
+      "rep": 1,
+      "ms": 3435,
+      "rounds": 2,
+      "promptTokens": 30852,
+      "outputTokens": 463,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "column/claude-code-2",
+        "column/ai-4"
+      ],
+      "recall": 1,
+      "answer": "'루프 엔지니어링(Loop Engineering)'은 **AI 에이전트가 목표를 달성할 때까지 스스로 반복 수행(Loop)하도록 설계하고, 그 과정을 최적화하는 방법론**을 의미합니다.\n\n단순히 AI에게 질문하고 답을 받는 수준을 넘어, 에이전트가 작업을 수행하고, 결과를 검증하며, 실패 시 스스로 수정하여 다시 시도하는 '자가 개선 루프'를 구축하는 것이 핵심입니다.\n\n주요 내용은 다음과 같습니다:\n\n*   **정의와 목적**: AI 에이전트가 명확한 작업 목표를 가지고, 결과물이 완성될 때까지 스스로 문제를 해결하게 하는 워크플로우를 설계하는 것입니다.\n*   **자가 검증 및 수정**: 에이전트가 작업 후 스스로 검토(검증)하고, 오류가 발생하면 그 원인을 파악해 코드를 수정하거나 접근 방식을 바꾸는 반복적인 과정을 포함합니다.\n*   **실전 활용**: 주로 Claude Code와 같은 AI 코딩 에이전트 환경에서 사용됩니다. 작업 규모와 복잡성에 따라 루프를 어떻게 설정하고 제어할지(하네스 엔지니어링 등)가 중요합니다.\n\n관련 자료는 다음과 같습니다:\n\n*   [Claude Code의 루프 엔지니어링 가이드](https://my-little-website-client-self.vercel.app/column/claude-code-2): 루프 엔지니어링의 핵심 정의와 유형별 활용법 분석.\n*   [AI 에이전트의 완성도를 높이는 루프 엔지니어링 실전 전략](https://my-little-website-client-self.vercel.app/column/ai-4): 프로젝트 규모에 따른 적절한 루프 운용 및 전략 분석.\n*   [프롬프트에서 하네스까지: AI 에이전틱 패턴의 진화](https://my-little-website-client-self.vercel.app/column/ai-1): 시스템 설계와 인프라 엄밀함을 강조하는 에이전틱 워크플로우의 발전 과정."
+    },
+    {
+      "kind": "find",
+      "q": "루프 엔지니어링에 대해 알려줘",
+      "expect": [
+        "column/claude-code-2",
+        "column/ai-4"
+      ],
+      "rep": 2,
+      "ms": 3163,
+      "rounds": 2,
+      "promptTokens": 30852,
+      "outputTokens": 450,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "column/claude-code-2",
+        "column/ai-4"
+      ],
+      "recall": 1,
+      "answer": "'루프 엔지니어링(Loop Engineering)'은 AI 코딩 에이전트가 단일 프롬프트로 작업을 완료하는 것을 넘어, **목표를 달성할 때까지 AI가 스스로 계획 수립, 실행, 결과 검증, 오류 수정(디버깅) 과정을 반복(Loop)하도록 설계하는 워크플로우 전략**을 의미합니다.\n\n이 개념은 단순히 AI를 도구로 사용하는 것을 넘어, AI가 스스로 문제를 해결할 수 있는 환경을 구축하여 결과물의 완성도를 극대화하는 데 목적이 있습니다.\n\n관련 자료에서 설명하는 루프 엔지니어링의 핵심 포인트는 다음과 같습니다:\n\n*   **자기 개선 루프:** AI가 자신의 결과물을 스스로 테스트하고, 실패 시 원인을 분석하여 다음 단계에 반영하도록 설계합니다.\n*   **하네스 엔지니어링:** AI 에이전트의 생산성을 높이기 위해 E2E(End-to-End) 테스트 환경이나 검증용 하네스를 사전에 구축하여, AI가 코드 변경 시 안전하게 피드백을 받을 수 있게 합니다.\n*   **동적 워크플로우:** 복잡한 프로젝트일수록 전체를 AI에게 한 번에 맡기는 것이 아니라, 단계를 나누고 각 단계에서 AI가 반복 루프를 돌며 작은 단위로 검증하며 진행하게 합니다.\n\n자세한 실무 전략과 가이드는 다음 칼럼에서 확인할 수 있습니다.\n\n*   [Claude Code의 루프 엔지니어링 가이드](https://my-little-website-client-self.vercel.app/column/claude-code-2)\n*   [AI 에이전트의 완성도를 높이는 루프 엔지니어링 실전 전략](https://my-little-website-client-self.vercel.app/column/ai-4)\n*   [프롬프트에서 하네스까지: AI 에이전틱 패턴의 진화](https://my-little-website-client-self.vercel.app/column/ai-1)"
+    },
+    {
+      "kind": "find",
+      "q": "랜딩페이지 만들 때 참고할 사이트",
+      "expect": [
+        "Framer",
+        "Webflow",
+        "MotionSites",
+        "Mobbin"
+      ],
+      "rep": 0,
+      "ms": 3731,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 706,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "Framer",
+        "Webflow",
+        "MotionSites",
+        "Mobbin"
+      ],
+      "recall": 1,
+      "answer": "랜딩페이지 제작 시 참고할 수 있는 디자인 레퍼런스, 컴포넌트, AI 기반 빌더 사이트들을 정리해 드립니다.\n\n### 1. UI/UX 디자인 레퍼런스 (기획·설계 참고)\n*   **[Mobbin](https://my-little-website-client-self.vercel.app/links)**: 실제 서비스들의 디자인 스크린샷과 사용자 흐름을 모아놓은 UI/UX 레퍼런스 플랫폼입니다.\n*   **[Data Viz Project](https://my-little-website-client-self.vercel.app/links)**: 데이터 성격과 목적에 최적화된 시각화 차트 및 그래프 유형을 참고할 수 있습니다.\n\n### 2. 컴포넌트 및 라이브러리 (개발 참고)\n*   **[React Bits](https://my-little-website-client-self.vercel.app/links)**: React 개발자를 위한 고품질 애니메이션 UI 컴포넌트를 제공합니다.\n*   **[Uiverse](https://my-little-website-client-self.vercel.app/links)**: 오픈소스 UI 컴포넌트 라이브러리로, 랜딩페이지에 활용할 수 있는 다양한 디자인 에셋이 있습니다.\n*   **[21st.dev](https://my-little-website-client-self.vercel.app/links)**: React 기반 UI 컴포넌트를 탐색하고 복사하여 사용할 수 있습니다.\n\n### 3. AI 기반 랜딩페이지 빌더 및 생성 도구\n*   **[Framer](https://my-little-website-client-self.vercel.app/links)**: AI 기능을 활용하여 코딩 없이 웹사이트 디자인, 인터랙션 구현 및 배포를 지원합니다.\n*   **[Webflow](https://my-little-website-client-self.vercel.app/links)**: AI 기반 노코드 플랫폼으로 웹사이트 디자인과 개발을 동시에 진행할 수 있습니다.\n*   **[CodeDesign.ai](https://my-little-website-client-self.vercel.app/links)**: 프롬프트 입력을 통해 웹사이트를 자동 생성하고 호스팅 및 코드 내보내기를 지원합니다.\n*   **[Dorik](https://my-little-website-client-self.vercel.app/links)**: 드래그 앤 드롭과 AI 기능을 결합한 노코드 웹사이트 제작 플랫폼입니다.\n*   **[MotionSites](https://my-little-website-client-self.vercel.app/links)**: 웹 디자인 및 개발 효율을 높이는 AI 프롬프트와 템플릿, 애니메이션 에셋을 제공합니다.\n*   **[AI 기반 랜딩페이지 빌더: Supanova Design Engine](https://my-little-website-client-self.vercel.app/ai-dev-tools/ai-supanova-design-engine)**: AI가 한국어 랜딩페이지를 처음부터 또는 재구성하여 고품질 디자인을 제공합니다.\n\n제작하시려는 랜딩페이지의 목적(예: 포트폴리오, 서비스 홍보 등)에 맞춰 위 도구들을 조합해 활용해 보시기 바랍니다."
+    },
+    {
+      "kind": "find",
+      "q": "랜딩페이지 만들 때 참고할 사이트",
+      "expect": [
+        "Framer",
+        "Webflow",
+        "MotionSites",
+        "Mobbin"
+      ],
+      "rep": 1,
+      "ms": 3646,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 764,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "Framer",
+        "Webflow",
+        "MotionSites",
+        "Mobbin"
+      ],
+      "recall": 1,
+      "answer": "랜딩페이지 제작 시 참고하거나 활용할 수 있는 사이트들을 정리해 드립니다.\n\n### 1. UI/UX 레퍼런스 및 컴포넌트\n*   **[Mobbin](https://my-little-website-client-self.vercel.app/links)**: 실제 앱 서비스의 디자인 스크린샷과 사용자 흐름을 확인할 수 있는 UI/UX 레퍼런스 플랫폼입니다.\n*   **[React Bits](https://my-little-website-client-self.vercel.app/links)**: React 개발자를 위한 고품질 애니메이션 UI 컴포넌트를 제공합니다.\n*   **[Uiverse](https://my-little-website-client-self.vercel.app/links)**: 오픈소스 UI 컴포넌트 라이브러리로, 랜딩페이지에 활용할 요소들을 찾기 좋습니다.\n*   **[21st.dev](https://my-little-website-client-self.vercel.app/links)**: React 기반 UI 컴포넌트 탐색 및 커스텀, 복사가 가능합니다.\n\n### 2. AI 기반 랜딩페이지 빌더 및 디자인 도구\n*   **[CodeDesign.ai](https://my-little-website-client-self.vercel.app/links)**: 프롬프트 입력만으로 웹사이트를 자동 생성하고 호스팅까지 지원합니다.\n*   **[Framer](https://my-little-website-client-self.vercel.app/links)**: 생성형 AI를 활용해 코딩 없이 웹사이트 디자인 및 인터랙션을 구현하고 배포할 수 있습니다.\n*   **[Webflow](https://my-little-website-client-self.vercel.app/links)**: 디자인, 개발, 배포를 지원하는 AI 기반 노코드 플랫폼입니다.\n*   **[Dorik](https://my-little-website-client-self.vercel.app/links)**: 드래그 앤 드롭과 AI 기능을 결합한 노코드 웹 빌더입니다.\n*   **[MotionSites](https://my-little-website-client-self.vercel.app/links)**: 웹 디자인 효율을 높이는 AI 프롬프트, 템플릿, 애니메이션 에셋을 제공합니다.\n*   **[AI 기반 랜딩페이지 빌더 (Supanova Design Engine)](https://my-little-website-client-self.vercel.app/ai-dev-tools/ai-supanova-design-engine)**: 한국어 랜딩페이지 제작 및 재구성에 특화된 디자인 엔진입니다.\n\n### 3. 디자인 에셋 및 유틸리티\n*   **[Pexels](https://my-little-website-client-self.vercel.app/links)** / **[Pixabay](https://my-little-website-client-self.vercel.app/links)**: 상업적으로 이용 가능한 고화질 무료 스톡 사진 및 영상을 제공합니다.\n*   **[10015.io](https://my-little-website-client-self.vercel.app/links)**: 웹 작업에 필요한 다양한 온라인 유틸리티(이미지, CSS 등)를 모아둔 사이트입니다.\n\n랜딩페이지를 직접 코딩하신다면 **React Bits**나 **Uiverse**에서 컴포넌트를 참고하시고, 보다 빠른 제작을 원하신다면 **Framer**나 **Webflow** 같은 노코드 툴을 고려해 보시는 것을 추천합니다."
+    },
+    {
+      "kind": "find",
+      "q": "랜딩페이지 만들 때 참고할 사이트",
+      "expect": [
+        "Framer",
+        "Webflow",
+        "MotionSites",
+        "Mobbin"
+      ],
+      "rep": 2,
+      "ms": 3923,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 759,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "Framer",
+        "Webflow",
+        "MotionSites",
+        "Mobbin"
+      ],
+      "recall": 1,
+      "answer": "랜딩페이지 제작 시 참고할 만한 사이트들을 정리해 드립니다. 디자인 레퍼런스부터 컴포넌트, AI 제작 도구까지 다양하게 활용해 보세요.\n\n### 1. UI/UX 디자인 레퍼런스\n*   **[Mobbin](https://my-little-website-client-self.vercel.app/links)**: 실제 서비스들의 디자인 스크린샷과 사용자 흐름(Flow)을 모아놓은 UI/UX 레퍼런스 플랫폼입니다.\n*   **[Data Viz Project](https://my-little-website-client-self.vercel.app/links)**: 데이터 성격과 목적에 최적화된 시각화 차트 및 그래프 유형 라이브러리를 제공하여 데이터 기반 랜딩페이지 구성 시 유용합니다.\n\n### 2. 컴포넌트 및 랜딩페이지 라이브러리\n*   **[React Bits](https://my-little-website-client-self.vercel.app/links)**: React 개발자를 위한 고품질 애니메이션 UI 컴포넌트를 제공합니다.\n*   **[Uiverse](https://my-little-website-client-self.vercel.app/links)**: 개발자 및 디자이너를 위한 오픈소스 UI 컴포넌트 라이브러리입니다.\n*   **[21st.dev](https://my-little-website-client-self.vercel.app/links)**: React 기반 UI 컴포넌트 탐색, 복사 및 커스텀 기능을 제공합니다.\n\n### 3. AI 기반 빌더 및 자동화 도구\n*   **[Framer](https://my-little-website-client-self.vercel.app/links)**: 코딩 없이 디자인, 인터랙션 구현 및 배포를 지원하는 AI 기반 디자인 플랫폼입니다.\n*   **[Webflow](https://my-little-website-client-self.vercel.app/links)**: 디자인과 개발을 동시에 해결할 수 있는 강력한 AI 기반 노코드 플랫폼입니다.\n*   **[CodeDesign.ai](https://my-little-website-client-self.vercel.app/links)**: 프롬프트 입력만으로 웹사이트를 자동 생성하고 호스팅 및 코드 내보내기를 지원합니다.\n*   **[Dorik](https://my-little-website-client-self.vercel.app/links)**: 드래그 앤 드롭과 AI 기능을 결합하여 빠르게 웹사이트를 제작할 수 있는 노코드 플랫폼입니다.\n*   **[MotionSites](https://my-little-website-client-self.vercel.app/links)**: 웹 디자인 및 개발 효율을 높이는 AI 프롬프트, 템플릿, 애니메이션 에셋을 제공합니다.\n\n### 4. 기타 유용한 리소스\n*   **[Pixabay / Pexels](https://my-little-website-client-self.vercel.app/links)**: 저작권 걱정 없이 사용할 수 있는 고품질 무료 스톡 이미지 및 영상 에셋을 제공합니다.\n*   **[10015.io](https://my-little-website-client-self.vercel.app/links)**: 텍스트, 이미지, CSS 등 랜딩페이지 작업 시 필요한 다양한 온라인 유틸리티 도구를 모아두었습니다.\n\n프로젝트의 성격에 맞춰 위 도구들을 조합하면 더욱 완성도 높은 랜딩페이지를 제작하실 수 있을 것입니다."
+    },
+    {
+      "kind": "find",
+      "q": "유니티 관련 뭐 있어?",
+      "expect": [
+        "game-dev/unity-cli-ai",
+        "game-dev/unity-cli-mcp-ai",
+        "game-dev/ai-2",
+        "game-dev/6-4",
+        "game-dev/ragdoll",
+        "game-dev/claude-code-unity-mcp-ai"
+      ],
+      "rep": 0,
+      "ms": 3895,
+      "rounds": 2,
+      "promptTokens": 30846,
+      "outputTokens": 772,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/unity-cli-ai",
+        "game-dev/unity-cli-mcp-ai",
+        "game-dev/ai-2",
+        "game-dev/6-4",
+        "game-dev/ragdoll",
+        "game-dev/claude-code-unity-mcp-ai"
+      ],
+      "recall": 1,
+      "answer": "유니티(Unity)와 관련하여 사이트에 저장된 유용한 자료들입니다. 주로 **AI를 활용한 생산성 극대화**와 **최적화**에 초점이 맞춰져 있습니다.\n\n### 유니티 관련 자료 목록\n*   **[Unity 6.2 AI와 Cursor 활용기: 게임 개발 생산성 극대화](https://my-little-website-client-self.vercel.app/column/unity-6-2-ai-cursor)**\n    *   유니티 6.2 베타와 Cursor AI를 조합하여 3매치 디펜스 게임을 4시간 만에 완성한 사례를 분석합니다.\n*   **[Unity CLI와 AI를 활용한 게임 코드 리팩토링 전략](https://my-little-website-client-self.vercel.app/game-dev/unity-cli-ai)**\n    *   Unity CLI와 AI 에이전트를 결합해 레거시 코드를 분석하고 디자인 패턴을 적용하여 유지보수성을 높이는 방법론입니다.\n*   **[Unity CLI 및 MCP 기반 AI 개발 워크플로우 분석](https://my-little-website-client-self.vercel.app/game-dev/unity-cli-mcp-ai)**\n    *   MCP(Model Context Protocol)를 활용해 AI 에이전트가 유니티 엔진을 직접 제어하며 생산성을 높이는 구조를 다룹니다.\n*   **[AI 코딩 시대의 유니티 대규모 프로젝트 설계](https://my-little-website-client-self.vercel.app/game-dev/ai-2)**\n    *   AI 생산성 극대화를 위해 데이터 중심 아키텍처(DCA)와 로직 분리 전략을 유니티에 적용하는 방법을 분석합니다.\n*   **[유니티 6 엔진 핵심 렌더링 최적화 4가지 기술 분석](https://my-little-website-client-self.vercel.app/game-dev/6-4)**\n    *   GPU 레지던트 드로어, 오클루전 컬링, STP, 메시 LOD 등 유니티 6의 최신 렌더링 최적화 기법을 다룹니다.\n*   **[유니티 랙돌(Ragdoll) 시스템과 캐릭터 조인트 심층 분석](https://my-little-website-client-self.vercel.app/game-dev/ragdoll)**\n    *   캐릭터 물리 연산을 통한 자연스러운 쓰러짐 효과와 캐릭터 조인트 설정 방법을 학습합니다.\n*   **[Claude Code와 Unity MCP를 활용한 AI 에이전트 기반 월드 생성](https://my-little-website-client-self.vercel.app/game-dev/claude-code-unity-mcp-ai)**\n    *   AI 에이전트가 유니티를 직접 제어하여 애니메이션 스타일의 오픈월드를 프로토타이핑하는 실험 리포트입니다.\n*   **[엔비디아 키모도(Kimodo) 활용 3D 모션 제작](https://my-little-website-client-self.vercel.app/game-dev/kimodo-3d)**\n    *   AI 도구 '키모도'로 생성한 3D 애니메이션을 유니티 엔진에 통합하는 파이프라인 분석 자료입니다.\n\n관심 있는 항목이 있다면 자세한 내용을 확인해 드릴 수 있습니다. 어떤 것을 더 살펴볼까요?"
+    },
+    {
+      "kind": "find",
+      "q": "유니티 관련 뭐 있어?",
+      "expect": [
+        "game-dev/unity-cli-ai",
+        "game-dev/unity-cli-mcp-ai",
+        "game-dev/ai-2",
+        "game-dev/6-4",
+        "game-dev/ragdoll",
+        "game-dev/claude-code-unity-mcp-ai"
+      ],
+      "rep": 1,
+      "ms": 3551,
+      "rounds": 2,
+      "promptTokens": 30846,
+      "outputTokens": 680,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/unity-cli-ai",
+        "game-dev/unity-cli-mcp-ai",
+        "game-dev/ai-2",
+        "game-dev/6-4",
+        "game-dev/ragdoll",
+        "game-dev/claude-code-unity-mcp-ai"
+      ],
+      "recall": 1,
+      "answer": "유니티(Unity) 게임 개발 및 AI 연동과 관련하여 사이트에 저장된 유용한 자료들은 다음과 같습니다.\n\n### **유니티 게임 개발 및 AI 활용 자료**\n*   **[Unity 6.2 AI와 Cursor 활용기: 게임 개발 생산성 극대화](https://my-little-website-client-self.vercel.app/column/unity-6-2-ai-cursor)**: 유니티 6.2 베타와 Cursor AI를 조합하여 3매치 디펜스 게임을 4시간 만에 완성한 개발 효율화 분석.\n*   **[Unity CLI 및 MCP 기반 AI 개발 워크플로우 분석](https://my-little-website-client-self.vercel.app/game-dev/unity-cli-mcp-ai)**: Unity CLI와 MCP를 결합하여 AI 에이전트로 엔진을 제어하고 개발 생산성을 높이는 방법.\n*   **[Unity CLI와 AI를 활용한 게임 코드 리팩토링 전략](https://my-little-website-client-self.vercel.app/game-dev/unity-cli-ai)**: CLI와 AI 에이전트로 레거시 코드를 분석하고 디자인 패턴을 적용해 유지보수성을 극대화하는 실무 방법론.\n*   **[AI 코딩 시대의 유니티 대규모 프로젝트 설계](https://my-little-website-client-self.vercel.app/game-dev/ai-2)**: AI 생산성 극대화를 위한 데이터 중심 아키텍처와 로직 분리 전략 분석.\n*   **[Claude Code와 Unity MCP를 활용한 AI 에이전트 기반 월드 생성](https://my-little-website-client-self.vercel.app/game-dev/claude-code-unity-mcp-ai)**: AI 에이전트가 유니티 엔진을 직접 제어하여 애니메이션 스타일의 오픈월드를 프로토타이핑하는 실험 리포트.\n*   **[유니티 6 엔진 핵심 렌더링 최적화 4가지 기술 분석](https://my-little-website-client-self.vercel.app/game-dev/6-4)**: 유니티 6에서 도입된 GPU 레지던트 드로어, 오클루전 컬링, STP, 메시 LOD를 통한 최적화 전략.\n*   **[유니티 랙돌(Ragdoll) 시스템과 캐릭터 조인트 심층 분석](https://my-little-website-client-self.vercel.app/game-dev/ragdoll)**: 캐릭터 물리 연산을 통한 자연스러운 쓰러짐 효과 구현 및 캐릭터 조인트 설정 학습.\n*   **[엔비디아 키모도(Kimodo) 활용 3D 모션 제작](https://my-little-website-client-self.vercel.app/game-dev/kimodo-3d)**: 텍스트 기반 AI '키모도'를 활용하여 유니티 등 게임 엔진 내 커스텀 애니메이션을 생성하고 통합하는 프로세스."
+    },
+    {
+      "kind": "find",
+      "q": "유니티 관련 뭐 있어?",
+      "expect": [
+        "game-dev/unity-cli-ai",
+        "game-dev/unity-cli-mcp-ai",
+        "game-dev/ai-2",
+        "game-dev/6-4",
+        "game-dev/ragdoll",
+        "game-dev/claude-code-unity-mcp-ai"
+      ],
+      "rep": 2,
+      "ms": 4733,
+      "rounds": 2,
+      "promptTokens": 30846,
+      "outputTokens": 666,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/unity-cli-ai",
+        "game-dev/unity-cli-mcp-ai",
+        "game-dev/ai-2",
+        "game-dev/6-4",
+        "game-dev/ragdoll",
+        "game-dev/claude-code-unity-mcp-ai"
+      ],
+      "recall": 1,
+      "answer": "유니티(Unity)와 AI를 활용한 개발 및 최적화와 관련된 자료들이 준비되어 있습니다. 주요 내용은 다음과 같습니다.\n\n### 유니티 및 AI 활용 개발 자료\n*   **[Unity 6.2 AI와 Cursor 활용기: 게임 개발 생산성 극대화](https://my-little-website-client-self.vercel.app/column/unity-6-2-ai-cursor)**\n    *   유니티 6.2 베타와 Cursor AI를 결합하여 게임 개발 생산성을 극대화한 사례와 분석입니다.\n*   **[Unity CLI 및 MCP 기반 AI 개발 워크플로우 분석](https://my-little-website-client-self.vercel.app/game-dev/unity-cli-mcp-ai)**\n    *   Unity CLI와 MCP를 결합해 AI 에이전트로 유니티 엔진을 제어하고 생산성을 높이는 방법을 다룹니다.\n*   **[Unity CLI와 AI를 활용한 게임 코드 리팩토링 전략](https://my-little-website-client-self.vercel.app/game-dev/unity-cli-ai)**\n    *   레거시 코드를 분석하고 디자인 패턴을 적용하여 유지보수성을 최적화하는 방법론입니다.\n*   **[AI 코딩 시대의 유니티 대규모 프로젝트 설계](https://my-little-website-client-self.vercel.app/game-dev/ai-2)**\n    *   데이터 중심 아키텍처와 로직 분리를 통한 효율적인 설계 전략을 다룹니다.\n*   **[유니티 6 엔진 핵심 렌더링 최적화 4가지 기술 분석](https://my-little-website-client-self.vercel.app/game-dev/6-4)**\n    *   GPU 레지던트 드로어, 오클루전 컬링, STP, 메시 LOD 등을 통한 최적화 전략입니다.\n*   **[유니티 랙돌(Ragdoll) 시스템과 캐릭터 조인트 심층 분석](https://my-little-website-client-self.vercel.app/game-dev/ragdoll)**\n    *   캐릭터 물리 연산을 통한 자연스러운 움직임 구현 및 상세 설정 방법입니다.\n*   **[Claude Code와 Unity MCP를 활용한 AI 에이전트 기반 월드 생성](https://my-little-website-client-self.vercel.app/game-dev/claude-code-unity-mcp-ai)**\n    *   AI 에이전트가 Unity 엔진을 직접 제어하여 월드를 프로토타이핑하는 실험 리포트입니다.\n*   **[엔비디아 키모도(Kimodo) 활용 3D 모션 제작](https://my-little-website-client-self.vercel.app/game-dev/kimodo-3d)**\n    *   AI를 활용해 유니티 엔진 내 애니메이션을 생성하고 통합하는 프로세스입니다."
+    },
+    {
+      "kind": "find",
+      "q": "칼럼 중에 MCP 관련 글",
+      "expect": [
+        "column/mcp-angular-next-js-nuxt-ai"
+      ],
+      "rep": 0,
+      "ms": 2132,
+      "rounds": 2,
+      "promptTokens": 11626,
+      "outputTokens": 133,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {
+            "section": "columns"
+          },
+          "resultChars": 18463
+        }
+      ],
+      "hits": [
+        "column/mcp-angular-next-js-nuxt-ai"
+      ],
+      "recall": 1,
+      "answer": "저장된 칼럼 중 MCP(Model Context Protocol)와 관련된 글은 다음과 같습니다.\n\n*   **MCP 도입 전략: Angular, Next.js, Nuxt AI 에이전트 활용법**\n    *   요약: 프레임워크별 MCP 활용의 효용과 컨텍스트 비용 문제를 고려한 효율적 도입 전략을 분석합니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/column/mcp-angular-next-js-nuxt-ai)"
+    },
+    {
+      "kind": "find",
+      "q": "칼럼 중에 MCP 관련 글",
+      "expect": [
+        "column/mcp-angular-next-js-nuxt-ai"
+      ],
+      "rep": 1,
+      "ms": 2408,
+      "rounds": 2,
+      "promptTokens": 11626,
+      "outputTokens": 118,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {
+            "section": "columns"
+          },
+          "resultChars": 18463
+        }
+      ],
+      "hits": [
+        "column/mcp-angular-next-js-nuxt-ai"
+      ],
+      "recall": 1,
+      "answer": "칼럼 중 MCP(Model Context Protocol)와 관련된 글은 다음과 같습니다.\n\n* **[MCP 도입 전략: Angular, Next.js, Nuxt AI 에이전트 활용법](https://my-little-website-client-self.vercel.app/column/mcp-angular-next-js-nuxt-ai)**\n    * 프레임워크별 MCP 활용의 효용과 컨텍스트 비용 문제를 고려한 효율적 도입 전략을 분석합니다."
+    },
+    {
+      "kind": "find",
+      "q": "칼럼 중에 MCP 관련 글",
+      "expect": [
+        "column/mcp-angular-next-js-nuxt-ai"
+      ],
+      "rep": 2,
+      "ms": 1938,
+      "rounds": 2,
+      "promptTokens": 11626,
+      "outputTokens": 125,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {
+            "section": "columns"
+          },
+          "resultChars": 18463
+        }
+      ],
+      "hits": [
+        "column/mcp-angular-next-js-nuxt-ai"
+      ],
+      "recall": 1,
+      "answer": "저장된 칼럼 중 MCP(Model Context Protocol)와 관련된 글은 다음과 같습니다.\n\n*   **[MCP 도입 전략: Angular, Next.js, Nuxt AI 에이전트 활용법](https://my-little-website-client-self.vercel.app/column/mcp-angular-next-js-nuxt-ai)**\n    *   프레임워크별 MCP 활용의 효용과 컨텍스트 비용 문제를 고려한 효율적 도입 전략을 분석한 글입니다."
+    },
+    {
+      "kind": "detail",
+      "q": "프롬프트 캐싱으로 비용이 얼마나 줄어드는지 언급한 자료 있어?",
+      "expect": [
+        "column/andrej-karpathy-llm-wiki"
+      ],
+      "rep": 0,
+      "ms": 3559,
+      "rounds": 2,
+      "promptTokens": 30868,
+      "outputTokens": 358,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "네, 프롬프트 캐싱을 통한 비용 절감 및 최적화와 관련된 자료가 저장되어 있습니다. 아래 도구가 해당 내용을 직접적으로 다루고 있습니다.\n\n*   **[Cache Tax: Claude Code 비용 최적화 도구](https://my-little-website-client-self.vercel.app/ai-dev-tools/cache-tax-claude-code)**\n    *   **요약:** Claude Code의 프롬프트 캐시를 유지하고, 실행 전에 비용을 예측하여 최적화할 수 있도록 돕는 도구입니다.\n\n또한, 관련하여 컨텍스트 관리를 통한 비용 및 성능 최적화 전략을 다룬 칼럼도 참고하실 수 있습니다.\n\n*   **[클로드 코드(Claude Code) 컨텍스트 엔지니어링 실전 가이드](https://my-little-website-client-self.vercel.app/column/claude-code-3)**\n    *   **요약:** AI 성능 저하(슬롭)를 방지하고 컨텍스트 윈도우를 효율적으로 관리하여 최상의 결과물을 도출하는 기술적 전략을 제시합니다.\n*   **[caveman: 토큰 소모를 줄이는 Claude Code 최적화 도구](https://my-little-website-client-self.vercel.app/ai-dev-tools/caveman-claude-code)**\n    *   **요약:** AI 에이전트의 프롬프트를 원시인 말투로 변환해 토큰 사용량을 최대 65%까지 절감하는 최적화 스킬입니다."
+    },
+    {
+      "kind": "detail",
+      "q": "프롬프트 캐싱으로 비용이 얼마나 줄어드는지 언급한 자료 있어?",
+      "expect": [
+        "column/andrej-karpathy-llm-wiki"
+      ],
+      "rep": 1,
+      "ms": 2757,
+      "rounds": 2,
+      "promptTokens": 30868,
+      "outputTokens": 366,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "네, 프롬프트 캐싱을 통한 비용 절감 및 최적화와 관련된 도구와 자료가 있습니다.\n\n관련된 자료는 다음과 같습니다.\n\n*   **Cache Tax: Claude Code 비용 최적화 도구**\n    *   요약: Claude Code의 프롬프트 캐시 유지 및 실행 전 비용 예측을 수행하여 비용을 최적화하는 도구입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/cache-tax-claude-code)\n\n*   **caveman: 토큰 소모를 줄이는 Claude Code 최적화 도구**\n    *   요약: AI 에이전트의 프롬프트를 원시인 말투로 변환하여 토큰 사용량을 최대 65% 절감하는 최적화 스킬입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/caveman-claude-code)\n\n또한, 컨텍스트 관리와 비용 최적화에 대한 전략을 다룬 칼럼도 참고하실 수 있습니다.\n\n*   **클로드 코드(Claude Code) 컨텍스트 엔지니어링 실전 가이드**\n    *   요약: AI 성능 저하(슬롭)를 막기 위해 컨텍스트 윈도우를 효율적으로 관리하고 최상의 결과물을 도출하는 기술적 전략을 제시합니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/column/claude-code-3)"
+    },
+    {
+      "kind": "detail",
+      "q": "프롬프트 캐싱으로 비용이 얼마나 줄어드는지 언급한 자료 있어?",
+      "expect": [
+        "column/andrej-karpathy-llm-wiki"
+      ],
+      "rep": 2,
+      "ms": 2861,
+      "rounds": 2,
+      "promptTokens": 30868,
+      "outputTokens": 392,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "프롬프트 캐싱을 통한 비용 절감 및 최적화와 관련된 자료로 다음 항목이 저장되어 있습니다.\n\n*   **[Cache Tax: Claude Code 비용 최적화 도구](https://my-little-website-client-self.vercel.app/ai-dev-tools/cache-tax-claude-code)**\n    *   요약: Claude Code의 프롬프트 캐시를 유지하고, 실행 전에 비용을 예측하여 최적화를 수행하는 도구입니다.\n\n또한, **프롬프트 캐싱 및 컨텍스트 관리**와 관련하여 참고할 만한 자료는 다음과 같습니다.\n\n*   **[클로드 코드(Claude Code) 컨텍스트 엔지니어링 실전 가이드](https://my-little-website-client-self.vercel.app/column/claude-code-3)**\n    *   요약: AI 성능 저하(슬롭)를 막기 위해 컨텍스트 윈도우를 효율적으로 관리하고 최상의 결과물을 도출하는 전략을 다룹니다.\n*   **[caveman: 토큰 소모를 줄이는 Claude Code 최적화 도구](https://my-little-website-client-self.vercel.app/ai-dev-tools/caveman-claude-code)**\n    *   요약: AI 에이전트의 프롬프트를 원시인 말투로 변환하여 토큰 사용량을 최대 65%까지 절감하는 최적화 스킬입니다.\n\n프롬프트 캐싱은 주로 반복되는 대화나 큰 컨텍스트를 입력할 때 토큰 비용을 획기적으로 줄여주는 기술로, 위 도구들을 통해 구체적인 비용 최적화와 관리 방법을 확인하실 수 있습니다."
+    },
+    {
+      "kind": "detail",
+      "q": "Ralph 루프 다루는 자료 찾아줘",
+      "expect": [
+        "ai-dev-tools/unlazy-ai",
+        "ai-dev-tools/ouroboros-ai-os",
+        "column/ai-1"
+      ],
+      "rep": 0,
+      "ms": 2482,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 215,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "'Ralph 루프'와 관련하여, Claude Code 환경에서 AI 에이전트의 작업 루프를 다루는 **'루프 엔지니어링'**에 관한 자료가 있습니다.\n\n- **[Claude Code의 루프 엔지니어링 가이드](https://my-little-website-client-self.vercel.app/column/claude-code-2)**: 코딩 에이전트가 목표를 달성할 때까지 스스로 반복 수행하도록 설계하는 루프 엔지니어링의 핵심 정의와 유형별 활용법을 다룹니다.\n- **[AI 에이전트의 완성도를 높이는 루프 엔지니어링 실전 전략](https://my-little-website-client-self.vercel.app/column/ai-4)**: AI가 스스로 반복하며 작업 완성도를 높이는 루프 엔지니어링의 개념과 프로젝트 규모에 따른 적절한 운용 전략을 분석합니다."
+    },
+    {
+      "kind": "detail",
+      "q": "Ralph 루프 다루는 자료 찾아줘",
+      "expect": [
+        "ai-dev-tools/unlazy-ai",
+        "ai-dev-tools/ouroboros-ai-os",
+        "column/ai-1"
+      ],
+      "rep": 1,
+      "ms": 2316,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 235,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "'Ralph' 루프(아마도 'Loop Engineering' 관련 언급)에 대해 주인님께서 정리해 두신 자료를 찾았습니다. AI 에이전트의 반복적인 작업 수행과 완성도를 높이는 전략을 다루고 있습니다.\n\n*   **[Claude Code의 루프 엔지니어링 가이드](https://my-little-website-client-self.vercel.app/column/claude-code-2)**\n    *   코딩 에이전트가 목표를 달성할 때까지 스스로 반복 수행하도록 설계하는 '루프 엔지니어링'의 핵심 정의와 유형별 활용법을 다룹니다.\n*   **[AI 에이전트의 완성도를 높이는 루프 엔지니어링 실전 전략](https://my-little-website-client-self.vercel.app/column/ai-4)**\n    *   AI가 스스로 반복하며 작업 완성도를 높이는 루프 엔지니어링의 개념과 프로젝트 규모에 따른 적절한 운용 전략을 분석합니다."
+    },
+    {
+      "kind": "detail",
+      "q": "Ralph 루프 다루는 자료 찾아줘",
+      "expect": [
+        "ai-dev-tools/unlazy-ai",
+        "ai-dev-tools/ouroboros-ai-os",
+        "column/ai-1"
+      ],
+      "rep": 2,
+      "ms": 2968,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 304,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "'Ralph 루프'와 관련하여, Claude Code에서 AI가 목표를 달성할 때까지 스스로 반복 수행하게 하는 **'루프 엔지니어링'**에 대한 자료가 저장되어 있습니다. \n\n요청하신 루프 엔지니어링 관련 자료는 다음과 같습니다.\n\n*   **[Claude Code의 루프 엔지니어링 가이드](https://my-little-website-client-self.vercel.app/column/claude-code-2)**\n    *   코딩 에이전트가 목표 달성까지 스스로 반복 수행하도록 설계하는 '루프 엔지니어링'의 핵심 정의와 유형별 활용법을 다룹니다.\n*   **[AI 에이전트의 완성도를 높이는 루프 엔지니어링 실전 전략](https://my-little-website-client-self.vercel.app/column/ai-4)**\n    *   AI 에이전트의 작업 완성도를 높이기 위한 루프 엔지니어링의 개념과 프로젝트 규모별 운용 전략을 분석한 유튜브 자료입니다.\n\n참고로, 질문하신 'Ralph'는 해당 문서들에서 다루는 '루프 엔지니어링' 개념과 맥락상 일치하거나, 관련 프로젝트/도구의 명칭으로 언급되는 것으로 보입니다. 위 링크들을 통해 상세 내용을 확인해 보시기 바랍니다."
+    },
+    {
+      "kind": "detail",
+      "q": "Claude Code Stop hook을 쓰는 도구 뭐 있어?",
+      "expect": [
+        "ai-dev-tools/unlazy-ai",
+        "ai-dev-tools/impeccable"
+      ],
+      "rep": 0,
+      "ms": 3265,
+      "rounds": 2,
+      "promptTokens": 30854,
+      "outputTokens": 532,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "ai-dev-tools/unlazy-ai"
+      ],
+      "recall": 0.5,
+      "answer": "Claude Code에서 작업 흐름이나 에이전트의 동작을 제어하기 위해 사용할 수 있는 도구 및 프레임워크들은 다음과 같습니다. 질문하신 'Stop hook'과 같이 AI의 동작을 강제로 제어하거나 특정 시점에 작업을 중단/검증하는 목적의 도구들이 포함되어 있습니다.\n\n*   **[Unlazy: AI 에이전트의 게으름 방지 및 사고 강화 프레임워크](https://my-little-website-client-self.vercel.app/ai-dev-tools/unlazy-ai)**\n    *   에이전트가 복잡한 작업을 수행할 때 사고의 깊이를 강제로 확장하여 품질을 극대화하는 프레임워크입니다.\n*   **[Hindsight: AI 에이전트의 경험적 학습 메모리 플랫폼](https://my-little-website-client-self.vercel.app/ai-dev-tools/hindsight-ai)**\n    *   에이전트의 성공과 실패 사례를 기록하고 학습하여 향후 의사결정을 최적화합니다.\n*   **[TestSprite: 자율형 AI 테스트 및 검증 플랫폼](https://my-little-website-client-self.vercel.app/ai-dev-tools/testsprite-ai)**\n    *   에이전트 워크플로우에 결합하여 자율적으로 결과물을 검증하고 오류를 수정하는 테스트 플랫폼입니다.\n*   **[attention-span: AI 에이전트 출력 최적화 도구](https://my-little-website-client-self.vercel.app/ai-dev-tools/attention-span-ai)**\n    *   AI 에이전트의 불필요한 장황함을 줄이고 핵심적인 작업에 집중하도록 제어하는 시스템 프롬프트 및 스킬 팩입니다.\n*   **[Andrej Karpathy 스타일 AI 코딩 규칙(CLAUDE.md)](https://my-little-website-client-self.vercel.app/ai-dev-tools/andrej-karpathy-ai-claude-md)**\n    *   에이전트의 코드 과잉 생산이나 불필요한 추측을 억제하기 위한 제어 규칙(system prompt) 설정입니다.\n\n이 외에도 `Claude Code`의 동작 최적화를 위한 도구들이 많이 있으니 위 링크들을 참고하시기 바랍니다."
+    },
+    {
+      "kind": "detail",
+      "q": "Claude Code Stop hook을 쓰는 도구 뭐 있어?",
+      "expect": [
+        "ai-dev-tools/unlazy-ai",
+        "ai-dev-tools/impeccable"
+      ],
+      "rep": 1,
+      "ms": 3582,
+      "rounds": 2,
+      "promptTokens": 30854,
+      "outputTokens": 557,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "ai-dev-tools/unlazy-ai"
+      ],
+      "recall": 0.5,
+      "answer": "Claude Code와 같은 AI 코딩 에이전트의 작업 흐름을 제어하거나 최적화하는 도구 중, 특히 'Stop hook'과 유사한 제어 및 루프 최적화 기능을 가진 도구들은 다음과 같습니다.\n\n*   **[Unlazy (AI 에이전트의 게으름 방지 및 사고 강화 프레임워크)](https://my-little-website-client-self.vercel.app/ai-dev-tools/unlazy-ai)**\n    *   Depth Tree 방법론을 통해 복잡한 작업 시 모델의 사고 깊이를 강제로 확장하고 품질을 극대화합니다. 에이전트의 작업 도중 발생할 수 있는 조기 종료나 품질 저하(게으름)를 방지하는 역할을 합니다.\n*   **[attention-span (AI 에이전트 출력 최적화 도구)](https://my-little-website-client-self.vercel.app/ai-dev-tools/attention-span-ai)**\n    *   에이전트의 불필요한 장황함을 줄이고 핵심적인 인간 중심적 대화를 유도하는 시스템 프롬프트 및 스킬 팩입니다. 루프 내에서 토큰 낭비를 줄이고 의도된 방향으로 작업이 종료되도록 유도할 수 있습니다.\n*   **[Sequential Thinking MCP 서버 분석](https://my-little-website-client-self.vercel.app/ai-dev-tools/sequential-thinking-mcp)**\n    *   AI의 논리적 추론 과정을 단계별로 구조화합니다. 에이전트가 복잡한 문제를 풀 때 사고 과정을 단계화하여, 특정 시점에 추론을 멈추거나 검토하는 구조적 제어를 가능하게 합니다.\n*   **[Claude Code의 루프 엔지니어링 가이드](https://my-little-website-client-self.vercel.app/column/claude-code-2)**\n    *   에이전트가 목표 달성까지 반복 수행하는 '루프 엔지니어링'의 핵심 원리를 다룹니다. 특정 조건을 달성했을 때 루프를 빠져나오거나 작업을 중단시키는 설계 방법론을 확인할 수 있습니다.\n\n직접적으로 'Stop hook'이라는 명칭의 플러그인이기보다는, 위와 같은 **에이전트 제어 프레임워크나 스킬을 통해 작업의 시작과 종료 조건을 제어하는 방식**으로 활용됩니다. 필요하신 목적에 가장 부합하는 것을 확인해 보세요."
+    },
+    {
+      "kind": "detail",
+      "q": "Claude Code Stop hook을 쓰는 도구 뭐 있어?",
+      "expect": [
+        "ai-dev-tools/unlazy-ai",
+        "ai-dev-tools/impeccable"
+      ],
+      "rep": 2,
+      "ms": 4205,
+      "rounds": 2,
+      "promptTokens": 30854,
+      "outputTokens": 639,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "ai-dev-tools/unlazy-ai"
+      ],
+      "recall": 0.5,
+      "answer": "Claude Code에서 'Stop hook' 기능을 직접적으로 명칭하거나 지원하는 단일 도구는 없지만, 사용자가 질문하신 **에이전트의 불필요한 행동이나 장황한 코딩(Slop)을 제어하고 최적화**하기 위해 다음 도구와 프레임워크들을 활용하고 있습니다.\n\n관련된 도구들은 다음과 같습니다:\n\n1.  **[Andrej Karpathy 스타일 AI 코딩 규칙 (CLAUDE.md)](https://my-little-website-client-self.vercel.app/ai-dev-tools/andrej-karpathy-ai-claude-md)**\n    *   에이전트가 코드 과잉 생산을 하거나 불필요한 추측을 하지 않도록 제어하는 시스템 프롬프트 및 가이드라인입니다. 사실상 'Stop hook'과 같은 역할을 수행합니다.\n2.  **[attention-span: AI 에이전트 출력 최적화 도구](https://my-little-website-client-self.vercel.app/ai-dev-tools/attention-span-ai)**\n    *   에이전트의 장황함을 줄이고 핵심적인 인간 중심적 대화를 유도하여, 필요 없는 루프를 방지하는 시스템 프롬프트 및 스킬 프레임워크입니다.\n3.  **[anti-slop: Oxlint 기반 저품질 코드 방지 룰셋](https://my-little-website-client-self.vercel.app/ai-dev-tools/anti-slop-oxlint)**\n    *   AI가 작성하는 코드의 품질을 강제하고, 수준 낮은 코드 생성을 사전에 방지하는 린팅(Linting) 룰셋입니다.\n4.  **[Unlazy: AI 에이전트의 게으름 방지 및 사고 강화 프레임워크](https://my-little-website-client-self.vercel.app/ai-dev-tools/unlazy-ai)**\n    *   작업의 깊이를 제어하여 에이전트가 더 효율적으로 문제를 해결하도록 돕는 프롬프트 기반 스킬 프레임워크입니다.\n5.  **[caveman: Claude Code 최적화 도구](https://my-little-website-client-self.vercel.app/ai-dev-tools/caveman-claude-code)**\n    *   프롬프트를 간결하게 변환하여 불필요한 토큰 소모를 줄이고, 에이전트의 사고 과정을 최적화합니다.\n\n이 도구들은 공통적으로 **에이전트의 루프(Loop)나 작업 수행 범위를 적절한 시점에 제어(Hook)**하여 효율성을 극대화하는 것을 목적으로 합니다. 상황에 맞는 적절한 규칙을 `CLAUDE.md` 파일에 정의하는 것이 가장 효과적인 방법입니다."
+    },
+    {
+      "kind": "detail",
+      "q": "pgvector 쓰는 자료 있어?",
+      "expect": [
+        "ai-dev-tools/garry-tan-ai-gbrain",
+        "column/andrej-karpathy-llm-wiki"
+      ],
+      "rep": 0,
+      "ms": 2923,
+      "rounds": 2,
+      "promptTokens": 30844,
+      "outputTokens": 152,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "저장된 자료 목록을 확인한 결과, **pgvector**를 직접적으로 다루는 자료는 다음 항목이 있습니다.\n\n*   **제목:** PostgreSQL MCP 서버 기술 분석 (Archived)\n    *   **한 줄 요약:** PostgreSQL 데이터베이스를 MCP 프로토콜로 연결하는 아카이브된 도구입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/postgresql-mcp-archived)\n\nPGVector는 벡터 검색을 위해 PostgreSQL에서 사용하는 확장 프로그램이므로, 위 MCP 서버 구현체 관련 자료에서 관련 내용을 참고하실 수 있습니다."
+    },
+    {
+      "kind": "detail",
+      "q": "pgvector 쓰는 자료 있어?",
+      "expect": [
+        "ai-dev-tools/garry-tan-ai-gbrain",
+        "column/andrej-karpathy-llm-wiki"
+      ],
+      "rep": 1,
+      "ms": 2786,
+      "rounds": 2,
+      "promptTokens": 30844,
+      "outputTokens": 171,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "저장된 자료 중에서 `pgvector`와 직접 관련된 항목은 다음 하나입니다.\n\n* **PostgreSQL MCP 서버 기술 분석 (Archived)**\n    * 요약: PostgreSQL 데이터베이스를 MCP 프로토콜로 연결하는 아카이브된 도구입니다.\n    * [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/postgresql-mcp-archived)\n\n참고로, 저장소에 있는 많은 AI 에이전트 및 MCP 관련 도구들은 벡터 데이터베이스나 RAG(검색 증강 생성) 환경을 전제로 설계된 경우가 많지만, `pgvector` 자체를 주제로 깊게 다루는 자료는 위 항목이 유일합니다."
+    },
+    {
+      "kind": "detail",
+      "q": "pgvector 쓰는 자료 있어?",
+      "expect": [
+        "ai-dev-tools/garry-tan-ai-gbrain",
+        "column/andrej-karpathy-llm-wiki"
+      ],
+      "rep": 2,
+      "ms": 2547,
+      "rounds": 2,
+      "promptTokens": 30844,
+      "outputTokens": 196,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "저장된 자료 목록 중 `pgvector`와 직접적으로 관련된 항목은 **'PostgreSQL MCP 서버 기술 분석 (Archived)'**이 있습니다.\n\n- **제목**: PostgreSQL MCP 서버 기술 분석 (Archived)\n- **요약**: PostgreSQL 데이터베이스를 MCP(Model Context Protocol) 프로토콜로 연결하는 아카이브된 도구입니다.\n- **사이트 링크**: [PostgreSQL MCP 서버 기술 분석](https://my-little-website-client-self.vercel.app/ai-dev-tools/postgresql-mcp-archived)\n\n참고로, 위 도구는 데이터베이스를 AI 에이전트와 연결하는 MCP 프로토콜 관련 자료이며, `pgvector`를 직접 활용하는 코드 예시나 구체적인 가이드가 포함되어 있는지 확인하려면 해당 링크를 통해 내용을 살펴보시길 권장합니다."
+    },
+    {
+      "kind": "detail",
+      "q": "Tauri로 데스크톱 앱을 만든 AI 도구 있어?",
+      "expect": [
+        "ai-dev-tools/colibri-moe"
+      ],
+      "rep": 0,
+      "ms": 3190,
+      "rounds": 2,
+      "promptTokens": 30860,
+      "outputTokens": 362,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "사이트 주인은 Tauri를 직접 활용한 프로젝트를 명시적으로 나열하고 있지는 않으나, 저장된 자료 중 **VoiceStudio**가 데스크톱 앱 프레임워크인 **Electron**을 사용하는 것으로 확인되었습니다.\n\nTauri와 유사한 데스크톱 앱 기술이나 AI 도구 개발에 관심이 있으시다면 아래 자료를 참고해 보세요.\n\n*   **[VoiceStudio: 로컬 기반의 오픈소스 음성 AI 플랫폼](https://my-little-website-client-self.vercel.app/ai-dev-tools/voicestudio-ai)**\n    *   요약: ElevenLabs의 기능을 대체하는 완전 로컬 실행형 오픈소스 음성 합성 및 처리 통합 솔루션으로, **Electron** 기반으로 개발되었습니다.\n*   **[PerfectPixel-Studio: AI 기반 스프라이트 자동화 툴](https://my-little-website-client-self.vercel.app/game-dev/perfectpixel-studio-ai)**\n    *   요약: 텍스트 프롬프트로 8방향 애니메이션 스프라이트 시트를 생성하는 **Go/Wails** 기반 개발 툴입니다. (Wails는 Tauri와 마찬가지로 Rust/Go 백엔드와 웹 프론트엔드를 결합하는 데스크톱 프레임워크입니다.)\n\n직접적인 Tauri 프로젝트 리스트는 없지만, 위와 같은 현대적인 데스크톱 프레임워크 기반의 AI 도구 관련 자료들이 저장되어 있습니다. 추가로 특정 기능(예: 특정 OS 제어, 자동화 방식)을 구현하는 데 참고할만한 자료가 필요하시면 다시 말씀해주세요."
+    },
+    {
+      "kind": "detail",
+      "q": "Tauri로 데스크톱 앱을 만든 AI 도구 있어?",
+      "expect": [
+        "ai-dev-tools/colibri-moe"
+      ],
+      "rep": 1,
+      "ms": 2448,
+      "rounds": 2,
+      "promptTokens": 30860,
+      "outputTokens": 235,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "제공된 자료 목록을 확인한 결과, **Tauri**를 사용하여 데스크톱 앱으로 구현된 AI 도구에 대한 직접적인 언급은 없습니다.\n\n다만, 저장된 자료 중 **VoiceStudio** 도구가 'Electron'을 기반으로 하여 로컬 실행형 오픈소스 음성 AI 플랫폼으로 운영된다는 점이 확인되었습니다.\n\n*   **[VoiceStudio: 로컬 기반의 오픈소스 음성 AI 플랫폼](https://my-little-website-client-self.vercel.app/ai-dev-tools/voicestudio-ai)**\n    *   요약: ElevenLabs의 기능을 대체하는 완전 로컬 실행형 오픈소스 음성 합성 및 처리 통합 솔루션 (기술 스택: Electron)\n\nTauri 기반의 도구를 찾으신다면, 위와 같이 로컬 실행을 지원하는 오픈소스 AI 프로젝트들이 향후 데스크톱 앱 형태로 확장되거나 유사한 워크플로우를 제공하는지 참고해 보시는 것이 좋겠습니다. 다른 궁금한 점이 있으시면 말씀해 주세요."
+    },
+    {
+      "kind": "detail",
+      "q": "Tauri로 데스크톱 앱을 만든 AI 도구 있어?",
+      "expect": [
+        "ai-dev-tools/colibri-moe"
+      ],
+      "rep": 2,
+      "ms": 2515,
+      "rounds": 2,
+      "promptTokens": 13104,
+      "outputTokens": 183,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {
+            "section": "ai-tools"
+          },
+          "resultChars": 23835
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "저장된 AI 도구 목록을 확인한 결과, Tauri를 기반으로 제작된 도구는 **VoiceStudio**가 있습니다.\n\n* **VoiceStudio**: ElevenLabs의 기능을 대체하는 완전 로컬 실행형 오픈소스 음성 합성 및 처리 통합 솔루션으로, Electron을 사용하여 제작되었습니다. (참고: 목록에는 Electron으로 명시되어 있으나, 데스크톱 앱 개발 프레임워크인 Tauri와 유사한 성격의 도구로 관리되고 있습니다.)\n\n도구에 대한 상세 내용은 아래 링크에서 확인하실 수 있습니다.\n\n* [VoiceStudio: 로컬 기반의 오픈소스 음성 AI 플랫폼](https://my-little-website-client-self.vercel.app/ai-dev-tools/voicestudio-ai)"
+    },
+    {
+      "kind": "detail",
+      "q": "ONNX로 돌릴 수 있는 도구 뭐 있어?",
+      "expect": [
+        "ai-dev-tools/laya",
+        "ai-dev-tools/voxcpm-tts"
+      ],
+      "rep": 0,
+      "ms": 3116,
+      "rounds": 2,
+      "promptTokens": 30856,
+      "outputTokens": 396,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "저장된 자료 중에서 ONNX(Open Neural Network Exchange) 환경에서 모델을 효율적으로 운용하거나 최적화하는 데 활용할 수 있는 도구는 다음과 같습니다.\n\n*   **Bonsai-demo (LLM 경량화 및 추론 최적화 데모)**: 1-bit 및 Ternary 양자화 모델 운용과 에이전트 구축을 지원하며, 추론 최적화 프레임워크를 포함하고 있습니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/bonsai-demo-llm)\n\n*   **Colibri (MoE 모델 로컬 추론 엔진)**: 저사양 하드웨어에서 대규모 MoE(Mixture of Experts) 모델을 디스크 스트리밍 기술로 효율적으로 실행할 수 있게 하는 고성능 C 기반 추론 엔진입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/colibri-moe)\n\n*   **LLMfit (로컬 AI 추천)**: 사용자의 하드웨어 사양에 맞춰 구동 가능한 로컬 AI 모델 및 도구를 추천해 줍니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/llmfit)\n\n일반적으로 ONNX는 다양한 딥러닝 프레임워크(PyTorch, TensorFlow 등) 간의 상호운용성과 추론 성능 최적화를 위해 사용됩니다. 위 도구들은 주로 로컬 추론 최적화와 경량화에 초점이 맞춰져 있어 ONNX 모델의 배포 및 실행 전략과 함께 고려해 보시기 바랍니다."
+    },
+    {
+      "kind": "detail",
+      "q": "ONNX로 돌릴 수 있는 도구 뭐 있어?",
+      "expect": [
+        "ai-dev-tools/laya",
+        "ai-dev-tools/voxcpm-tts"
+      ],
+      "rep": 1,
+      "ms": 2887,
+      "rounds": 2,
+      "promptTokens": 30856,
+      "outputTokens": 466,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "사이트 주인님이 저장한 자료 중에서 **ONNX(Open Neural Network Exchange)**를 활용하거나 경량화·추론 최적화와 관련된 항목은 다음과 같습니다.\n\n*   **Bonsai-demo (LLM 경량화 및 추론 최적화)**\n    *   1-bit 및 Ternary 양자화 모델 운용과 에이전트 구축을 지원하는 고성능 LLM 추론 프레임워크 데모입니다. ONNX와 같은 양자화 및 경량화 기술이 중요한 분야입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/bonsai-demo-llm)\n\n*   **DoRA (Weight-Decomposed Low-Rank Adaptation)**\n    *   LLM 및 비전 모델을 위한 고효율 미세 조정 알고리즘(PEFT) 구현체로, 학습된 모델을 ONNX 등으로 변환하여 추론 환경에 배포할 때 유용하게 활용되는 기법입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/dora-weight-decomposed-low-rank-adaptation)\n\n*   **Colibri (로컬 추론 엔진)**\n    *   디스크 스트리밍 기술을 활용해 저사양 하드웨어에서 대규모 MoE 모델을 실행하는 C 기반의 고성능 추론 엔진입니다. 로컬 추론을 위해 ONNX와 유사한 최적화된 추론 런타임을 사용합니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/colibri-moe)\n\nONNX는 주로 파이토치(PyTorch)나 텐서플로우(TensorFlow)로 만든 모델을 범용적인 런타임(ONNX Runtime 등)에서 가볍고 빠르게 돌리기 위해 사용됩니다. 위 도구들은 로컬 환경에서의 모델 실행 및 최적화라는 공통된 목적을 가지고 있습니다."
+    },
+    {
+      "kind": "detail",
+      "q": "ONNX로 돌릴 수 있는 도구 뭐 있어?",
+      "expect": [
+        "ai-dev-tools/laya",
+        "ai-dev-tools/voxcpm-tts"
+      ],
+      "rep": 2,
+      "ms": 3873,
+      "rounds": 3,
+      "promptTokens": 32280,
+      "outputTokens": 299,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {
+            "tag": "ONNX"
+          },
+          "resultChars": 13
+        },
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "저장된 자료 중 ONNX와 직접적으로 관련된 항목은 확인되지 않습니다. 다만, 관련 분야(모델 추론, 최적화 등)에서 다루는 도구들이 있으니 참고해 보세요.\n\n*   **[Bonsai-demo](https://my-little-website-client-self.vercel.app/ai-dev-tools/bonsai-demo-llm)**: LLM 경량화 및 추론 최적화 데모로, 고성능 모델 운용을 지원합니다.\n*   **[Colibri](https://my-little-website-client-self.vercel.app/ai-dev-tools/colibri-moe)**: 저사양 하드웨어에서 대규모 모델을 실행하는 C 기반의 로컬 추론 엔진입니다.\n*   **[ComfyUI](https://my-little-website-client-self.vercel.app/links)**: 모델 실행과 워크플로우를 제어하는 AI 엔진으로, 다양한 모델 형식을 다룰 때 자주 사용됩니다.\n\n찾으시는 특정 프로젝트나 목적(예: 특정 디바이스에서의 추론, 모델 변환 등)을 말씀해 주시면, 관련 기술이나 도구를 추가로 확인해 드릴 수 있습니다."
+    },
+    {
+      "kind": "detail",
+      "q": "Blender랑 같이 쓸 수 있는 AI 3D 생성 도구",
+      "expect": [
+        "ai-dev-tools/hi3d-ai-3d"
+      ],
+      "rep": 0,
+      "ms": 3463,
+      "rounds": 2,
+      "promptTokens": 30860,
+      "outputTokens": 559,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "ai-dev-tools/hi3d-ai-3d"
+      ],
+      "recall": 1,
+      "answer": "Blender와 함께 활용할 수 있는 AI 3D 관련 도구들을 정리해 드립니다.\n\n### 1. 3D 모델 생성 및 파이프라인\n*   **Hi3D**: 텍스트와 이미지를 즉각적으로 고해상도 3D 모델로 변환하여 프린팅 워크플로우를 최적화하는 SaaS 도구입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/hi3d-ai-3d)\n*   **4DAnyone**: 단일 카메라 영상에서 4D 캐릭터를 재구성하는 연구 프로젝트입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/4danyone-4d)\n\n### 2. 애니메이션 및 리깅 자동화\n*   **Skin Tokens**: AI를 활용해 3D 모델을 즉시 리깅하고 게임 엔진용으로 변환하는 로컬 워크플로우를 안내합니다. (Blender 연동 포함)\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/column/skin-tokens-ai-3d)\n*   **Kimodo**: NVIDIA가 공개한 운동학 기반 모션 확산 모델로, 고품질 인간형 모션 생성 및 시뮬레이션을 지원합니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/kimodo-3d)\n\n### 3. 기타 유용한 기술 자원\n*   **ComfyUI**: 이미지, 비디오, 3D 등을 생성할 수 있는 노드 기반 워크플로우 엔진입니다. 3D 생성 분야에서도 제어권을 확보하기 위해 널리 사용됩니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/links)\n*   **React Three Fiber**: 웹 환경에서 3D 장면을 선언적으로 구축할 수 있게 지원하는 라이브러리입니다. (웹 3D 구현 시 참고)\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/links)\n\nBlender 자체 기능에 AI를 더하고 싶으시다면, 위 도구들을 활용한 파이프라인(예: Kimodo로 모션 추출 후 Blender로 리깅)을 구성해 보시는 것을 추천드립니다."
+    },
+    {
+      "kind": "detail",
+      "q": "Blender랑 같이 쓸 수 있는 AI 3D 생성 도구",
+      "expect": [
+        "ai-dev-tools/hi3d-ai-3d"
+      ],
+      "rep": 1,
+      "ms": 2487,
+      "rounds": 2,
+      "promptTokens": 3192,
+      "outputTokens": 347,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {
+            "tag": "3d",
+            "section": "ai-tools"
+          },
+          "resultChars": 895
+        }
+      ],
+      "hits": [
+        "ai-dev-tools/hi3d-ai-3d"
+      ],
+      "recall": 1,
+      "answer": "Blender와 연동하거나 3D 워크플로우에 활용할 수 있는 AI 도구들을 찾아보았습니다.\n\n*   **[Hi3D: AI 기반 고충실도 3D 모델 생성 및 전처리 플랫폼](https://my-little-website-client-self.vercel.app/ai-dev-tools/hi3d-ai-3d)**\n    *   텍스트와 이미지를 즉각적으로 고해상도 3D 모델로 변환해 주는 솔루션입니다. 3D 프린팅 워크플로우를 최적화하는 데 유용합니다.\n*   **[Viggle AI: 영상 기반 모션 캡처 및 캐릭터 합성 API](https://my-little-website-client-self.vercel.app/ai-dev-tools/viggle-ai-api)**\n    *   영상에서 움직임을 추출해 3D 캐릭터에 적용할 수 있는 플랫폼입니다. 모션 캡처 장비 없이 애니메이션 작업을 할 때 Blender와 병행하여 사용하기 좋습니다.\n*   **[4DAnyone: 단일 영상 기반 4D 캐릭터 생성 연구](https://my-little-website-client-self.vercel.app/ai-dev-tools/4danyone-4d)**\n    *   단일 카메라 영상에서 4D(시간축이 포함된 3D) 캐릭터를 재구성하는 연구 프로젝트입니다.\n\n상세 내용은 각 사이트 링크에서 확인하실 수 있습니다."
+    },
+    {
+      "kind": "detail",
+      "q": "Blender랑 같이 쓸 수 있는 AI 3D 생성 도구",
+      "expect": [
+        "ai-dev-tools/hi3d-ai-3d"
+      ],
+      "rep": 2,
+      "ms": 2497,
+      "rounds": 2,
+      "promptTokens": 13104,
+      "outputTokens": 340,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {
+            "section": "ai-tools"
+          },
+          "resultChars": 23835
+        }
+      ],
+      "hits": [
+        "ai-dev-tools/hi3d-ai-3d"
+      ],
+      "recall": 1,
+      "answer": "Blender와 함께 활용할 수 있는 AI 3D 생성 도구로 저장된 자료는 다음과 같습니다.\n\n*   **Hi3D**: 텍스트와 이미지를 즉각적으로 고해상도 3D 모델로 변환하여 프린팅 워크플로우를 최적화하는 웹 기반 SaaS 솔루션입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/hi3d-ai-3d)\n*   **Viggle AI**: 영상에서 움직임을 추출해 3D 캐릭터에 적용하는 모션 캡처 및 캐릭터 합성 플랫폼입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/viggle-ai-api)\n*   **4DAnyone**: 단일 카메라 영상에서 4D 캐릭터를 재구성하는 연구 프로젝트입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/4danyone-4d)\n*   **Kimodo**: NVIDIA에서 공개한 운동학(Kinematics) 기반의 모션 확산 모델로, 고품질 인간형 모션 생성 및 시뮬레이션을 지원합니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/kimodo-nvidia)"
+    },
+    {
+      "kind": "detail",
+      "q": "언리얼 PCG 언급한 자료",
+      "expect": [
+        "game-dev/5"
+      ],
+      "rep": 0,
+      "ms": 2948,
+      "rounds": 2,
+      "promptTokens": 30848,
+      "outputTokens": 187,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "언리얼 엔진의 PCG(Procedural Content Generation) 프레임워크와 관련하여, 사이트 주인이 저장한 자료 중에는 다음 항목이 직접 언급되어 있습니다.\n\n*   **[Warko 3D와 언리얼 엔진을 활용한 1일 레벨 구축 워크플로우](https://my-little-website-client-self.vercel.app/game-dev/warko-3d-1)**\n    *   **요약**: AI 도구인 Warko 3D를 중심으로 언리얼 엔진까지 이어지는 고속 게임 레벨 디자인 파이프라인을 분석한 자료입니다.\n\n직접적인 PCG 튜토리얼은 아니지만, 언리얼 엔진을 활용한 레벨 디자인 및 워크플로우 효율화 관점에서 참고하실 수 있습니다."
+    },
+    {
+      "kind": "detail",
+      "q": "언리얼 PCG 언급한 자료",
+      "expect": [
+        "game-dev/5"
+      ],
+      "rep": 1,
+      "ms": 2779,
+      "rounds": 2,
+      "promptTokens": 30848,
+      "outputTokens": 307,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/5"
+      ],
+      "recall": 1,
+      "answer": "저장된 자료 목록을 확인한 결과, '언리얼 PCG(Procedural Content Generation)'를 직접적으로 언급하는 개별 스크랩 항목은 확인되지 않습니다.\n\n다만, 언리얼 엔진 관련 워크플로우를 다루는 자료는 아래와 같이 존재하오니 참고하시기 바랍니다.\n\n*   **Warko 3D와 언리얼 엔진을 활용한 1일 레벨 구축 워크플로우**: [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/warko-3d-1)\n*   **언리얼 엔진 5.8 마커리스 모션 캡처 가이드**: [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/5-8)\n*   **Claude Code로 구현하는 UE5 자동화 게임 개발**: [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/claude-code-ue5)\n*   **언리얼 엔진 5 노르딕 환경 제작 실무 워크플로우**: [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/5)\n\n특정 주제와 관련하여 추가로 궁금한 점이 있으시면 말씀해 주세요."
+    },
+    {
+      "kind": "detail",
+      "q": "언리얼 PCG 언급한 자료",
+      "expect": [
+        "game-dev/5"
+      ],
+      "rep": 2,
+      "ms": 3606,
+      "rounds": 2,
+      "promptTokens": 30848,
+      "outputTokens": 391,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/5"
+      ],
+      "recall": 1,
+      "answer": "저장된 자료 목록을 확인한 결과, '언리얼 PCG(Procedural Content Generation)'를 직접적으로 다루거나 언급한 자료는 현재 리스트에 포함되어 있지 않습니다.\n\n대신 언리얼 엔진과 관련된 다음 자료들은 확인 가능합니다. 필요하신 경우 해당 링크를 참고해 보세요.\n\n* **[Warko 3D와 언리얼 엔진을 활용한 1일 레벨 구축 워크플로우](https://my-little-website-client-self.vercel.app/game-dev/warko-3d-1)**: Warko 3D와 언리얼 엔진을 연동하여 레벨 디자인을 자동화하는 파이프라인.\n* **[언리얼 엔진 5.8 마커리스 모션 캡처 가이드](https://my-little-website-client-self.vercel.app/game-dev/5-8)**: 외부 장비 없이 모션 데이터를 추출하여 언리얼 엔진에 리타겟팅하는 실무 프로세스.\n* **[Claude Code로 구현하는 UE5 자동화 게임 개발](https://my-little-website-client-self.vercel.app/game-dev/claude-code-ue5)**: Claude Code를 활용해 언리얼 엔진 내 개발 워크플로우를 자동화하는 사례.\n* **[언리얼 엔진 5 노르딕 환경 제작 실무 워크플로우](https://my-little-website-client-self.vercel.app/game-dev/5)**: 언리얼 엔진 5를 활용한 고품질 게임 배경 제작 및 최적화 과정.\n\n혹시 특정 기능 구현이나 다른 언리얼 관련 도구에 대해 궁금하신 점이 있다면 말씀해 주세요."
+    },
+    {
+      "kind": "detail",
+      "q": "GPU 인스턴싱 설명한 자료",
+      "expect": [
+        "game-dev/6-4"
+      ],
+      "rep": 0,
+      "ms": 2979,
+      "rounds": 2,
+      "promptTokens": 30848,
+      "outputTokens": 253,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/6-4"
+      ],
+      "recall": 1,
+      "answer": "저장된 자료 목록 중 GPU 인스턴싱을 직접적으로 다룬 자료는 검색되지 않습니다.\n\n다만, 관련 분야(게임 개발 및 최적화)에서 유용한 정보가 담긴 항목들은 다음과 같습니다. 필요하시다면 확인해 보세요.\n\n*   **유니티 6 엔진 핵심 렌더링 최적화 4가지 기술 분석**: 유니티 6의 렌더링 최적화(드로어, 오클루전 컬링 등) 기법을 분석한 자료입니다. ([사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/6-4))\n*   **8비트 게임보이 최적화의 기술적 정수**: 제한된 자원을 극복하기 위한 저수준 메모리 최적화 기법을 분석한 자료입니다. ([사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/8))\n\n혹시 특정 게임 엔진(Unity, Unreal 등)에서의 구현 방법을 찾으시는 것인지 알려주시면, 추가적인 정보를 탐색해 보겠습니다."
+    },
+    {
+      "kind": "detail",
+      "q": "GPU 인스턴싱 설명한 자료",
+      "expect": [
+        "game-dev/6-4"
+      ],
+      "rep": 1,
+      "ms": 3713,
+      "rounds": 2,
+      "promptTokens": 30848,
+      "outputTokens": 202,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/6-4"
+      ],
+      "recall": 1,
+      "answer": "저장된 자료 목록을 확인했으나, **GPU 인스턴싱(GPU Instancing)**을 직접적으로 설명하는 자료는 포함되어 있지 않습니다.\n\n다만, 게임 개발 최적화와 관련된 아래 자료들은 참고하실 수 있습니다:\n\n*   **[유니티 6 엔진 핵심 렌더링 최적화 4가지 기술 분석](https://my-little-website-client-self.vercel.app/game-dev/6-4)**: 유니티 6의 렌더링 최적화(드로어, 컬링, LOD 등)를 다루고 있어, 인스턴싱과 함께 자주 언급되는 최적화 기법들을 이해하는 데 도움이 됩니다.\n\n필요하시다면 다른 게임 최적화 기법이나 관련 엔진 기술에 대해 추가로 찾아봐 드릴 수 있습니다. 어떤 부분에 대해 더 알고 싶으신가요?"
+    },
+    {
+      "kind": "detail",
+      "q": "GPU 인스턴싱 설명한 자료",
+      "expect": [
+        "game-dev/6-4"
+      ],
+      "rep": 2,
+      "ms": 3376,
+      "rounds": 2,
+      "promptTokens": 30848,
+      "outputTokens": 231,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [
+        "game-dev/6-4"
+      ],
+      "recall": 1,
+      "answer": "저장된 자료 목록을 확인한 결과, 'GPU 인스턴싱'을 직접적으로 설명하는 제목의 자료는 없으나, 유니티 6의 렌더링 최적화 기술을 다룬 자료가 포함되어 있습니다.\n\n관련 자료는 다음과 같습니다:\n\n*   **유니티 6 엔진 핵심 렌더링 최적화 4가지 기술 분석**\n    *   요약: 유니티 6에서 도입된 GPU 레지던트 드로어(GPU Resident Drawer), 오클루전 컬링, STP, 메시 LOD를 통한 최적화 전략을 분석합니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/6-4)\n\nGPU 인스턴싱은 대규모 오브젝트 렌더링 최적화의 핵심 기술이므로, 위 자료에서 언급되는 **GPU Resident Drawer** 등 최신 렌더링 기법과 연관 지어 학습하시는 것을 추천드립니다."
+    },
+    {
+      "kind": "detail",
+      "q": "스팀 위시리스트 얘기한 자료",
+      "expect": [
+        "game-dev/item-mqpbigt0",
+        "game-dev/item-mqpbbrvb"
+      ],
+      "rep": 0,
+      "ms": 2447,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 136,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "스팀 위시리스트와 관련된 내용은 다음 자료에서 확인하실 수 있습니다.\n\n* **인디 게임 바이럴 성공과 비용 효율적 네트워크 인프라 분석**\n    * 요약: 광고비 없이 300만 장을 판매한 인디 게임의 성공 요인과 Epic Online Services(EOS)를 활용한 네트워크 설계 전략, 스팀 위시리스트 마케팅 등을 다룹니다.\n    * [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/item-mqpcd1ll)"
+    },
+    {
+      "kind": "detail",
+      "q": "스팀 위시리스트 얘기한 자료",
+      "expect": [
+        "game-dev/item-mqpbigt0",
+        "game-dev/item-mqpbbrvb"
+      ],
+      "rep": 1,
+      "ms": 2372,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 140,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "스팀(Steam) 위시리스트와 관련된 내용은 다음 자료에서 다루고 있습니다.\n\n* **인디 게임 바이럴 성공과 비용 효율적 네트워크 인프라 분석**\n    * 요약: 광고비 없이 300만 장을 판매한 인디 게임의 성공 요인과 EOS를 활용한 네트워크 설계 전략을 분석하며, 위시리스트 확보가 성공의 핵심 요인 중 하나로 언급됩니다.\n    * [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/item-mqpcd1ll)"
+    },
+    {
+      "kind": "detail",
+      "q": "스팀 위시리스트 얘기한 자료",
+      "expect": [
+        "game-dev/item-mqpbigt0",
+        "game-dev/item-mqpbbrvb"
+      ],
+      "rep": 2,
+      "ms": 2349,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 145,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "스팀 위시리스트와 관련하여 인디 게임의 성공 요인 및 네트워크 설계 전략을 다룬 자료가 있습니다.\n\n* **인디 게임 바이럴 성공과 비용 효율적 네트워크 인프라 분석**\n    * 요약: 광고비 없이 300만 장을 판매한 인디 게임의 성공 요인(스팀 위시리스트 포함)과 Epic Online Services(EOS)를 활용한 네트워크 설계 전략을 다룹니다.\n    * [사이트 링크](https://my-little-website-client-self.vercel.app/game-dev/item-mqpcd1ll)"
+    },
+    {
+      "kind": "detail",
+      "q": "A2A 프로토콜 언급한 자료",
+      "expect": [
+        "column/ai-1"
+      ],
+      "rep": 0,
+      "ms": 2777,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 103,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "저장된 자료 목록 전체를 검토하였으나, **'A2A 프로토콜'**을 직접적으로 언급한 자료는 확인되지 않았습니다.\n\n혹시 찾으시는 내용이 **'MCP(Model Context Protocol)'**와 같이 에이전트 간 통신이나 통합과 관련된 기술을 의미하시는 것이라면 관련 항목들이 존재합니다. MCP 관련 도구 및 분석 자료가 필요하시면 다시 말씀해 주세요."
+    },
+    {
+      "kind": "detail",
+      "q": "A2A 프로토콜 언급한 자료",
+      "expect": [
+        "column/ai-1"
+      ],
+      "rep": 1,
+      "ms": 2718,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 387,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "저장된 자료들 중 \"A2A 프로토콜\"이라는 명칭으로 직접 언급된 항목은 없으나, AI 에이전트 간의 협업 및 통신과 관련된 자료들은 다수 존재합니다. 찾으시는 내용과 유사한 맥락의 자료들을 안내해 드립니다.\n\n*   **Block buzz: AI 에이전트 통신 및 오케스트레이션 프레임워크**\n    *   AI 에이전트 간의 협업과 데이터 통신을 지원하는 분산형 오케스트레이션 프레임워크입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/block-buzz-ai)\n\n*   **Paperclip: AI 에이전트 통합 관리 플랫폼**\n    *   다양한 AI 에이전트를 프로젝트 단위로 체계적으로 관리하고 오케스트레이션하는 오픈소스 프레임워크입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/paperclip-ai)\n\n*   **oh-my-claudecode: Claude Code 멀티 에이전트 오케스트레이션**\n    *   Claude Code 기반의 팀 단위 협업을 위한 멀티 에이전트 확장 프레임워크입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/oh-my-claudecode-claude-code)\n\n혹시 특정 문서나 논문 등에서 보신 내용을 기반으로 찾으시는 것이라면, 정확한 문맥을 알려주시면 추가로 확인해 보겠습니다."
+    },
+    {
+      "kind": "detail",
+      "q": "A2A 프로토콜 언급한 자료",
+      "expect": [
+        "column/ai-1"
+      ],
+      "rep": 2,
+      "ms": 2823,
+      "rounds": 2,
+      "promptTokens": 30850,
+      "outputTokens": 409,
+      "calls": [
+        {
+          "name": "list_scraps",
+          "args": {},
+          "resultChars": 60081
+        }
+      ],
+      "hits": [],
+      "recall": 0,
+      "answer": "조회된 자료 중 'A2A 프로토콜'이라는 명칭을 직접적으로 언급한 항목은 없으나, 사이트 주인이 관리하는 자료들 중 **AI 에이전트 간 통신 및 오케스트레이션**과 관련된 도구들은 다음과 같습니다. 혹시 찾으시는 내용이 이와 관련이 있는지 확인해 보시기 바랍니다.\n\n*   **Block buzz: AI 에이전트 통신 및 오케스트레이션 프레임워크**\n    *   AI 에이전트 간 협업과 데이터 통신을 지원하는 분산형 오케스트레이션 프레임워크입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/block-buzz-ai)\n\n*   **Paperclip: AI 에이전트 통합 관리 플랫폼**\n    *   다양한 AI 에이전트를 프로젝트 단위로 체계적으로 관리하고 오케스트레이션하는 오픈소스 프레임워크입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/paperclip-ai)\n\n*   **oh-my-claudecode: Claude Code 멀티 에이전트 오케스트레이션**\n    *   Claude Code 기반의 팀 단위 협업을 위한 멀티 에이전트 확장 프레임워크입니다.\n    *   [사이트 링크](https://my-little-website-client-self.vercel.app/ai-dev-tools/oh-my-claudecode-claude-code)\n\n혹시 특정 문서나 칼럼에서 보신 용어라면, 어떤 맥락(예: 프로토콜의 성격, 특정 기술 스택 등)인지 알려주시면 추가로 검색해 드리겠습니다."
+    }
+  ]
+}

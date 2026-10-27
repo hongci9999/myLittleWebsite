@@ -1,0 +1,116 @@
+{
+  "before": {
+    "find": {
+      "runs": 30,
+      "recall": 0.9444444444444444,
+      "hitRate": 0.9666666666666667,
+      "msMedian": 3051,
+      "msMean": 3165.733333333333,
+      "promptTokens": 28334.333333333332,
+      "outputTokens": 398.93333333333334,
+      "toolCalls": 1,
+      "rounds": 2,
+      "errors": 0
+    },
+    "detail": {
+      "runs": 33,
+      "recall": 0.2878787878787879,
+      "hitRate": 0.3333333333333333,
+      "msMedian": 2861,
+      "msMean": 2958,
+      "promptTokens": 28982.060606060608,
+      "outputTokens": 308.93939393939394,
+      "toolCalls": 1.0303030303030303,
+      "rounds": 2.0303030303030303,
+      "errors": 0
+    },
+    "all": {
+      "runs": 63,
+      "recall": 0.6005291005291005,
+      "hitRate": 0.6349206349206349,
+      "msMedian": 2887,
+      "msMean": 3056.9206349206347,
+      "promptTokens": 28673.619047619046,
+      "outputTokens": 351.7936507936508,
+      "toolCalls": 1.0158730158730158,
+      "rounds": 2.015873015873016,
+      "errors": 0
+    }
+  },
+  "after-v2": {
+    "find": {
+      "runs": 30,
+      "recall": 0.8944444444444442,
+      "hitRate": 1,
+      "msMedian": 4302,
+      "msMean": 4455.866666666667,
+      "promptTokens": 31727.166666666668,
+      "outputTokens": 604.1666666666666,
+      "toolCalls": 2,
+      "rounds": 2,
+      "errors": 0
+    },
+    "detail": {
+      "runs": 33,
+      "recall": 0.6515151515151515,
+      "hitRate": 0.7878787878787878,
+      "msMedian": 3524,
+      "msMean": 3655.2727272727275,
+      "promptTokens": 34336.030303030304,
+      "outputTokens": 464.09090909090907,
+      "toolCalls": 2,
+      "rounds": 2,
+      "errors": 0
+    },
+    "all": {
+      "runs": 63,
+      "recall": 0.767195767195767,
+      "hitRate": 0.8888888888888888,
+      "msMedian": 3766,
+      "msMean": 4036.5079365079364,
+      "promptTokens": 33093.71428571428,
+      "outputTokens": 530.7936507936508,
+      "toolCalls": 2,
+      "rounds": 2,
+      "errors": 0
+    }
+  },
+  "after-v3": {
+    "find": {
+      "runs": 30,
+      "recall": 0.8722222222222222,
+      "hitRate": 1,
+      "msMedian": 4208,
+      "msMean": 4245.233333333334,
+      "promptTokens": 27714.5,
+      "outputTokens": 591,
+      "toolCalls": 2,
+      "rounds": 2,
+      "errors": 0
+    },
+    "detail": {
+      "runs": 33,
+      "recall": 0.6666666666666666,
+      "hitRate": 0.8181818181818182,
+      "msMedian": 3662,
+      "msMean": 3847.4848484848485,
+      "promptTokens": 30887.878787878788,
+      "outputTokens": 441.4848484848485,
+      "toolCalls": 2,
+      "rounds": 2,
+      "errors": 0
+    },
+    "all": {
+      "runs": 63,
+      "recall": 0.7645502645502645,
+      "hitRate": 0.9047619047619048,
+      "msMedian": 3825,
+      "msMean": 4036.8888888888887,
+      "promptTokens": 29376.74603174603,
+      "outputTokens": 512.6825396825396,
+      "toolCalls": 2,
+      "rounds": 2,
+      "errors": 0
+    }
+  }
+}

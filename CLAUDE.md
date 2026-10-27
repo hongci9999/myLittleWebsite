@@ -11,7 +11,7 @@
    - 시연 수단으로만 나온 도구(예: Claude Code)는 `include: false`
 3. url을 고친 항목은 `data`를 지우고 `include: true` → `refill ../.omc/bulk/<name>.preview.json` (그 항목만 AI 재채움)
 4. 사용자에게 표로 보고: 저장 예정 목록, 고친 것(✏️), 불확실(❓), 제외(중복·시연 도구)
-5. 사용자 승인 후 `save ../.omc/bulk/<name>.preview.json` (server/.env의 BULK_EMAIL/BULK_PASSWORD 사용) → 섹션별로 DB 한 건씩 조회해 확인 → `npm run backfill-sources -w server` (새 항목의 유튜브 자막·README 원문을 MCP `get_source`용으로 저장, 로컬에서만 자막 수신 가능)
+5. 사용자 승인 후 `save ../.omc/bulk/<name>.preview.json` (server/.env의 BULK_EMAIL/BULK_PASSWORD 사용) → 섹션별로 DB 한 건씩 조회해 확인 → `npm run backfill-sources -w server` (새 항목의 원문 저장 + `search_sources` 벡터 색인. cron이 매일 같은 일을 하지만 유튜브는 자막 대신 Gemini 요약이라, 로컬에서 진짜 자막으로 바로 채운다)
 
 제약: 중복 검사는 세 섹션 통합 linkKey 기준 → 같은 URL을 두 섹션에 넣으면 두 번째는 스킵된다. 두 섹션에 다 넣을 땐 한쪽은 영상 URL을 메인으로.
 

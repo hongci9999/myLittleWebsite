@@ -6,6 +6,7 @@
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ],
+  "crons": [{ "path": "/api/cron/sources", "schedule": "0 18 * * *" }],
   "functions": {
     "api/index.ts": {
       "maxDuration": 300,

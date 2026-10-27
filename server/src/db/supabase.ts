@@ -25,6 +25,12 @@ export function getSupabaseWithAuth(token: string): SupabaseClient | null {
   })
 }
 
+/** service_role — RLS 무시. 로그인 없이 도는 cron 전용, 클라이언트로 절대 내보내지 않는다 */
+export function getSupabaseAdmin(): SupabaseClient | null {
+  const service = process.env.SUPABASE_SERVICE_ROLE_KEY
+  return url && service ? createClient(url, service) : null
+}
+
 export const supabase = {
   get client() {
     return getSupabase()

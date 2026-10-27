@@ -709,6 +709,14 @@ MCP 서버(Streamable HTTP, stateless, 인증 없음·읽기 전용). JSON-RPC �
 
 ---
 
+## 18. 원문 동기화 cron (`/api/cron`)
+
+### GET /api/cron/sources
+
+Vercel cron이 하루 1회(UTC 18:00) 호출. 빠진 원문(`scrap_sources`) 수집 + 원문·정리 본문 조각 색인(`source_chunks`, pgvector) + 사라진 자료의 조각 정리. `Authorization: Bearer $CRON_SECRET`이 아니면 `401`, `SUPABASE_SERVICE_ROLE_KEY` 없으면 `503`. 240초가 지나면 남은 작업은 다음 실행으로. → `{ fetched, fetchFailed, indexed, chunks, removed, pending }`. 로컬 `npm run backfill-sources -w server`도 같은 작업(유튜브는 진짜 자막으로). 설계: [ADR 0033](decisions/0033-source-chunk-rag.md).
+
+---
+
 ## 16. 참고
 
 - 설계: `docs/plans/2026-03-03-links-admin-design.md`

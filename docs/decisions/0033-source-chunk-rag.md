@@ -1,7 +1,7 @@
 # 원문 조각 검색 — pgvector 벡터 RAG를 `search_sources` 도구로 추가
 
 - **날짜**: 2026-10-27
-- **상태**: 제안
+- **상태**: 채택 (2026-10-27 구현·측정)
 
 ## 배경 (왜 이 결정이 필요한가)
 
@@ -18,14 +18,17 @@
 
 기존 도구 흐름은 그대로 두고, 원문 조각 검색 도구 하나를 추가하는 **하이브리드**.
 
-1. **색인 테이블 `source_chunks`** (Supabase pgvector) — `url`, `chunk_idx`, `text`, `embedding vector(768)`. 대상: `scrap_sources` 원문 + `bootcamp_docs.body_md`(url = 기록 페이지 경로). HNSW 코사인 인덱스. 검색은 `match_source_chunks(query_embedding, match_count)` RPC.
-2. **청킹** — 약 1,000자, 150자 겹침. 문단·줄바꿈 경계 우선으로 자른다.
-3. **임베딩** — Gemini `gemini-embedding-001`, `outputDimensionality: 768`(pgvector 인덱스 한도 2,000차원 이내·저장량 절감), 문서는 `RETRIEVAL_DOCUMENT`, 질문은 `RETRIEVAL_QUERY`. 기존 `GEMINI_API_KEY` + `fetch` 직접 호출(SDK 추가 없음, `chat.ts`와 같은 방식).
-4. **색인 시점**
-   - `backfill-sources` 스크립트: 원문 저장 후 청킹·임베딩까지. `--reindex`로 전체 재색인. 부트캠프 기록도 여기서.
-   - 빠른 저장 `keepSource`: 원문 저장 직후 같은 함수로 색인(실패해도 저장은 성공 — 다음 백필이 채움).
-5. **도구 `search_sources(query, k?)`** — 질문 임베딩 → top-k(기본 8) 조각 + 소속 스크랩 id·제목·siteUrl·유사도. MCP·대화창 공통(`knowledgeTools`에 추가).
-6. **시스템 프롬프트** — "제목·요약으로 안 잡히는 세부 내용, 특정 설명이 나온 부분은 `search_sources`. 조각만으로 부족하면 그 url을 `get_source`로."
+1. **색인 테이블 `source_chunks`** (Supabase pgvector) — `origin`(`source` 원문 / `body` 사이트 정리 본문), `ref`(원문 url·`/bootcamp/<slug>` / 스크랩 id), `chunk_idx`, `text`, `embedding vector(768)`. HNSW 코사인 인덱스, 검색 RPC `match_source_chunks(query_embedding, match_count)`.
+2. **색인 대상** — 원문(`scrap_sources`) + 부트캠프 기록 + **정리 본문(`bodyMd`)**. 원문은 영어가 많고 질문은 한국어라, 한국어 정리 본문을 같이 넣어 언어 차이를 줄이고 원문이 없는 자료도 잡는다. **유용한 링크는 제외**(사이트 홈이라 원문이 대부분 마케팅 문구).
+3. **청킹** — 약 1,000자, 150자 겹침, 문단 → 줄 → 문장 경계 우선. README의 HTML·`<` 이스케이프 정리.
+4. **임베딩** — `gemini-embedding-001`, `outputDimensionality: 768`(L2 정규화), 문서 `RETRIEVAL_DOCUMENT` + 자료 제목 `title`, 질문 `RETRIEVAL_QUERY`. 기존 `GEMINI_API_KEY` + `fetch`(SDK 추가 없음).
+5. **갱신 = Vercel cron 하루 1회** (`GET /api/cron/sources`, UTC 18:00) — 사이트 직접 등록·대량 등록·빠른 저장·수정·삭제를 한 곳에서 처리. `services/knowledge/sync.ts`:
+   - 빠진 원문 수집(메인 url + 유튜브·GitHub 추가 링크). Vercel은 유튜브 자막이 막혀 **Gemini 영상 요약을 `kind: 'digest'`로 저장**, 로컬 `backfill-sources`(같은 함수)가 진짜 자막으로 교체.
+   - 조각을 다시 계산해 **저장된 조각과 다른 문서만 재임베딩**, 사라진 자료의 조각 삭제. 240초 넘으면 다음 실행으로.
+   - 로그인 없이 쓰므로 `SUPABASE_SERVICE_ROLE_KEY`(서버 전용), 외부 호출은 `CRON_SECRET`으로 차단.
+   - 저장 경로마다 색인을 붙이는 방식(즉시 반영)은 고칠 곳이 4곳 이상이고 삭제 정리를 따로 만들어야 해서 안 함 — 최대 하루 지연.
+6. **도구 `search_sources(query, k=8)`** — 질문 임베딩 → 상위 조각 + 소속 자료 id·제목·siteUrl·`from`(원문|정리)·유사도. 소속 자료가 사라진 조각은 버린다. MCP·대화창 공통.
+7. **대화창 프롬프트** — 자료 질문은 `list_scraps`(전체 목록)와 `search_sources`를 **같은 회차에 병렬 호출**. 질문 유형(자료 찾기 / 원문 속 세부)을 모델이 판단해 고르게 하면 판단이 빗나갈 때 망가진다(error-fixes 0009의 섹션 짐작과 같은 구조). 답은 "관련 자료를 빠짐없이 나열, 조각은 근거 한 줄로" — 1차 측정에서 조각 때문에 목록 항목을 빼는 회귀가 있었다.
 
 ## 이유 (다른 선택지를 배제한 이유)
 
@@ -40,6 +43,8 @@
 
 ## 결과/참고
 
-- 계획: [2026-10-27-source-rag.md](../plans/2026-10-27-source-rag.md), SQL: [2026-10-27-source-chunks.sql](../plans/2026-10-27-source-chunks.sql)
-- 규모 추정: 약 3천 조각 × 768차원 ≈ 9MB(Supabase 무료 한도 내). 임베딩 비용 무시 가능 수준.
-- 유튜브 자막은 로컬에서만 받을 수 있어서(Vercel IP 차단) 자막 색인도 로컬 백필에서 한다.
+- 측정(질문 21개 × 3회, [learnings 0039](../learnings/0039-agentic-vs-vector-rag-eval.md)): 원문 속 세부 질문 정답 1개 이상 **33% → 82%**(회수율 29% → 67%), 자료 찾기 97% → 100%(회수율 94% → 87%). 응답 중앙값 2.9 → 3.8초, 입력 토큰 +2.5%(조각 추가분을 `list_scraps`의 사이트 전체 주소 → 경로로 상쇄, 처음엔 +15%), 도구 회차 1회 그대로.
+- 첫 색인 371문서 → 4,326조각(로컬 284초), 변경 없을 때 재실행 3초.
+- 남은 약점: 정확한 고유명사("Tauri")에 약함 → 키워드(BM25·`pg_trgm`) 하이브리드 검토. 목록이 수천 건이 되면 `list_scraps` 전체 전달도 요약 임베딩 검색으로.
+- 계획: [2026-10-27-source-rag.md](../plans/2026-10-27-source-rag.md), SQL: [2026-10-27-source-chunks.sql](../plans/2026-10-27-source-chunks.sql), 측정 원본: [rag-eval/](../plans/rag-eval/)
+- 실행 필요: SQL(Supabase), Vercel 환경변수 `SUPABASE_SERVICE_ROLE_KEY`·`CRON_SECRET`.

@@ -17,6 +17,7 @@ import mcpRoutes from './routes/mcp.js'
 import quickSaveRoutes from './routes/quick-save.js'
 import chatRoutes from './routes/chat.js'
 import bootcampRoutes from './routes/bootcamp.js'
+import cronRoutes from './routes/cron.js'
 import {
   resolveGeminiTextModel,
   resolveGeminiYoutubeModel,
@@ -87,5 +88,6 @@ app.use('/api/site-domain', siteDomainRoutes)
 app.use('/api/mcp', mcpRoutes)
 app.use('/api/quick-save', quickSaveRoutes)
 app.use('/api/chat', chatRoutes)
+app.use('/api/cron', cronRoutes)
 
 export default app

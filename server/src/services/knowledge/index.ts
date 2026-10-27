@@ -14,12 +14,13 @@ import { getBootcampDoc, listBootcampDocs } from '../../db/queries/bootcamp.js'
 import { getDimensionsWithValues, getLinks, type ValueTree } from '../../db/queries/links.js'
 import { projectRoot } from '../../config/learning-sections.js'
 import { fetchSourceText } from './source.js'
+import { searchChunks } from './chunks.js'
 
 const SITE_URL = process.env.SITE_URL ?? 'https://my-little-website-client-self.vercel.app'
 
 type Link = { label: string; url: string }
 
-interface Scrap {
+export interface Scrap {
   /** `<section>/<slug>` (links는 `links/<uuid>`) */
   id: string
   section: SectionKey
@@ -81,7 +82,7 @@ type SectionKey = keyof typeof SECTIONS
 const SECTION_KEYS = Object.keys(SECTIONS) as [SectionKey, ...SectionKey[]]
 
 // ponytail: 매 호출 전체 조회 후 메모리 필터 — 170여 건 기준. 1000건 넘으면 pgvector 검색으로
-async function loadScraps(section?: SectionKey): Promise<Scrap[]> {
+export async function loadScraps(section?: SectionKey): Promise<Scrap[]> {
   const keys = section ? [section] : SECTION_KEYS
   const lists = await Promise.all(
     keys.map(async (key) =>
@@ -127,7 +128,10 @@ async function getSource(url: string, offset: number) {
   if (!known) throw new Error('저장된 스크랩 url·extraLinks url, 프로젝트 카드의 링크만 조회할 수 있습니다.')
 
   const { data } = (await supabase.client?.from('scrap_sources').select('kind, text').eq('url', url).maybeSingle()) ?? {}
-  const src = data ?? (await fetchSourceText(url, { allowAiDigest: true }))
+  // DB엔 cron이 영상 요약을 'digest'로 저장 — 응답은 기존 이름(ai-digest) 유지
+  const src = data
+    ? { ...data, kind: data.kind === 'digest' ? 'ai-digest' : data.kind }
+    : await fetchSourceText(url, { allowAiDigest: true })
   if (!src) throw new Error('원문을 가져오지 못했습니다. url을 직접 열어 확인하세요.')
 
   const end = offset + SOURCE_CHUNK
@@ -153,7 +157,8 @@ export const knowledgeTools: KnowledgeTool[] = [
     name: 'list_scraps',
     description:
       '사이트 주인이 저장해 둔 자료 목록(AI 개발 도구, 칼럼, 게임 개발 자료, 유용한 링크=즐겨 쓰는 사이트·서비스)을 id·제목·요약·태그로 반환한다. id는 "섹션/키". ' +
-      '도구 추천, 프로젝트 아이디어, 학습 자료 질문에 답할 때 먼저 이걸로 관련 항목을 고른 뒤 get_scraps로 본문을 읽어라.',
+      '도구 추천, 프로젝트 아이디어, 학습 자료 질문에 답할 때 먼저 이걸로 관련 항목을 고른 뒤 get_scraps로 본문을 읽어라. ' +
+      `사이트 링크는 "${SITE_URL}" + sitePath.`,
     inputSchema: {
       section: z.enum(SECTION_KEYS).optional().describe('ai-tools | columns | game-dev | links, 생략 시 전체'),
       tag: z.string().optional().describe('이 태그를 포함한 항목만 (대소문자·띄어쓰기 무시, 부분 일치)'),
@@ -164,8 +169,8 @@ export const knowledgeTools: KnowledgeTool[] = [
       const t = tag && norm(tag)
       return (await loadScraps(section))
         .filter((s) => !t || s.tags.some((x) => norm(x).includes(t)))
-        // 목록은 고르기용으로 최소화 — 원본 url·본문은 get_scraps에서. siteUrl은 목록만으로 출처 다는 답(대화창)용
-        .map(({ id, title, summary, tags, siteUrl }) => ({ id, title, summary, tags, siteUrl }))
+        // 목록은 고르기용으로 최소화 — 원본 url·본문은 get_scraps에서. 사이트 링크는 경로만(도메인은 설명에 한 번) — 전체 주소가 목록의 25%였다
+        .map(({ id, title, summary, tags, siteUrl }) => ({ id, title, summary, tags, sitePath: siteUrl.slice(SITE_URL.length) }))
     },
   },
   {
@@ -195,6 +200,34 @@ export const knowledgeTools: KnowledgeTool[] = [
       offset: z.number().int().min(0).optional(),
     },
     handler: ({ url, offset }: { url: string; offset?: number }) => getSource(url, offset ?? 0),
+  },
+  {
+    name: 'search_sources',
+    description:
+      '원문(유튜브 자막·README·웹 글·부트캠프 기록)과 사이트 정리 본문을 의미로 검색해 관련 조각을 반환한다(벡터 검색). ' +
+      '제목·요약·태그엔 없고 본문 속에만 나오는 세부 내용(특정 기술·도구 이름, 설명, 수치)을 찾을 때 쓴다. ' +
+      '결과의 id·siteUrl은 소속 자료, from은 원문|정리. 조각만으로 부족하면 get_scraps(id)나 get_source로 이어 읽어라.',
+    inputSchema: {
+      query: z.string().min(1).describe('찾을 내용 (자연어)'),
+      k: z.number().int().min(1).max(20).optional().describe('조각 수, 기본 8'),
+    },
+    handler: async ({ query, k }: { query: string; k?: number }) => {
+      const [hits, scraps, boot] = await Promise.all([searchChunks(query, k ?? 8), loadScraps(), listBootcampDocs()])
+      const bootTitle = new Map(boot.map((b) => [b.slug === 'index' ? '/bootcamp' : `/bootcamp/${b.slug}`, b.title]))
+      return hits.flatMap((h) => {
+        const owner =
+          h.origin === 'body'
+            ? scraps.find((s) => s.id === h.ref)
+            : scraps.find((s) => s.url === h.ref || s.extraLinks.some((l) => l.url === h.ref))
+        const base = owner
+          ? { id: owner.id, title: owner.title, siteUrl: owner.siteUrl }
+          : bootTitle.has(h.ref)
+            ? { id: h.ref.slice(1), title: bootTitle.get(h.ref)!, siteUrl: `${SITE_URL}${h.ref}` }
+            : null
+        // 자료가 지워졌는데 조각이 남은 경우(다음 동기화 전)는 버린다
+        return base ? [{ ...base, from: h.origin === 'body' ? '정리' : '원문', similarity: +h.similarity.toFixed(3), text: h.text }] : []
+      })
+    },
   },
   {
     name: 'get_portfolio',
